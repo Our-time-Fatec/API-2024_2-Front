@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
 
 botaoazul:{
+    flex: 1,
     color: '#FFFFFF',
     backgroundColor: "#407CE2",
     borderRadius: 40,
@@ -15,6 +16,7 @@ textobotaoazul:{
     fontSize: 20
 },
 botaobranco:{
+    width: 300,
     backgroundColor: "#FFFFFF",
     borderRadius: 40,
     alignItems: 'center',

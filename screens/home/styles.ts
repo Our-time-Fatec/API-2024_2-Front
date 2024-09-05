@@ -3,7 +3,6 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
     container: {
         flex: 0,
-        flexDirection: 'column',
     },
     title: {
         flex: 1,
@@ -32,7 +31,7 @@ const styles = StyleSheet.create({
         color: '#221F1F'
     },
     logo: {
-        marginLeft: 15,
+        marginLeft: 48,
         marginTop: 175,
         flexDirection: 'column',
         height: 200,

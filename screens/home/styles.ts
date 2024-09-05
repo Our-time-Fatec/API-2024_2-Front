@@ -2,33 +2,45 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flex: 0,
         flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgb(48, 47, 47)',
     },
     title: {
-        display: 'flex',
+        flex: 1,
+        flexDirection: 'column',
+        textAlign: 'center',
         fontFamily: 'Poppins-SemiBold',
         fontWeight: 'bold',
         fontSize: 25,
         color: '#223A6A'
     },
     subtitle:{
+        flex: 1,
+        textAlign: 'center',
+        marginBottom: 50,
         fontFamily: "Poppins-Regular",
-        fontSize: 14,
+        fontSize: 20,
         color: '#407CE2',
-        marginBottom: 20,
     },
     welcome:{
+        flex: 1,
+        textAlign: 'center',
+        marginBottom: 50,
         fontFamily: "Poppins-Bold",
-        fontSize: 22,
+        fontWeight: "bold",
+        fontSize: 30,
         color: '#221F1F'
     },
     logo: {
+        marginLeft: 15,
+        marginTop: 175,
+        flexDirection: 'column',
         height: 200,
         width: 200,
     },
+    containerButton: {
+        justifyContent: 'center',
+        marginBottom: 10,
+    }
 });
 export default styles;

@@ -6,12 +6,14 @@ import logo from "../../assets/logo.png"
 
 const Home: React.FC = () => {
     return (
-        <View>
+        <View style={styles.container}>
             <Image style={styles.logo} source={logo}></Image>
             <Text style={styles.title}>Da Vinci Care</Text>
             <Text style={styles.subtitle}>Seu agente pessoal de saúde.</Text>
-            <Text style={styles.welcome}>Bem Vindo!</Text>
-            <BotaoAzul texto='Entrar' />
+            <Text style={styles.welcome}>Bem-Vindo!</Text>
+            <View style={styles.containerButton}>
+                <BotaoAzul texto='Entrar' />
+            </View>
             <BotaoBranco texto='Sign Up'/>
         </View>
     );

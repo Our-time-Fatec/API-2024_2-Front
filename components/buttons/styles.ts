@@ -5,24 +5,26 @@ const styles = StyleSheet.create({
 botaoazul:{
     color: '#FFFFFF',
     backgroundColor: "#407CE2",
-    borderRadius: 10,
+    borderRadius: 40,
     alignItems: 'center',
-    padding: 10,
+    padding: 20,
 },
 textobotaoazul:{
     fontFamily: "Poppins-SemiBold",
-    color: "#FFFFFF"
+    color: "#FFFFFF",
+    fontSize: 20
 },
 botaobranco:{
     backgroundColor: "#FFFFFF",
-    borderRadius: 10,
+    borderRadius: 40,
     alignItems: 'center',
-    padding: 10,
+    padding: 20,
     borderColor: '#407CE2',
     borderWidth: 2,
 },
 textobotaobranco:{
     fontFamily: "Poppins-SemiBold",
+    fontSize: 20,
     color: "#407CE2"
 }
 });

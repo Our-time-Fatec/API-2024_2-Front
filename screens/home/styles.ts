@@ -3,32 +3,47 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'column',
+        flexDirection: "column",
+        backgroundColor: '#fff',
         justifyContent: 'center',
+    },
+    containercima: {
+        flex: 0.5
+    },
+    containerlogo:{
         alignItems: 'center',
-        backgroundColor: 'rgb(48, 47, 47)',
+    },
+    logo: {
+        height: 200,
+        width: 200,
     },
     title: {
-        display: 'flex',
+        flexDirection: 'column',
+        textAlign: 'center',
         fontFamily: 'Poppins-SemiBold',
         fontWeight: 'bold',
         fontSize: 25,
         color: '#223A6A'
     },
     subtitle:{
+        flex: 1,
+        textAlign: 'center',
         fontFamily: "Poppins-Regular",
-        fontSize: 14,
+        fontSize: 20,
         color: '#407CE2',
-        marginBottom: 20,
     },
     welcome:{
-        fontFamily: "Poppins-Bold",
-        fontSize: 22,
-        color: '#221F1F'
+        fontFamily: 'Poppins-SemiBold',
+        textAlign: 'center',
+        marginBottom: 40,
+        fontWeight: "bold",
+        fontSize: 30,
     },
-    logo: {
-        height: 200,
-        width: 200,
-    },
+    containerButton: {
+        marginBottom: 10,
+        alignSelf: 'center',
+        width: "80%"
+        
+    }
 });
 export default styles;

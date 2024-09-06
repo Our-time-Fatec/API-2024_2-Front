@@ -55,7 +55,7 @@ const Login: React.FC<Props> = ({navigation, route}) => {
             </View>
                 <Text style={styles.textoesqueceu}> Esqueceu a senha?</Text>
             <View style={styles.botaocontainer}>
-                <BotaoAzul texto='Entre'/>
+                <BotaoAzul texto='Entre' onPress={() => navigation.navigate("Selecao")}/>
             </View>
                 <Text style={styles.textocadastro}>Não possui uma conta? 
                     <Text style={styles.linkcadastro} onPress={() => navigation.navigate("Cadastro")}> Cadastre-se</Text>

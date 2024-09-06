@@ -12,7 +12,6 @@ botaoazul:{
     padding: 14,
 },
 textobotaoazul:{
-    fontFamily: 'Poppins',
     color: "#FFFFFF",
     fontSize: 20
 },

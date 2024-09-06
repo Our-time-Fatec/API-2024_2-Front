@@ -9,8 +9,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 14, 
     paddingHorizontal: 100, 
-    color: "#FFFFFF",
-  },
+},
   textobotaoazul: {
     fontFamily: "Poppins_700Bold",
     color: "#FFFFFF",
@@ -29,6 +28,7 @@ const styles = StyleSheet.create({
   },
   textobotaobranco: {
     fontFamily: "Poppins_700Bold",
+
     fontSize: 20,
     color: "#407CE2",
   },

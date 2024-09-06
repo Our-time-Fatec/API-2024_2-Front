@@ -15,6 +15,7 @@ const BotaoAzul: React.FC<BotaoAzulProps> = ({ texto, onPress }) => {
     Poppins_400Regular,
   });
 
+
   if (!fontsLoaded) {
     SplashScreen.preventAutoHideAsync();
     return null; // Retorna null enquanto as fontes não estão carregadas
@@ -32,12 +33,13 @@ const BotaoAzul: React.FC<BotaoAzulProps> = ({ texto, onPress }) => {
 };
 interface BotaoBrancoProps{
     texto: string;
+    onPress: () => void;
 }
 
-const BotaoBranco: React.FC<BotaoBrancoProps> = ({texto}) => {
+const BotaoBranco: React.FC<BotaoBrancoProps> = ({texto,onPress}) => {
     return(
         <View>
-            <TouchableOpacity style={styles.botaobranco}>
+            <TouchableOpacity style={styles.botaobranco} onPress={onPress}>
                 <Text style={styles.textobotaobranco}>{texto}</Text>
             </TouchableOpacity>
         </View>

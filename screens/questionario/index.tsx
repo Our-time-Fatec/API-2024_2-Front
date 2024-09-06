@@ -9,8 +9,19 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { styles } from "./styles";
+import { RootStackParamList } from "../../types/rootStack";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RouteProp } from "@react-navigation/native";
 
-export default function Questionario() {
+type QuestionarioScreenNavigationProp = StackNavigationProp<RootStackParamList, "Questionario">;
+type QuestionarioScreenRouteProp = RouteProp<RootStackParamList, "Questionario">;
+
+type Props = {
+    navigation: QuestionarioScreenNavigationProp;
+    route: QuestionarioScreenRouteProp;
+  };
+
+const Questionario: React.FC<Props> = ({navigation, route}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Informações básicas</Text>
@@ -61,7 +72,7 @@ export default function Questionario() {
         <TextInput placeholder="Seu objetivo" style={styles.input} />
       </View>
 
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Login")}>
           <Text style={styles.buttonText}>Finalizar cadastro</Text>
         </TouchableOpacity>
 
@@ -69,3 +80,4 @@ export default function Questionario() {
   );
 }
 
+export default Questionario;

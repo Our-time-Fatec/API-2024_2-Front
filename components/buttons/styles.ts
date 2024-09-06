@@ -12,7 +12,7 @@ botaoazul:{
     padding: 14,
 },
 textobotaoazul:{
-    fontFamily: 'Poppins_700Bold',
+    fontFamily: 'Poppins',
     color: "#FFFFFF",
     fontSize: 20
 },
@@ -27,7 +27,7 @@ botaobranco:{
     marginTop: 15,
 },
 textobotaobranco:{
-    fontFamily: "Poppins_700Bold",
+    fontFamily: "Poppins",
     fontSize: 20,
     color: "#407CE2"
 }

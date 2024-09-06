@@ -10,13 +10,6 @@ interface BotaoAzulProps{
 }
 
 const BotaoAzul: React.FC<BotaoAzulProps> = ({texto,onPress}) => {
-    const [fontsLoaded] = useFonts({
-        Poppins_700Bold,
-        Poppins_400Regular
-    })
-    if(!fontsLoaded){
-        <AppLoading />
-    }
     return(
         <View>
             <TouchableOpacity style={styles.botaoazul} onPress={onPress}>
@@ -28,12 +21,13 @@ const BotaoAzul: React.FC<BotaoAzulProps> = ({texto,onPress}) => {
 
 interface BotaoBrancoProps{
     texto: string;
+    onPress: () => void;
 }
 
-const BotaoBranco: React.FC<BotaoBrancoProps> = ({texto}) => {
+const BotaoBranco: React.FC<BotaoBrancoProps> = ({texto,onPress}) => {
     return(
         <View>
-            <TouchableOpacity style={styles.botaobranco}>
+            <TouchableOpacity style={styles.botaobranco} onPress={onPress}>
                 <Text style={styles.textobotaobranco}>{texto}</Text>
             </TouchableOpacity>
         </View>

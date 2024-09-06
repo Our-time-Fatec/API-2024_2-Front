@@ -1,9 +1,21 @@
 import React, { useState } from 'react';
+import { BotaoAzul } from '../../components/buttons';
 import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { styles } from './styles';
+import { RootStackParamList } from "../../types/rootStack";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RouteProp } from "@react-navigation/native";
 
-const Cadastro = () => {
+type CadastroScreenNavigationProp = StackNavigationProp<RootStackParamList, "Cadastro">;
+type CadastroScreenRouteProp = RouteProp<RootStackParamList, "Cadastro">;
+
+type Props = {
+    navigation: CadastroScreenNavigationProp;
+    route: CadastroScreenRouteProp;
+  };
+
+const Cadastro: React.FC<Props> = ({navigation,route}) => {
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
     const [email, setEmail] = useState('');
@@ -77,12 +89,12 @@ const Cadastro = () => {
 
 {/* Alterar para botao da outra branch depois */}
 
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Questionario")}>
                     <Text style={styles.buttonText}>Próximo</Text>
                 </TouchableOpacity>
 
                 <Text style={styles.loginText}>
-                     <Text style={styles.link}>Voltar</Text>
+                     <Text style={styles.link} onPress={() => navigation.navigate("Home")}>Voltar</Text>
                 </Text>
             </View>
         </View>

@@ -29,7 +29,7 @@ const Home: React.FC<Props> = ({navigation,route}) => {
                 <Text style={styles.welcome}>Bem-Vindo!</Text>
                     <View style={styles.containerButton}>
                     <BotaoAzul texto='Entrar' onPress={() => navigation.navigate("Login")}/>
-                    <BotaoBranco texto='Sign Up'/>
+                    <BotaoBranco texto='Sign Up' onPress={() => navigation.navigate("Cadastro")}/>
                 </View>
             </View>
         </View>

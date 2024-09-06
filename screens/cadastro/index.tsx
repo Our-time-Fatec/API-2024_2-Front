@@ -1,19 +1,25 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { styles } from './styles';
 
 const Cadastro = () => {
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
+    const [showPassword, setShowPassword] = useState(true);
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
 
     return (
+        <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
         <View style={styles.container}>
             <View style={styles.containerUp}>
                 <Text style={styles.title}>Cadastre-se</Text>
@@ -63,7 +69,7 @@ const Cadastro = () => {
                         placeholderTextColor="rgba(163,162,163,255)"
                     />
                     <TouchableOpacity onPress={togglePasswordVisibility}>
-                        <Ionicons name={showPassword ? "eye-off-outline" : "eye-outline"} size={20} color="gray" />
+                        <Ionicons name={showPassword ? "eye-off-outline" : "eye-outline"} size={30} color="gray" />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -80,69 +86,9 @@ const Cadastro = () => {
                 </Text>
             </View>
         </View>
+        </ScrollView>
+        </KeyboardAvoidingView>
     );
 };
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: "column",
-        backgroundColor: '#fff',
-        paddingHorizontal: 20,
-
-        justifyContent: 'center',
-    },
-    containerUp: {
-        paddingVertical: 40,
-        flex: 0.5
-    },
-    containerDown: {
-        flex: 0.5,
-        justifyContent: "flex-end",
-        paddingVertical: 40,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        marginBottom: 30,
-    },
-    inputContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#f2f2f2',
-        paddingHorizontal: 30,
-        borderRadius: 8,
-        marginBottom: 25,
-        height: 60,
-    },
-    inputNome: {
-        flex: 0.6,
-        flexDirection: "row"
-    },
-    input: {
-        flex: 1,
-        marginLeft: 10,
-        fontSize: 16,
-        padding: 20
-    },
-    link: {
-        color: '#007bff',
-    },
-    button: {
-        backgroundColor: '#007bff',
-        padding: 20,
-        borderRadius: 30,
-        marginBottom: 10,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
-    loginText: {
-        textAlign: 'center',
-    },
-});
 
 export default Cadastro;

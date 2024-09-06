@@ -11,7 +11,12 @@ import { RouteProp } from "@react-navigation/native";
 type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, "Login">;
 type LoginScreenRouteProp = RouteProp<RootStackParamList, "Login">;
 
-const Login: React.FC = () => {
+type Props = {
+    navigation: LoginScreenNavigationProp;
+    route: LoginScreenRouteProp;
+  };
+
+const Login: React.FC<Props> = ({navigation, route}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -50,7 +55,7 @@ const Login: React.FC = () => {
             </View>
                 <Text style={styles.textoesqueceu}> Esqueceu a senha?</Text>
             <View style={styles.botaocontainer}>
-                <BotaoAzul texto='Entre'/>
+                <BotaoAzul texto='Entre' onPress={() => navigation.navigate("Home")}/>
             </View>
                 <Text style={styles.textocadastro}>Não possui uma conta? 
                     <Text style={styles.linkcadastro}> Cadastre-se</Text>

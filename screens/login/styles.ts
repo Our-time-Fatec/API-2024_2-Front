@@ -40,7 +40,9 @@ const styles = StyleSheet.create({
         padding: 20
     },
     botaocontainer: {
-        marginTop: 40
+        marginTop: 40,
+        width: "80%",
+        alignSelf: 'center',
     },
     textocadastro:{
         fontWeight: '500',
@@ -83,7 +85,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     iconContainer: {
-        marginRight: 40,
+        marginRight: 75,
     },
     buttonText: {
         fontSize: 16,

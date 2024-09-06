@@ -1,36 +1,37 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
-
-botaoazul:{
-    flex: 1,
-    color: '#FFFFFF',
+  botaoazul: {
+    width: "100%", // Definindo largura para 80% da tela
     backgroundColor: "#407CE2",
     borderRadius: 40,
-    textAlign: 'center',
-    alignItems: 'center',
-    padding: 14,
-},
-textobotaoazul:{
-    fontFamily: 'Poppins_700Bold',
+    textAlign: "center",
+    alignItems: "center",
+    paddingVertical: 14, 
+    paddingHorizontal: 100, 
     color: "#FFFFFF",
-    fontSize: 20
-},
-botaobranco:{
-    textAlign: 'center',
+  },
+  textobotaoazul: {
+    fontFamily: "Poppins_700Bold",
+    color: "#FFFFFF",
+    fontSize: 20,
+  },
+  botaobranco: {
+    textAlign: "center",
     backgroundColor: "#FFFFFF",
     borderRadius: 40,
-    alignItems: 'center',
-    padding: 14,
-    borderColor: '#407CE2',
+    alignItems: "center",
+    paddingVertical: 14, 
+    paddingHorizontal: 60, 
+    borderColor: "#407CE2",
     borderWidth: 2,
     marginTop: 15,
-},
-textobotaobranco:{
+  },
+  textobotaobranco: {
     fontFamily: "Poppins_700Bold",
     fontSize: 20,
-    color: "#407CE2"
-}
+    color: "#407CE2",
+  },
 });
 
 export default styles;

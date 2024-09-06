@@ -2,10 +2,23 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
     container: {
-        flex: 0,
+        flex: 1,
+        flexDirection: "column",
+        backgroundColor: '#fff',
+        justifyContent: 'center',
+        width: '80%'
+    },
+    containercima: {
+        flex: 0.5
+    },
+    containerlogo:{
+        alignItems: 'center',
+    },
+    logo: {
+        height: 200,
+        width: 200,
     },
     title: {
-        flex: 1,
         flexDirection: 'column',
         textAlign: 'center',
         fontFamily: 'Poppins-SemiBold',
@@ -16,26 +29,16 @@ const styles = StyleSheet.create({
     subtitle:{
         flex: 1,
         textAlign: 'center',
-        marginBottom: 50,
         fontFamily: "Poppins-Regular",
         fontSize: 20,
         color: '#407CE2',
     },
     welcome:{
-        flex: 1,
+        fontFamily: 'Poppins-SemiBold',
         textAlign: 'center',
-        marginBottom: 50,
-        fontFamily: "Poppins-Bold",
+        marginBottom: 40,
         fontWeight: "bold",
         fontSize: 30,
-        color: '#221F1F'
-    },
-    logo: {
-        marginLeft: 48,
-        marginTop: 175,
-        flexDirection: 'column',
-        height: 200,
-        width: 200,
     },
     containerButton: {
         justifyContent: 'center',

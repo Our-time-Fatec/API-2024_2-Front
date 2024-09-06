@@ -7,7 +7,7 @@ import Questionario from './screens/questionario';
 export default function App() {
   return (
     <View style={styles.container}>
-        <Cadastro/>
+        <Questionario/>
     </View>
   );
 }

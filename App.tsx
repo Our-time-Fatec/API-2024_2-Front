@@ -1,11 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+ import Home from './screens/home';
+import Cadastro from './screens/cadastro';
+import Questionario from './screens/questionario';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Projeto base inicial para o front!</Text>
-      <StatusBar style="auto" />
+        <Questionario/>
     </View>
   );
 }

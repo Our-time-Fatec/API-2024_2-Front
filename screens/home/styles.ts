@@ -6,7 +6,6 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         backgroundColor: '#fff',
         justifyContent: 'center',
-        width: '80%'
     },
     containercima: {
         flex: 0.5
@@ -41,8 +40,10 @@ const styles = StyleSheet.create({
         fontSize: 30,
     },
     containerButton: {
-        justifyContent: 'center',
         marginBottom: 10,
+        alignSelf: 'center',
+        width: "80%"
+        
     }
 });
 export default styles;

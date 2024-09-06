@@ -4,7 +4,12 @@ import {BotaoAzul,BotaoBranco} from '../../components/buttons';
 import { View, Text, Button, Image, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import logo from "../../assets/googleicon.png"
+import { RootStackParamList } from "../../types/rootStack";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RouteProp } from "@react-navigation/native";
 
+type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, "Login">;
+type LoginScreenRouteProp = RouteProp<RootStackParamList, "Login">;
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState('');

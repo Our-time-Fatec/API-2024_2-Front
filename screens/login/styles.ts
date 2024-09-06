@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         backgroundColor: '#fff',
         justifyContent: 'center',
-        width: '80%'
+        width: '100%'
     },
     containercima: {
         paddingVertical: 40,

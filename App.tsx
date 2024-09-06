@@ -2,12 +2,20 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import Home from './screens/home';
 import Login from './screens/login';
+import { NavigationContainer } from '@react-navigation/native';
+import { RootStackParamList } from './types/rootStack';
+import { createStackNavigator } from '@react-navigation/stack';
+
+const Stack = createStackNavigator<RootStackParamList>();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-        <Home />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }}> 
+        <Stack.Screen name="Home" component={Home}/>
+        <Stack.Screen name="Login" component={Login}/>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 

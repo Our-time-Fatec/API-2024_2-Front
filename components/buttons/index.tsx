@@ -6,9 +6,10 @@ import AppLoading from 'expo-app-loading'
 
 interface BotaoAzulProps{
     texto: string;
+    onPress: () => void;
 }
 
-const BotaoAzul: React.FC<BotaoAzulProps> = ({texto}) => {
+const BotaoAzul: React.FC<BotaoAzulProps> = ({texto,onPress}) => {
     const [fontsLoaded] = useFonts({
         Poppins_700Bold,
         Poppins_400Regular
@@ -18,7 +19,7 @@ const BotaoAzul: React.FC<BotaoAzulProps> = ({texto}) => {
     }
     return(
         <View>
-            <TouchableOpacity style={styles.botaoazul}>
+            <TouchableOpacity style={styles.botaoazul} onPress={onPress}>
                 <Text style={styles.textobotaoazul}>{texto}</Text>
             </TouchableOpacity>
         </View>

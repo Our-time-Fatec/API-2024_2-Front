@@ -24,6 +24,7 @@ botaobranco:{
     padding: 14,
     borderColor: '#407CE2',
     borderWidth: 2,
+    marginTop: 15,
 },
 textobotaobranco:{
     fontFamily: "Poppins_700Bold",

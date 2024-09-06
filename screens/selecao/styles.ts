@@ -9,6 +9,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#ADD8E6',
         justifyContent: 'flex-start',
         paddingTop: 80,
+        paddingLeft: 10,
         paddingBottom: 80,
         borderBottomLeftRadius: 30,
         borderBottomRightRadius: 30,

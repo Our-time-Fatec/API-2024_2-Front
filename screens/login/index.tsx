@@ -55,7 +55,7 @@
                 </View>
                     <Text style={styles.textoesqueceu}> Esqueceu a senha?</Text>
                 <View style={styles.botaocontainer}>
-                    <BotaoAzul texto='Entre' onPress={() => navigation.navigate("Cadastro")} style={{paddingHorizontal: 14}} textStyle={{fontSize: 18}}/>
+                    <BotaoAzul texto='Entre' onPress={() => navigation.navigate("Selecao")} style={{paddingHorizontal: 14}} textStyle={{fontSize: 18}}/>
                 </View>
                     <Text style={styles.textocadastro}>Não possui uma conta? 
                         <Text style={styles.linkcadastro} onPress={() => navigation.navigate("Cadastro")}> Cadastre-se</Text>

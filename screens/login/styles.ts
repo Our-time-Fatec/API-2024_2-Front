@@ -1,3 +1,4 @@
+
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -5,24 +6,16 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "column",
         backgroundColor: '#fff',
-        justifyContent: 'center',
-        width: '100%'
-    },
-    containercima: {
-        paddingVertical: 40,
-        flex: 0.5
-    },
-    containerbaixo: {
-        flex: 0.5,
-        justifyContent: "flex-end",
-        paddingVertical: 40,
+        justifyContent: 'flex-start', // Alinha os itens no topo
+        width: '100%',
+        paddingTop: 50 // Adiciona um pouco de espaçamento no topo
     },
     titulo: {
         fontSize: 24,
         fontFamily: "Poppins_700Bold",
         fontWeight: 'bold',
         textAlign: 'center',
-        marginBottom: 50,
+        marginBottom: 40, // Reduz o espaço inferior
     },
     containerinput: {
         flexDirection: 'row',
@@ -32,6 +25,8 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginBottom: 25,
         height: 60,
+        width: "90%",
+        alignSelf: "center"
     },
     textoinput: {
         flex: 1,
@@ -40,13 +35,15 @@ const styles = StyleSheet.create({
         padding: 20
     },
     botaocontainer: {
-        marginTop: 40,
+        marginTop: 20,
+        marginBottom: 5,
         width: "80%",
         alignSelf: 'center',
     },
     textocadastro:{
         fontWeight: '500',
         textAlign: 'center',
+        marginBottom: 10
     },
     linkcadastro:{
         color: '#007bff',
@@ -55,13 +52,14 @@ const styles = StyleSheet.create({
     textoesqueceu:{
         alignSelf: 'flex-end',
         color: '#007bff',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        marginRight: 15
     },
     containerline:{
         flexDirection: 'row',
         alignItems: 'center',
-        marginVertical: 20,
-        marginTop: 100
+        marginVertical: 15, // Ajuste para garantir que não fique muito espaço entre os elementos
+        marginTop: "5%",   // Reduz o espaçamento superior para evitar sobreposição
     },
     line: {
         flex: 1,
@@ -83,6 +81,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         width: '80%',
         alignSelf: 'center',
+        marginTop: 10
     },
     iconContainer: {
         marginRight: 75,

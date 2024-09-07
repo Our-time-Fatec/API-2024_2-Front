@@ -9,6 +9,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    alignSelf: "center",
+    marginBottom: 5,
+  },
+  editPhoto: {
+    textAlign: "center",
+    color: "#00f",
+    marginBottom: 30,
+  },
   containerUp: {
     paddingVertical: 40,
     flex: 0.5,
@@ -34,13 +46,16 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 25,
     height: 60,
-    width: "100%",
+    width: "100%", // Altere para 100% para usar toda a largura disponível
+    maxWidth: 500, // Aumente o valor do limite máximo para 500
+    minWidth: 300,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 2,
   },
+
   inputNome: {
     flex: 0.6,
     flexDirection: "row",

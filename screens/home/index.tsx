@@ -49,7 +49,7 @@ const Home: React.FC<Props> = ({ navigation }) => {
         <Text style={styles.welcome}>Bem-Vindo!</Text>
         <View style={styles.containerButton}>
           <BotaoAzul texto='Entrar' onPress={() => navigation.navigate("Login")} />
-          <BotaoBranco texto='Cadastre-se' onPress={() => navigation.navigate("Login")}/>
+          <BotaoBranco texto='Cadastre-se' onPress={() => navigation.navigate("Cadastro")}/>
         </View>
       </View>
     </View>

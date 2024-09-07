@@ -91,11 +91,17 @@ const styles = StyleSheet.create({
         color: '#888',
       },
       footer: {
+        backgroundColor: "#FFFFFF",
         flexDirection: 'row',
         justifyContent: 'space-around',
         paddingVertical: 15,
         borderTopWidth: 1,
         borderColor: '#eee',
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 2, height: -5 },
+        shadowRadius: 5,
+        elevation: 5
       },
     });
   

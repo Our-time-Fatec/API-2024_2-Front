@@ -7,6 +7,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { RootStackParamList } from './types/rootStack';
 import { createStackNavigator } from '@react-navigation/stack';
 import Questionario from './screens/questionario';
+import Selecao from './screens/selecao';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -18,6 +19,7 @@ export default function App() {
         <Stack.Screen name="Cadastro" component={Cadastro}/>
         <Stack.Screen name="Login" component={Login}/>
         <Stack.Screen name="Questionario" component={Questionario}/>
+        <Stack.Screen name="Selecao" component={Selecao}/>
       </Stack.Navigator>
     </NavigationContainer>
 

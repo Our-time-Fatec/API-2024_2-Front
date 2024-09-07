@@ -4,8 +4,9 @@ export interface IUsuario {
     sobrenome: string;
     email: string;
     senha?: string;
+    confirmarSenha?: string;
     dataDeNascimento: Date;
-    idade: number;
+    idade?: number;
     peso: number;
     altura: number;
     nivelDeSedentarismo?: "Sedentário" | "Levemente ativo" | "Moderadamente ativo" | "Altamente ativo" | "Extremamente ativo";

@@ -33,9 +33,9 @@ async function requestWithRefresh(config: any) {
             try {
                 const newToken = await refreshAuthToken();
                 config.headers['Authorization'] = `${newToken}`;
-                return await api.request(config); 
+                return await api.request(config);
             } catch (refreshError) {
-                throw refreshError; 
+                throw refreshError;
             }
         }
         throw error;
@@ -54,4 +54,4 @@ async function login(loginRequest: ILoginRequest) {
     return response.data;
 }
 
-export { requestWithRefresh, login };
+export { requestWithRefresh, login, api };

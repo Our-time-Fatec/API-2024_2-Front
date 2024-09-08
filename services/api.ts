@@ -29,7 +29,6 @@ async function requestWithRefresh(config: any) {
         config.headers = config.headers || {};
         config.headers['Authorization'] = `${token}`;
         const response = await api.request(config);
-        console.log(response)
         return response;
     } catch (error: any) {
         if (error.response?.status === 401) {

@@ -7,6 +7,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../types/rootStack';
 import FooterMenu from '../../components/menus';
+import { Picker } from '@react-native-picker/picker';
 
 type ListAlimentoScreenNavigationProp = StackNavigationProp<RootStackParamList, "ListAlimentos">;
 type ListAlimentoScreenRouteProp = RouteProp<RootStackParamList, "ListAlimentos">;
@@ -18,18 +19,45 @@ type Props = {
 
 const AlimentosScreen: React.FC<Props> = ({ navigation, route }) => {
     const [alimentos, setAlimentos] = useState<IAlimento[]>([]);
+    const [categorias, setCategorias] = useState<{ _id: string; nome: string; codigo: number }[]>([]);
+    const [selectedCategoria, setSelectedCategoria] = useState<string>('');
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
     useEffect(() => {
-        fetchAlimentos(page);
+        fetchCategorias();
+    }, []);
+
+    useEffect(() => {
+        // Reset page and alimentos when category changes
+        setPage(1);
+        setAlimentos([]);
+        fetchAlimentos(1, selectedCategoria);
+    }, [selectedCategoria]);
+
+    useEffect(() => {
+        if (page > 1) {
+            fetchAlimentos(page, selectedCategoria);
+        }
     }, [page]);
 
-    const fetchAlimentos = async (pageNumber: number) => {
+    const fetchCategorias = async () => {
         try {
             const response = await requestWithRefresh({
                 method: 'GET',
-                url: `/alimento?page=${pageNumber}&limit=10`,
+                url: '/categoria',
+            });
+            setCategorias(response.data);
+        } catch (error) {
+            console.error('Erro ao buscar categorias:', error);
+        }
+    };
+
+    const fetchAlimentos = async (pageNumber: number, categoriaCodigo: string) => {
+        try {
+            const response = await requestWithRefresh({
+                method: 'GET',
+                url: `/alimento?page=${pageNumber}&limit=10${categoriaCodigo ? `&categoriaCodigo=${categoriaCodigo}` : ''}`,
             });
             setAlimentos((prevAlimentos) => [...prevAlimentos, ...response.data.alimentosComCategoria]);
             setTotalPages(response.data.totalPages);
@@ -47,9 +75,19 @@ const AlimentosScreen: React.FC<Props> = ({ navigation, route }) => {
     return (
         <View style={{ flex: 1 }}>
             <View style={styles.container}>
-                <View style={{ marginTop: 10 }}>
-                    <Text style={styles.title}>Listar alimentos</Text>
-                </View>
+                <Text style={styles.title}>Listar alimentos</Text>
+                <Picker
+                    selectedValue={selectedCategoria}
+                    style={styles.picker}
+                    onValueChange={(itemValue: string) => {
+                        setSelectedCategoria(itemValue);
+                    }}
+                >
+                    <Picker.Item label="Todas as Categorias" value="" />
+                    {categorias.map(categoria => (
+                        <Picker.Item key={categoria.codigo} label={categoria.nome} value={categoria.codigo.toString()} />
+                    ))}
+                </Picker>
                 <FlatList
                     data={alimentos}
                     keyExtractor={(item) => item._id}
@@ -78,6 +116,11 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    picker: {
+        height: 50,
+        width: '100%',
         marginBottom: 10,
     },
     row: {

@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ILoginRequest, ILoginSuccessResponse } from '../interfaces/ILogin';
 
 const api = axios.create({
-    baseURL: 'http://192.168.1.44:3010',
+    baseURL: 'http://192.168.1.41:3010',
 });
 
 async function getToken() {

@@ -18,6 +18,7 @@ import { Picker } from "@react-native-picker/picker";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { api } from "../../services/api";
 import { IUsuario } from "../../interfaces/IUsuario";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type CadastroScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -73,8 +74,14 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
 
     try {
       const response = await api.post("/usuario", userData);
+
+      const { token, refreshToken } = response.data;
+
+      await AsyncStorage.setItem('token', token);
+      await AsyncStorage.setItem('refreshToken', refreshToken);
+
       Alert.alert("Sucesso", "Cadastro realizado com sucesso!");
-      navigation.navigate("Home");
+      navigation.navigate("Selecao");
     } catch (error) {
       Alert.alert("Erro", "Houve um problema ao realizar o cadastro. Tente novamente.");
     }

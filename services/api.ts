@@ -26,8 +26,11 @@ async function refreshAuthToken() {
 async function requestWithRefresh(config: any) {
     try {
         const token = await getToken();
+        config.headers = config.headers || {};
         config.headers['Authorization'] = `${token}`;
-        return await api.request(config);
+        const response = await api.request(config);
+        console.log(response)
+        return response;
     } catch (error: any) {
         if (error.response?.status === 401) {
             try {

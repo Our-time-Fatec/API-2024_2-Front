@@ -6,6 +6,7 @@ import { RootStackParamList } from "../../types/rootStack";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import FooterMenu from '../../components/menus';
 
 type SelecaoScreenNavigationProp = StackNavigationProp<RootStackParamList, "Selecao">;
 type SelecaoScreenRouteProp = RouteProp<RootStackParamList, "Selecao">;
@@ -73,11 +74,8 @@ const Selecao: React.FC<Props> = ({ navigation, route }) => {
           </View>
         </TouchableOpacity>
       </View>
-      <View style={styles.footer}>
-        <Ionicons name="home-outline" size={24} color="black" />
-        <Ionicons name="restaurant-outline" size={24} color="black" />
-        <Ionicons name="checkmark-circle-outline" size={24} color="black" />
-        <Ionicons name="search-outline" size={24} color="black" />
+      <View >
+        <FooterMenu navigation={navigation} />
       </View>
     </View>
   );

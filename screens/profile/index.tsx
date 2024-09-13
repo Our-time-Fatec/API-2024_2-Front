@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types/rootStack';
 import { RouteProp } from '@react-navigation/native';
 import FooterMenu from '../../components/menus';
+import useUsuario from '../../hooks/useUsuario'; // Certifique-se de que o caminho está correto
 
 type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, "Profile">;
 type ProfileScreenRouteProp = RouteProp<RootStackParamList, "Profile">;
@@ -15,6 +16,17 @@ type Props = {
 };
 
 const PerfilScreen: React.FC<Props> = ({ navigation, route }) => {
+    // Usar o hook para buscar informações do usuário
+    const { usuario, loading, error } = useUsuario();
+
+    if (loading) {
+        return <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator} />;
+    }
+
+    if (error) {
+        return <Text style={styles.errorText}>{error}</Text>;
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.content}>
@@ -23,40 +35,40 @@ const PerfilScreen: React.FC<Props> = ({ navigation, route }) => {
                         source={{ uri: 'https://via.placeholder.com/150' }}
                         style={styles.profileImage}
                     />
-                    <Text style={styles.profileName}>Lucas Costa</Text>
+                    <Text style={styles.profileName}>{usuario?.nome} {usuario?.sobrenome}</Text>
                 </View>
                 <View style={styles.infoSection}>
                     <View style={styles.infoItem}>
                         <Ionicons name="calendar-outline" size={24} color="#2d74da" />
                         <Text style={styles.infoLabel}>Idade</Text>
-                        <Text style={styles.infoValue}>24</Text>
+                        <Text style={styles.infoValue}>{usuario?.idade ?? 'N/A'}</Text>
                     </View>
                     <View style={styles.infoItem}>
                         <Ionicons name="man-outline" size={24} color="#2d74da" />
                         <Text style={styles.infoLabel}>Altura</Text>
-                        <Text style={styles.infoValue}>1,65 m</Text>
+                        <Text style={styles.infoValue}>{usuario?.altura} m</Text>
                     </View>
                     <View style={styles.infoItem}>
                         <Ionicons name="scale-outline" size={24} color="#2d74da" />
                         <Text style={styles.infoLabel}>Peso</Text>
-                        <Text style={styles.infoValue}>65Kg</Text>
+                        <Text style={styles.infoValue}>{usuario?.peso} Kg</Text>
                     </View>
                 </View>
                 <View style={styles.infoSection}>
                     <View style={styles.infoItem}>
                         <Ionicons name="trophy-outline" size={24} color="#2d74da" />
                         <Text style={styles.infoLabel}>Objetivo</Text>
-                        <Text style={styles.infoValue}>Dieta de emagrecimento</Text>
+                        <Text style={styles.infoValue}>{usuario?.objetivo ?? 'N/A'}</Text>
                     </View>
                     <View style={styles.infoItem}>
                         <Ionicons name="people-outline" size={24} color="#2d74da" />
                         <Text style={styles.infoLabel}>Nível de Sedentarismo</Text>
-                        <Text style={styles.infoValue}>Sedentário</Text>
+                        <Text style={styles.infoValue}>{usuario?.nivelDeSedentarismo ?? 'N/A'}</Text>
                     </View>
                     <View style={styles.infoItem}>
                         <Ionicons name="flame-outline" size={24} color="#2d74da" />
                         <Text style={styles.infoLabel}>Gasto de Calorias/dia</Text>
-                        <Text style={styles.infoValue}>1974.24</Text>
+                        <Text style={styles.infoValue}>{usuario?.gastoDeCaloria ?? 'N/A'}</Text>
                     </View>
                 </View>
 
@@ -108,7 +120,7 @@ const styles = StyleSheet.create({
         height: 100,
         borderRadius: 50,
         marginBottom: 8,
-        marginTop: 15
+        marginTop: 15,
     },
     profileName: {
         fontSize: 18,
@@ -149,6 +161,15 @@ const styles = StyleSheet.create({
         fontSize: 16,
         flex: 1,
         flexWrap: 'wrap',
+    },
+    loadingIndicator: {
+        flex: 1,
+        justifyContent: 'center',
+    },
+    errorText: {
+        color: 'red',
+        textAlign: 'center',
+        marginTop: 20,
     },
 });
 

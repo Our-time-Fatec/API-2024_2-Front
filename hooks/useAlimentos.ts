@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { requestWithRefresh } from '../services/api';
 import { IAlimento } from '../interfaces/IAlimento';
+import ICategoria from '../interfaces/ICategoria';
 
 const useAlimentos = (searchTerm: string) => {
     const [alimentos, setAlimentos] = useState<IAlimento[]>([]);
-    const [categorias, setCategorias] = useState<{ _id: string; nome: string; codigo: number }[]>([]);
+    const [categorias, setCategorias] = useState<ICategoria[]>([]);
     const [selectedCategoria, setSelectedCategoria] = useState<string>('');
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);

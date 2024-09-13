@@ -7,6 +7,7 @@ import { RootStackParamList } from '../../types/rootStack';
 import FooterMenu from '../../components/menus';
 import { Picker } from '@react-native-picker/picker';
 import useAlimentos from '../../hooks/useAlimentos';
+import { Ionicons } from '@expo/vector-icons';
 
 type ListAlimentoScreenNavigationProp = StackNavigationProp<RootStackParamList, "ListAlimentos">;
 type ListAlimentoScreenRouteProp = RouteProp<RootStackParamList, "ListAlimentos">;
@@ -28,6 +29,10 @@ const AlimentosScreen: React.FC<Props> = ({ navigation }) => {
         setSelectedCategoria(itemValue);
     }, []);
 
+    const handleRegister = () => {
+        navigation.navigate('CadastroAlimento');
+    };
+
     return (
         <View style={{ flex: 1 }}>
             <View style={styles.container}>
@@ -48,9 +53,13 @@ const AlimentosScreen: React.FC<Props> = ({ navigation }) => {
                         <Picker.Item key={categoria.codigo} label={categoria.nome} value={categoria.codigo.toString()} />
                     ))}
                 </Picker>
+                <TouchableOpacity style={styles.button} onPress={handleRegister}>
+                    <Ionicons name="add" size={20} color="#fff" style={styles.icon} />
+                    <Text style={styles.buttonText}>Cadastrar Alimento</Text>
+                </TouchableOpacity>
                 <FlatList
                     data={alimentos}
-                    keyExtractor={(item) => item._id}
+                    keyExtractor={(item, index) => item._id ? item._id : `key-${index}`}
                     renderItem={({ item }) => <AlimentoItem alimento={item} />}
                     numColumns={2}
                     columnWrapperStyle={styles.row}
@@ -100,6 +109,27 @@ const styles = StyleSheet.create({
     loadMoreText: {
         fontSize: 16,
         color: '#007bff',
+    },
+    button: {
+        backgroundColor: "#007bff",
+        paddingVertical: 12,  
+        paddingHorizontal: "25%",
+        borderRadius: 30,
+        marginBottom: 10,
+        width: "100%",
+        maxWidth: 400,
+        alignSelf: "center",
+        flexDirection: 'row', 
+        alignItems: 'center', 
+    },
+    buttonText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "bold",
+        textAlign: "center",
+    },
+    icon: {
+        marginRight: 10,
     },
 });
 

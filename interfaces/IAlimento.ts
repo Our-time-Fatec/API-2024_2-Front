@@ -7,12 +7,13 @@ interface Detalhes {
 }
 
 interface IAlimento {
-    _id: string;
+    _id?: string;
     nome: string;
     preparo: string;
-    categoriaUrl: string;
+    categoriaUrl?: string;
     porcao: number;
-    categoriaNome: string;
+    categoriaNome?: string;
+    categoriaCodigo: number;
     detalhes: Detalhes;
 }
 

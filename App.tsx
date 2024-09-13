@@ -11,6 +11,7 @@ import Selecao from './screens/selecao';
 import AlimentosScreen from './screens/listAlimentos';
 import PerfilScreen from './screens/profile';
 import EditProfile from './screens/editProfile';
+import CadastroAlimentoScreen from './screens/cadastrarAlimento';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -26,6 +27,7 @@ export default function App() {
         <Stack.Screen name="ListAlimentos" component={AlimentosScreen} />
         <Stack.Screen name="Profile" component={PerfilScreen} />
         <Stack.Screen name="EditProfile" component={EditProfile} />
+        <Stack.Screen name="CadastroAlimento" component={CadastroAlimentoScreen} />
       </Stack.Navigator>
     </NavigationContainer>
 

@@ -15,7 +15,7 @@ async function refreshAuthToken() {
     const refreshToken = await AsyncStorage.getItem('refreshToken');
     if (!refreshToken) throw new Error('Refresh token não encontrado');
 
-    const response = await axios.post('http://192.168.1.44:3010/auth/refresh-token', { refreshToken });
+    const response = await axios.post('http://192.168.1.45:3010/auth/refresh-token', { refreshToken });
     const { token, refreshToken: newRefreshToken } = response.data;
 
     await AsyncStorage.setItem('token', token);

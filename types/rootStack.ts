@@ -7,4 +7,5 @@ export type RootStackParamList = {
   ListAlimentos: undefined;
   Profile: undefined;
   EditProfile: undefined;
+  CadastroAlimento: undefined;
 };

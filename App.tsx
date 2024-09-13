@@ -9,6 +9,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Questionario from './screens/questionario';
 import Selecao from './screens/selecao';
 import AlimentosScreen from './screens/listAlimentos';
+import PerfilScreen from './screens/profile';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -22,6 +23,7 @@ export default function App() {
         <Stack.Screen name="Questionario" component={Questionario} />
         <Stack.Screen name="Selecao" component={Selecao} />
         <Stack.Screen name="ListAlimentos" component={AlimentosScreen} />
+        <Stack.Screen name="Profile" component={PerfilScreen} />
       </Stack.Navigator>
     </NavigationContainer>
 

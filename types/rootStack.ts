@@ -5,4 +5,5 @@ export type RootStackParamList = {
   Questionario: undefined;
   Selecao: undefined;
   ListAlimentos: undefined;
+  Profile: undefined;
 };

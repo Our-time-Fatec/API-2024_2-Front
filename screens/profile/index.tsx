@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types/rootStack';
 import { RouteProp } from '@react-navigation/native';
 import FooterMenu from '../../components/menus';
 import useUsuario from '../../hooks/useUsuario'; // Certifique-se de que o caminho está correto
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, "Profile">;
 type ProfileScreenRouteProp = RouteProp<RootStackParamList, "Profile">;
@@ -16,8 +17,18 @@ type Props = {
 };
 
 const PerfilScreen: React.FC<Props> = ({ navigation, route }) => {
-    // Usar o hook para buscar informações do usuário
     const { usuario, loading, error } = useUsuario();
+
+    const handleLogout = async () => {
+        try {
+            await AsyncStorage.removeItem('token');
+            await AsyncStorage.removeItem('refreshToken');
+            await AsyncStorage.removeItem('usuario');
+            navigation.navigate('Home');
+        } catch (error) {
+            Alert.alert('Erro', 'Não foi possível realizar o logout. Tente novamente.');
+        }
+    };
 
     if (loading) {
         return <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator} />;
@@ -73,7 +84,7 @@ const PerfilScreen: React.FC<Props> = ({ navigation, route }) => {
                 </View>
 
                 <View style={styles.menuSection}>
-                    <TouchableOpacity style={styles.menuItem}>
+                    {/* <TouchableOpacity style={styles.menuItem}>
                         <Ionicons name="pencil-outline" size={24} color="#2d74da" />
                         <Text style={styles.menuText}>Editar Perfil</Text>
                     </TouchableOpacity>
@@ -88,8 +99,8 @@ const PerfilScreen: React.FC<Props> = ({ navigation, route }) => {
                     <TouchableOpacity style={styles.menuItem}>
                         <Ionicons name="chatbubble-outline" size={24} color="#2d74da" />
                         <Text style={styles.menuText}>FAQs</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.menuItem}>
+                    </TouchableOpacity> */}
+                    <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
                         <Ionicons name="log-out-outline" size={24} color="#2d74da" />
                         <Text style={styles.menuText}>Logout</Text>
                     </TouchableOpacity>

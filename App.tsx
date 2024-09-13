@@ -1,43 +1,48 @@
+import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import Home from './screens/home';
 import Login from './screens/login';
 import Cadastro from './screens/cadastro';
-import { NavigationContainer } from '@react-navigation/native';
-import { RootStackParamList } from './types/rootStack';
-import { createStackNavigator } from '@react-navigation/stack';
 import Questionario from './screens/questionario';
 import Selecao from './screens/selecao';
 import AlimentosScreen from './screens/listAlimentos';
 import PerfilScreen from './screens/profile';
 import EditProfile from './screens/editProfile';
 import CadastroAlimentoScreen from './screens/cadastrarAlimento';
+import { RootStackParamList } from './types/rootStack';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Cadastro" component={Cadastro} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Questionario" component={Questionario} />
-        <Stack.Screen name="Selecao" component={Selecao} />
-        <Stack.Screen name="ListAlimentos" component={AlimentosScreen} />
-        <Stack.Screen name="Profile" component={PerfilScreen} />
-        <Stack.Screen name="EditProfile" component={EditProfile} />
-        <Stack.Screen name="CadastroAlimento" component={CadastroAlimentoScreen} />
-      </Stack.Navigator>
+      <SafeAreaView style={styles.container}>
+        <StatusBar
+          style="dark"
+          backgroundColor="#eee"
+        />
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="Cadastro" component={Cadastro} />
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Questionario" component={Questionario} />
+          <Stack.Screen name="Selecao" component={Selecao} />
+          <Stack.Screen name="ListAlimentos" component={AlimentosScreen} />
+          <Stack.Screen name="Profile" component={PerfilScreen} />
+          <Stack.Screen name="EditProfile" component={EditProfile} />
+          <Stack.Screen name="CadastroAlimento" component={CadastroAlimentoScreen} />
+        </Stack.Navigator>
+      </SafeAreaView>
     </NavigationContainer>
-
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
   },
 });

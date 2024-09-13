@@ -9,4 +9,5 @@ export type RootStackParamList = {
   EditProfile: undefined;
   CadastroAlimento: { alimentoId: string };
   UserAlimentos: undefined;
+  FAQs: undefined;
 };

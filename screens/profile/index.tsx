@@ -107,10 +107,10 @@ const PerfilScreen: React.FC<Props> = ({ navigation, route }) => {
                         <Ionicons name="document-text-outline" size={24} color="#2d74da" />
                         <Text style={styles.menuText}>Alimentos Cadastrados</Text>
                     </TouchableOpacity>
-                    {/* <TouchableOpacity style={styles.menuItem}>
+                    <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('FAQs')}>
                         <Ionicons name="chatbubble-outline" size={24} color="#2d74da" />
                         <Text style={styles.menuText}>FAQs</Text>
-                    </TouchableOpacity> */}
+                    </TouchableOpacity>
                     <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
                         <Ionicons name="log-out-outline" size={24} color="#2d74da" />
                         <Text style={styles.menuText}>Logout</Text>

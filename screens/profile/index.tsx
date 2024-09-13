@@ -8,6 +8,7 @@ import FooterMenu from '../../components/menus';
 import useUsuario from '../../hooks/useUsuario'; // Certifique-se de que o caminho está correto
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
+import { useAuth } from '../../context/AuthContext';
 
 type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, "Profile">;
 type ProfileScreenRouteProp = RouteProp<RootStackParamList, "Profile">;
@@ -27,10 +28,12 @@ const PerfilScreen: React.FC<Props> = ({ navigation, route }) => {
     );
 
     const handleLogout = async () => {
+        const { setIsAuthenticated } = useAuth();
         try {
             await AsyncStorage.removeItem('token');
             await AsyncStorage.removeItem('refreshToken');
             await AsyncStorage.removeItem('usuario');
+            setIsAuthenticated(false);
             navigation.navigate('Home');
         } catch (error) {
             Alert.alert('Erro', 'Não foi possível realizar o logout. Tente novamente.');

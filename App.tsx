@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import Home from './screens/home';
 import Login from './screens/login';
 import Cadastro from './screens/cadastro';
@@ -12,36 +13,52 @@ import AlimentosScreen from './screens/listAlimentos';
 import PerfilScreen from './screens/profile';
 import EditProfile from './screens/editProfile';
 import CadastroAlimentoScreen from './screens/cadastrarAlimento';
-import { RootStackParamList } from './types/rootStack';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import UserAlimentosScreen from './screens/userAlimentos';
 import FAQs from './screens/FAQs';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { RootStackParamList } from './types/rootStack';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
-export default function App() {
+const AuthenticatedStack = () => {
+  const { isAuthenticated } = useAuth();
+
   return (
-    <NavigationContainer>
-      <SafeAreaView style={styles.container}>
-        <StatusBar
-          style="dark"
-          backgroundColor="#eee"
-        />
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Home" component={Home} />
-          <Stack.Screen name="Cadastro" component={Cadastro} />
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Questionario" component={Questionario} />
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {isAuthenticated ? (
+        <>
           <Stack.Screen name="Selecao" component={Selecao} />
+          <Stack.Screen name="Questionario" component={Questionario} />
           <Stack.Screen name="ListAlimentos" component={AlimentosScreen} />
           <Stack.Screen name="Profile" component={PerfilScreen} />
           <Stack.Screen name="EditProfile" component={EditProfile} />
           <Stack.Screen name="CadastroAlimento" component={CadastroAlimentoScreen} />
           <Stack.Screen name="UserAlimentos" component={UserAlimentosScreen} />
           <Stack.Screen name="FAQs" component={FAQs} />
-        </Stack.Navigator>
-      </SafeAreaView>
-    </NavigationContainer>
+        </>
+      ) : (
+        <>
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="Cadastro" component={Cadastro} />
+          <Stack.Screen name="Login" component={Login} />
+        </>
+      )}
+    </Stack.Navigator>
+  );
+};
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <StatusBar style="dark" backgroundColor="#fff" />
+          <SafeAreaView style={styles.container}>
+            <AuthenticatedStack />
+          </SafeAreaView>
+        </NavigationContainer>
+      </SafeAreaProvider>
+    </AuthProvider>
   );
 }
 

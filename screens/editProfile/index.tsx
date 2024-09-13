@@ -17,6 +17,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { IUsuario } from "../../interfaces/IUsuario";
 import useUsuario from "../../hooks/useUsuario";
 import useUpdateUser from "../../hooks/useUpdateUser";
+import FooterMenu from "../../components/menus";
 
 type EditProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, "EditProfile">;
 type EditProfileScreenRouteProp = RouteProp<RootStackParamList, "EditProfile">;
@@ -102,169 +103,172 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
     }
 
     return (
-        <View style={styles.container}>
-            <ScrollView
-                contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
-                style={{ flex: 1 }}
-            >
-                <View style={styles.containerUp}>
-                    <Text style={styles.title}>Editar Perfil</Text>
-                </View>
+        <View style={{ flex: 1 }}>
+            <View style={styles.container}>
+                <ScrollView
+                    contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
+                    style={{ flex: 1 }}
+                >
+                    <View style={styles.containerUp}>
+                        <Text style={styles.title}>Editar Perfil</Text>
+                    </View>
 
-                <View style={styles.inputContainer}>
-                    <Ionicons name="person-outline" size={20} color="gray" />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Nome"
-                        value={formState.nome}
-                        onChangeText={(text) => handleInputChange("nome", text)}
-                        placeholderTextColor="rgba(163,162,163,255)"
+                    <View style={styles.inputContainer}>
+                        <Ionicons name="person-outline" size={20} color="gray" />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Nome"
+                            value={formState.nome}
+                            onChangeText={(text) => handleInputChange("nome", text)}
+                            placeholderTextColor="rgba(163,162,163,255)"
+                        />
+                    </View>
+
+                    <View style={styles.inputContainer}>
+                        <Ionicons name="person-outline" size={20} color="gray" />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Sobrenome"
+                            value={formState.sobrenome}
+                            onChangeText={(text) => handleInputChange("sobrenome", text)}
+                            placeholderTextColor="rgba(163,162,163,255)"
+                        />
+                    </View>
+
+                    <View style={styles.inputContainer}>
+                        <Ionicons name="mail-outline" size={20} color="gray" />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Email"
+                            keyboardType="email-address"
+                            value={formState.email}
+                            onChangeText={(text) => handleInputChange("email", text)}
+                            placeholderTextColor="rgba(163,162,163,255)"
+                        />
+                    </View>
+
+                    <View style={styles.inputContainer}>
+                        <Ionicons name="calendar-outline" size={24} color="black" />
+                        <TouchableOpacity
+                            onPress={() => setShowDatePicker(true)}
+                            style={styles.input}
+                        >
+                            <Text>
+                                {formState.dataDeNascimento
+                                    ? formState.dataDeNascimento.toLocaleDateString("pt-BR")
+                                    : "Selecionar data"}
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <DateTimePickerModal
+                        isVisible={showDatePicker}
+                        mode="date"
+                        onConfirm={handleDateConfirm}
+                        onCancel={() => setShowDatePicker(false)}
                     />
-                </View>
 
-                <View style={styles.inputContainer}>
-                    <Ionicons name="person-outline" size={20} color="gray" />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Sobrenome"
-                        value={formState.sobrenome}
-                        onChangeText={(text) => handleInputChange("sobrenome", text)}
-                        placeholderTextColor="rgba(163,162,163,255)"
-                    />
-                </View>
+                    <View style={styles.inputContainer}>
+                        <Ionicons name="barbell-outline" size={24} color="black" />
+                        <TextInput
+                            placeholder="Altura (em cm)"
+                            style={styles.input}
+                            keyboardType="numeric"
+                            value={formState.altura ? formState.altura.toString() : ""}
+                            onChangeText={(text) => handleInputChange("altura", text)}
+                            placeholderTextColor="rgba(163,162,163,255)"
+                        />
+                    </View>
 
-                <View style={styles.inputContainer}>
-                    <Ionicons name="mail-outline" size={20} color="gray" />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Email"
-                        keyboardType="email-address"
-                        value={formState.email}
-                        onChangeText={(text) => handleInputChange("email", text)}
-                        placeholderTextColor="rgba(163,162,163,255)"
-                    />
-                </View>
+                    <View style={styles.inputContainer}>
+                        <Ionicons name="fitness-outline" size={24} color="black" />
+                        <TextInput
+                            placeholder="Peso (em kg)"
+                            style={styles.input}
+                            keyboardType="numeric"
+                            value={formState.peso ? formState.peso.toString() : ""}
+                            onChangeText={(text) => handleInputChange("peso", text)}
+                            placeholderTextColor="rgba(163,162,163,255)"
+                        />
+                    </View>
 
-                <View style={styles.inputContainer}>
-                    <Ionicons name="calendar-outline" size={24} color="black" />
-                    <TouchableOpacity
-                        onPress={() => setShowDatePicker(true)}
-                        style={styles.input}
-                    >
-                        <Text>
-                            {formState.dataDeNascimento
-                                ? formState.dataDeNascimento.toLocaleDateString("pt-BR")
-                                : "Selecionar data"}
+                    <View style={styles.pickerContainer}>
+                        <Ionicons name="walk-outline" size={24} color="black" />
+                        <Picker
+                            selectedValue={formState.nivelDeSedentarismo}
+                            style={styles.picker}
+                            onValueChange={(itemValue) =>
+                                handleInputChange("nivelDeSedentarismo", itemValue)
+                            }
+                        >
+                            <Picker.Item label="Sedentário" value="Sedentário" />
+                            <Picker.Item label="Levemente ativo" value="Levemente ativo" />
+                            <Picker.Item label="Moderadamente ativo" value="Moderadamente ativo" />
+                            <Picker.Item label="Altamente ativo" value="Altamente ativo" />
+                            <Picker.Item label="Extremamente ativo" value="Extremamente ativo" />
+                        </Picker>
+                    </View>
+
+                    <View style={styles.pickerContainer}>
+                        <Ionicons name="star-outline" size={24} color="black" />
+                        <Picker
+                            selectedValue={formState.objetivo}
+                            style={styles.picker}
+                            onValueChange={(itemValue) =>
+                                handleInputChange("objetivo", itemValue)
+                            }
+                        >
+                            <Picker.Item label="Dieta de emagrecimento" value="Dieta de emagrecimento" />
+                            <Picker.Item label="Dieta de Ganho de Massa Muscular" value="Dieta de Ganho de Massa Muscular" />
+                            <Picker.Item label="Dieta Low Carb" value="Dieta Low Carb" />
+                        </Picker>
+                    </View>
+
+                    <View style={styles.pickerContainer}>
+                        <Ionicons name="male-outline" size={24} color="black" />
+                        <Picker
+                            selectedValue={formState.sexo}
+                            style={styles.picker}
+                            onValueChange={(itemValue) => handleInputChange("sexo", itemValue)}
+                        >
+                            <Picker.Item label="Masculino" value="Masculino" />
+                            <Picker.Item label="Feminino" value="Feminino" />
+                        </Picker>
+                    </View>
+                    <View style={styles.inputContainer}>
+                        <Ionicons name="lock-closed-outline" size={20} color="gray" />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Nova senha (deixe em branco para não alterar)"
+                            secureTextEntry
+                            value={formState.senha}
+                            onChangeText={(text) => handleInputChange("senha", text)}
+                            placeholderTextColor="rgba(163,162,163,255)"
+                        />
+                    </View>
+
+                    <View style={styles.inputContainer}>
+                        <Ionicons name="lock-closed-outline" size={20} color="gray" />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Confirme a nova senha"
+                            secureTextEntry
+                            value={formState.confirmarSenha}
+                            onChangeText={(text) => handleInputChange("confirmarSenha", text)}
+                            placeholderTextColor="rgba(163,162,163,255)"
+                        />
+                    </View>
+
+                    <TouchableOpacity style={styles.button} onPress={handleUpdate}>
+                        <Text style={styles.buttonText}>
+                            {loading ? "Atualizando..." : "Atualizar Perfil"}
                         </Text>
                     </TouchableOpacity>
-                </View>
-
-                <DateTimePickerModal
-                    isVisible={showDatePicker}
-                    mode="date"
-                    onConfirm={handleDateConfirm}
-                    onCancel={() => setShowDatePicker(false)}
-                />
-
-                <View style={styles.inputContainer}>
-                    <Ionicons name="barbell-outline" size={24} color="black" />
-                    <TextInput
-                        placeholder="Altura (em cm)"
-                        style={styles.input}
-                        keyboardType="numeric"
-                        value={formState.altura ? formState.altura.toString() : ""}
-                        onChangeText={(text) => handleInputChange("altura", text)}
-                        placeholderTextColor="rgba(163,162,163,255)"
-                    />
-                </View>
-
-                <View style={styles.inputContainer}>
-                    <Ionicons name="fitness-outline" size={24} color="black" />
-                    <TextInput
-                        placeholder="Peso (em kg)"
-                        style={styles.input}
-                        keyboardType="numeric"
-                        value={formState.peso ? formState.peso.toString() : ""}
-                        onChangeText={(text) => handleInputChange("peso", text)}
-                        placeholderTextColor="rgba(163,162,163,255)"
-                    />
-                </View>
-
-                <View style={styles.pickerContainer}>
-                    <Ionicons name="walk-outline" size={24} color="black" />
-                    <Picker
-                        selectedValue={formState.nivelDeSedentarismo}
-                        style={styles.picker}
-                        onValueChange={(itemValue) =>
-                            handleInputChange("nivelDeSedentarismo", itemValue)
-                        }
-                    >
-                        <Picker.Item label="Sedentário" value="Sedentário" />
-                        <Picker.Item label="Levemente ativo" value="Levemente ativo" />
-                        <Picker.Item label="Moderadamente ativo" value="Moderadamente ativo" />
-                        <Picker.Item label="Altamente ativo" value="Altamente ativo" />
-                        <Picker.Item label="Extremamente ativo" value="Extremamente ativo" />
-                    </Picker>
-                </View>
-
-                <View style={styles.pickerContainer}>
-                    <Ionicons name="star-outline" size={24} color="black" />
-                    <Picker
-                        selectedValue={formState.objetivo}
-                        style={styles.picker}
-                        onValueChange={(itemValue) =>
-                            handleInputChange("objetivo", itemValue)
-                        }
-                    >
-                        <Picker.Item label="Dieta de emagrecimento" value="Dieta de emagrecimento" />
-                        <Picker.Item label="Dieta de Ganho de Massa Muscular" value="Dieta de Ganho de Massa Muscular" />
-                        <Picker.Item label="Dieta Low Carb" value="Dieta Low Carb" />
-                    </Picker>
-                </View>
-
-                <View style={styles.pickerContainer}>
-                    <Ionicons name="male-outline" size={24} color="black" />
-                    <Picker
-                        selectedValue={formState.sexo}
-                        style={styles.picker}
-                        onValueChange={(itemValue) => handleInputChange("sexo", itemValue)}
-                    >
-                        <Picker.Item label="Masculino" value="Masculino" />
-                        <Picker.Item label="Feminino" value="Feminino" />
-                    </Picker>
-                </View>
-                <View style={styles.inputContainer}>
-                    <Ionicons name="lock-closed-outline" size={20} color="gray" />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Nova senha (deixe em branco para não alterar)"
-                        secureTextEntry
-                        value={formState.senha}
-                        onChangeText={(text) => handleInputChange("senha", text)}
-                        placeholderTextColor="rgba(163,162,163,255)"
-                    />
-                </View>
-
-                <View style={styles.inputContainer}>
-                    <Ionicons name="lock-closed-outline" size={20} color="gray" />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Confirme a nova senha"
-                        secureTextEntry
-                        value={formState.confirmarSenha}
-                        onChangeText={(text) => handleInputChange("confirmarSenha", text)}
-                        placeholderTextColor="rgba(163,162,163,255)"
-                    />
-                </View>
-
-                <TouchableOpacity style={styles.button} onPress={handleUpdate}>
-                    <Text style={styles.buttonText}>
-                        {loading ? "Atualizando..." : "Atualizar Perfil"}
-                    </Text>
-                </TouchableOpacity>
-            </ScrollView>
+                </ScrollView>
+            </View>
+            <FooterMenu navigation={navigation} />
         </View>
     );
 };

@@ -38,24 +38,21 @@ const UserAlimentosScreen: React.FC<Props> = ({ navigation }) => {
         }>
             <View style={styles.container}>
                 <Text style={styles.title}> Meus Alimentos </Text>
-                < TextInput
-                    style={styles.searchInput}
-                    placeholder="Buscar alimentos..."
-                    value={searchTerm}
-                    onChangeText={handleSearchChange}
-                />
                 <Picker
                     selectedValue={selectedCategoria}
                     style={styles.picker}
                     onValueChange={handleCategoriaChange}
                 >
                     <Picker.Item label="Todas as Categorias" value="todascategorias" />
-                    {
-                        categorias.map(categoria => (
-                            <Picker.Item key={categoria.codigo} label={categoria.nome} value={categoria.codigo.toString()} />
-                        ))
-                    }
+                    {categorias.map(categoria => (
+                        <Picker.Item key={categoria.codigo} label={categoria.nome} value={categoria.codigo.toString()} />
+                    ))}
                 </Picker>
+                <View style={styles.searchContainer}>
+                    <Ionicons name="search" size={20} color="#ccc" />
+                    <TextInput style={styles.searchInput} placeholder="Buscar alimentos..." value={searchTerm}
+                        onChangeText={handleSearchChange} />
+                </View>
                 < TouchableOpacity style={styles.button} onPress={handleRegister} >
                     <Ionicons name="add" size={20} color="#fff" style={styles.icon} />
                     <Text style={styles.buttonText}> Cadastrar Alimento </Text>
@@ -93,14 +90,7 @@ const styles = StyleSheet.create({
     picker: {
         height: 50,
         width: '100%',
-        marginBottom: 10,
-    },
-    searchInput: {
-        height: 40,
-        borderColor: 'gray',
-        borderWidth: 1,
-        marginBottom: 10,
-        paddingHorizontal: 8,
+        marginBottom: 1,
     },
     row: {
         justifyContent: 'space-between',
@@ -115,12 +105,13 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: "#007bff",
-        paddingVertical: 12,
+        paddingVertical: 9,
         paddingHorizontal: "25%",
         borderRadius: 30,
         marginBottom: 10,
         width: "100%",
         maxWidth: 400,
+        marginTop: 15,
         alignSelf: "center",
         flexDirection: 'row',
         alignItems: 'center',
@@ -133,6 +124,23 @@ const styles = StyleSheet.create({
     },
     icon: {
         marginRight: 10,
+    },
+    searchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        padding: 5,
+        borderRadius: 25,
+        marginTop: 10,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 5 },
+        elevation: 5,
+    },
+    searchInput: {
+        marginLeft: 10,
+        flex: 1,
+        fontSize: 16
     },
 });
 

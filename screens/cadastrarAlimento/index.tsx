@@ -130,13 +130,14 @@ const CadastroAlimentoScreen: React.FC<Props> = ({ navigation, route }) => {
 
     return (
         <View style={{ flex: 1 }}>
-            <ScrollView
-                contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
-                style={{ flex: 1 }}
-            >
-                <View style={styles.container}>
+            <View style={styles.container}>
+
+                <ScrollView
+                    contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
+                    style={{ flex: 1 }}
+                >
                     <Text style={styles.title}>Cadastro de Alimento</Text>
 
                     <View style={styles.inputContainer}>
@@ -255,8 +256,8 @@ const CadastroAlimentoScreen: React.FC<Props> = ({ navigation, route }) => {
                     <TouchableOpacity style={styles.button} onPress={cadastrarAlimento}>
                         <Text style={styles.buttonText}>Cadastrar</Text>
                     </TouchableOpacity>
-                </View>
-            </ScrollView>
+                </ScrollView>
+            </View>
             <FooterMenu navigation={navigation} />
         </View>
     );

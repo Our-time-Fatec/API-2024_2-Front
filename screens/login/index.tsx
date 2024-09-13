@@ -66,7 +66,7 @@ const Login: React.FC<Props> = ({ navigation }) => {
                 </Text>
             )}
 
-            <Text style={styles.textoesqueceu}>Esqueceu a senha?</Text>
+            {/* <Text style={styles.textoesqueceu}>Esqueceu a senha?</Text> //Descomentar quando implementar funcionalidade */}
 
             <View style={styles.botaocontainer}>
                 <BotaoAzul
@@ -87,7 +87,7 @@ const Login: React.FC<Props> = ({ navigation }) => {
                 </Text>
             </Text>
 
-            <View style={styles.containerline}>
+            {/* <View style={styles.containerline}> //Descomentar quando implementar funcionalidade 
                 <View style={styles.line} />
                 <Text style={styles.ortext}>OR</Text>
                 <View style={styles.line} />
@@ -101,7 +101,7 @@ const Login: React.FC<Props> = ({ navigation }) => {
                     />
                 </View>
                 <Text style={styles.buttonText}>Login com Google</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
         </View>
     );
 };

@@ -4,9 +4,12 @@ import { IAlimento } from '../../interfaces/IAlimento';
 
 interface AlimentoProps {
     alimento: IAlimento;
+    isUserAlimento: boolean; // Adicionado para verificar se o alimento pertence ao usuário
+    onEdit: (id: string) => void;
+    onDelete: (id: string) => void;
 }
 
-const AlimentoItem: React.FC<AlimentoProps> = ({ alimento }) => {
+const AlimentoItem: React.FC<AlimentoProps> = ({ alimento, isUserAlimento, onEdit, onDelete }) => {
     const [modalVisible, setModalVisible] = useState(false);
 
     const toggleModal = () => {
@@ -34,6 +37,16 @@ const AlimentoItem: React.FC<AlimentoProps> = ({ alimento }) => {
                 <Text style={styles.info}>Preparo: {alimento.preparo}</Text>
                 <Text style={styles.info}>Categoria: {alimento.categoriaNome}</Text>
             </View>
+            {isUserAlimento && (
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={styles.editButton} onPress={() => onEdit(alimento._id ? alimento._id : '')}>
+                        <Text style={styles.closeButtonText}>Editar</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.deleteButton} onPress={() => onDelete(alimento._id ? alimento._id : '')} >
+                        <Text style={styles.closeButtonText}>Remover</Text>
+                    </TouchableOpacity>
+                </View>
+            )}
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -169,6 +182,30 @@ const styles = StyleSheet.create({
     closeButtonText: {
         color: '#fff',
         fontSize: 16,
+    },
+    buttonContainer: {
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        paddingHorizontal: 10,
+        paddingVertical: 1,
+        marginBottom: 10,
+        gap: 3
+    },
+    editButton: {
+        marginTop: 5,
+        backgroundColor: '#2d74da',
+        paddingVertical: 8,
+        borderRadius: 5,
+        alignItems: 'center',
+        flex: 0.5
+    },
+    deleteButton: {
+        marginTop: 5,
+        backgroundColor: '#e13f2f',
+        paddingVertical: 8,
+        borderRadius: 5,
+        alignItems: 'center',
+        flex: 0.5
     },
 });
 

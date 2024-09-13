@@ -50,6 +50,12 @@ const useAlimentos = (searchTerm: string, onlyUser: boolean = false) => {
         }
     };
 
+   
+    const refreshAlimentos = useCallback(() => {
+        setPage(1);  
+        fetchAlimentos(1, selectedCategoria, searchTerm, onlyUser);  
+    }, [fetchAlimentos, selectedCategoria, searchTerm, onlyUser]);
+
     return {
         alimentos,
         categorias,
@@ -58,6 +64,7 @@ const useAlimentos = (searchTerm: string, onlyUser: boolean = false) => {
         page,
         totalPages,
         loadMore,
+        refreshAlimentos, 
     };
 };
 

@@ -38,45 +38,48 @@ const Selecao: React.FC<Props> = ({ navigation, route }) => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.profileContainer}>
-          <Ionicons name="person-circle-outline" size={50} color="white" />
-          <View style={styles.textContainer}>
-            <Text style={styles.welcomeText}>Bem vindo!</Text>
-            <Text style={styles.usernameText}>{nomeUsuario}</Text>
-            <Text style={styles.questionText}>Como você está?</Text>
+    <View style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <View style={styles.profileContainer}>
+            <Ionicons name="person-circle-outline" size={50} color="white" />
+            <View style={styles.textContainer}>
+              <Text style={styles.welcomeText}>Bem vindo!</Text>
+              <Text style={styles.usernameText}>{nomeUsuario}</Text>
+              <Text style={styles.questionText}>Como você está?</Text>
+            </View>
           </View>
         </View>
-      </View>
 
-      <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color="#ccc" />
-        <TextInput style={styles.searchInput} placeholder="Procurar dietas..." />
-      </View>
+        {/* <View style={styles.searchContainer}>
+          <Ionicons name="search" size={20} color="#ccc" />
+          <TextInput style={styles.searchInput} placeholder="Procurar dietas..." />
+        </View> */}
 
-      <View style={styles.content}>
-        <Text style={styles.selectText}>Selecione um tipo de dieta:</Text>
+        <View style={styles.content}>
+          <Text style={styles.selectText}>Ingestão diaria de calorias</Text>
 
-        <TouchableOpacity style={styles.optionContainer}>
-          <Image />
-          <View style={styles.optionTextContainer}>
-            <Text style={styles.optionTitle}>Dieta Predefinida</Text>
-            <Text style={styles.optionSubtitle}>Dieta de especialistas.</Text>
-          </View>
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.optionContainer}>
+            <Image />
+            <View style={styles.optionTextContainer}>
+              <Text style={styles.optionTitle}>1233 Kcal</Text>
+              <Text style={styles.optionSubtitle}>2g Proteinas</Text>
+              <Text style={styles.optionSubtitle}>2g Carboidratos</Text>
+              <Text style={styles.optionSubtitle}>2g Lipidios</Text>
+            </View>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.optionContainer}>
-          <Image />
-          <View style={styles.optionTextContainer}>
-            <Text style={styles.optionTitle}>Dieta Personalizada</Text>
-            <Text style={styles.optionSubtitle}>Dieta montada por você.</Text>
-          </View>
-        </TouchableOpacity>
+          <Text style={styles.selectText}>Ingestão diaria de água</Text>
+          <TouchableOpacity style={styles.optionContainer}>
+            <Image />
+            <View style={styles.optionTextContainer}>
+              <Text style={styles.optionTitle}>2.3 L</Text>
+              <Text style={styles.optionSubtitle}>Restam: 2.4L</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View >
-        <FooterMenu navigation={navigation} />
-      </View>
+      <FooterMenu navigation={navigation} />
     </View>
   );
 }

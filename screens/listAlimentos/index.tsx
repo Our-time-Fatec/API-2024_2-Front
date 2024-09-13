@@ -1,8 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import AlimentoItem from '../../components/alimento';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp } from '@react-navigation/native';
+import { RouteProp, useIsFocused } from '@react-navigation/native';
 import { RootStackParamList } from '../../types/rootStack';
 import FooterMenu from '../../components/menus';
 import { Picker } from '@react-native-picker/picker';
@@ -19,7 +19,14 @@ type Props = {
 
 const AlimentosScreen: React.FC<Props> = ({ navigation }) => {
     const [searchTerm, setSearchTerm] = useState<string>('');
-    const { alimentos, categorias, selectedCategoria, setSelectedCategoria, page, totalPages, loadMore } = useAlimentos(searchTerm);
+    const { alimentos, categorias, selectedCategoria, setSelectedCategoria, page, totalPages, loadMore, refreshAlimentos } = useAlimentos(searchTerm);
+    const isFocused = useIsFocused();
+
+    useEffect(() => {
+        if (isFocused) {
+            refreshAlimentos();
+        }
+    }, [isFocused, refreshAlimentos]);
 
     const handleSearchChange = useCallback((text: string) => {
         setSearchTerm(text);
@@ -30,7 +37,7 @@ const AlimentosScreen: React.FC<Props> = ({ navigation }) => {
     }, []);
 
     const handleRegister = () => {
-        navigation.navigate('CadastroAlimento');
+        navigation.navigate('CadastroAlimento', { alimentoId: '' });
     };
 
     return (
@@ -59,7 +66,14 @@ const AlimentosScreen: React.FC<Props> = ({ navigation }) => {
                 <FlatList
                     data={alimentos}
                     keyExtractor={(item, index) => item._id ? item._id : `key-${index}`}
-                    renderItem={({ item }) => <AlimentoItem alimento={item} />}
+                    renderItem={({ item }) => (
+                        <AlimentoItem
+                            alimento={item}
+                            isUserAlimento={false}
+                            onEdit={() => console.log('nao edita')}
+                            onDelete={() => console.log('nao deleta')}
+                        />
+                    )}
                     numColumns={2}
                     columnWrapperStyle={styles.row}
                     ListFooterComponent={() => (

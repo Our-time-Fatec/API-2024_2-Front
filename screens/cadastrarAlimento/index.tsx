@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    ScrollView,
-    Alert,
-} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons';
 import { styles } from './styles';
@@ -51,6 +44,8 @@ const CadastroAlimentoScreen: React.FC<Props> = ({ navigation, route }) => {
 
     const [categorias, setCategorias] = useState<ICategoria[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isEditing, setIsEditing] = useState(false);
+    const [alimentoId, setAlimentoId] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchCategorias = async () => {
@@ -69,6 +64,40 @@ const CadastroAlimentoScreen: React.FC<Props> = ({ navigation, route }) => {
 
         fetchCategorias();
     }, []);
+
+    useEffect(() => {
+        const { alimentoId } = route.params;
+
+        if (alimentoId) {
+            setAlimentoId(alimentoId);
+            setIsEditing(true);
+            const fetchAlimento = async () => {
+                try {
+                    const response = await requestWithRefresh({
+                        method: 'GET',
+                        url: `/alimento/${alimentoId}`,
+                    });
+                    const alimento = response.data;
+
+                    setFormState({
+                        nome: alimento.nome,
+                        preparo: alimento.preparo,
+                        porcao: alimento.porcao.toString(),
+                        categoriaCodigo: alimento.categoriaCodigo,
+                        valorEnergetico: alimento.detalhes.valorEnergetico.toString(),
+                        proteinas: alimento.detalhes.proteinas.toString(),
+                        carboidratos: alimento.detalhes.carboidratos.toString(),
+                        fibras: alimento.detalhes.fibras.toString(),
+                        lipidios: alimento.detalhes.lipidios.toString(),
+                    });
+                } catch (error) {
+                    console.error('Erro ao buscar alimento:', error);
+                }
+            };
+
+            fetchAlimento();
+        }
+    }, [route.params]);
 
     const handleChange = (field: string, value: string | number | null) => {
         setFormState(prevState => ({ ...prevState, [field]: value }));
@@ -99,46 +128,53 @@ const CadastroAlimentoScreen: React.FC<Props> = ({ navigation, route }) => {
         };
 
         try {
-            const response = await requestWithRefresh({
-                method: 'POST',
-                url: '/alimento',
-                data: alimento,
-            });
-
-            if (response.status === 201) {
-                Alert.alert('Sucesso', 'Alimento cadastrado com sucesso!');
-                setFormState({
-                    nome: '',
-                    preparo: '',
-                    porcao: '',
-                    categoriaCodigo: null,
-                    valorEnergetico: '',
-                    proteinas: '',
-                    carboidratos: '',
-                    fibras: '',
-                    lipidios: '',
+            if (isEditing) {
+                await requestWithRefresh({
+                    method: 'PUT',
+                    url: `/alimento/${alimentoId}`,
+                    data: alimento,
                 });
-                navigation.goBack()
+                Alert.alert('Sucesso', 'Alimento atualizado com sucesso!');
             } else {
-                Alert.alert('Erro', 'Ocorreu um erro ao cadastrar o alimento.');
+                await requestWithRefresh({
+                    method: 'POST',
+                    url: '/alimento',
+                    data: alimento,
+                });
+                Alert.alert('Sucesso', 'Alimento cadastrado com sucesso!');
             }
+            limparFormState
+            navigation.goBack();
         } catch (error) {
-            console.error('Erro ao cadastrar alimento:', error);
-            Alert.alert('Erro', 'Ocorreu um erro ao cadastrar o alimento.');
+            console.error('Erro ao cadastrar/atualizar alimento:', error);
+            Alert.alert('Erro', 'Ocorreu um erro ao cadastrar/atualizar o alimento.');
         }
     };
+
+    const limparFormState = async () => {
+        setFormState({
+            nome: '',
+            preparo: '',
+            porcao: '',
+            categoriaCodigo: null,
+            valorEnergetico: '',
+            proteinas: '',
+            carboidratos: '',
+            fibras: '',
+            lipidios: '',
+        });
+    }
 
     return (
         <View style={{ flex: 1 }}>
             <View style={styles.container}>
-
                 <ScrollView
                     contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
                     style={{ flex: 1 }}
                 >
-                    <Text style={styles.title}>Cadastro de Alimento</Text>
+                    <Text style={styles.title}>{isEditing ? 'Editar Alimento' : 'Cadastro de Alimento'}</Text>
 
                     <View style={styles.inputContainer}>
                         <Ionicons name="nutrition-outline" size={20} color="gray" />
@@ -254,7 +290,7 @@ const CadastroAlimentoScreen: React.FC<Props> = ({ navigation, route }) => {
                     </View>
 
                     <TouchableOpacity style={styles.button} onPress={cadastrarAlimento}>
-                        <Text style={styles.buttonText}>Cadastrar</Text>
+                        <Text style={styles.buttonText}>{isEditing ? 'Atualizar' : 'Cadastrar'}</Text>
                     </TouchableOpacity>
                 </ScrollView>
             </View>

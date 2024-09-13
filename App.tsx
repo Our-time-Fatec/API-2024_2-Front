@@ -14,6 +14,7 @@ import EditProfile from './screens/editProfile';
 import CadastroAlimentoScreen from './screens/cadastrarAlimento';
 import { RootStackParamList } from './types/rootStack';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import UserAlimentosScreen from './screens/userAlimentos';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -35,6 +36,7 @@ export default function App() {
           <Stack.Screen name="Profile" component={PerfilScreen} />
           <Stack.Screen name="EditProfile" component={EditProfile} />
           <Stack.Screen name="CadastroAlimento" component={CadastroAlimentoScreen} />
+          <Stack.Screen name="UserAlimentos" component={UserAlimentosScreen} />
         </Stack.Navigator>
       </SafeAreaView>
     </NavigationContainer>

@@ -8,4 +8,5 @@ export type RootStackParamList = {
   Profile: undefined;
   EditProfile: undefined;
   CadastroAlimento: undefined;
+  UserAlimentos: undefined;
 };

@@ -1,9 +1,10 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ILoginRequest, ILoginSuccessResponse } from '../interfaces/ILogin';
+import { IUsuario } from '../interfaces/IUsuario';
 
 const api = axios.create({
-    baseURL: 'http://192.168.1.41:3010',
+    baseURL: 'http://192.168.1.45:3010',
 });
 
 async function getToken() {
@@ -56,4 +57,16 @@ async function login(loginRequest: ILoginRequest) {
     return response.data;
 }
 
-export { requestWithRefresh, login, api };
+async function register(registerRequest: IUsuario) {
+    const response = await api.post<ILoginSuccessResponse>('/usuario', registerRequest);
+    const { token, refreshToken, usuario } = response.data;
+
+    const usuarioString = JSON.stringify(usuario);
+    await AsyncStorage.setItem('usuario', usuarioString);
+    await AsyncStorage.setItem('token', token);
+    await AsyncStorage.setItem('refreshToken', refreshToken);
+
+    return response.data;
+}
+
+export { requestWithRefresh, login, register, api };

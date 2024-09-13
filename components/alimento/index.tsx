@@ -54,6 +54,7 @@ const AlimentoItem: React.FC<AlimentoProps> = ({ alimento }) => {
                             </View>
                         )}
                         <Text style={styles.modalNome}>{alimento.nome}</Text>
+                        <Text style={styles.modalInfo}>Categoria: {alimento.categoriaNome}</Text>
                         <Text style={styles.modalInfo}>Preparo: {alimento.preparo}</Text>
                         <Text style={styles.modalInfo}>Porção: {alimento.porcao}g</Text>
                         <Text style={styles.modalInfo}>Valor Energético: {alimento.detalhes.valorEnergetico} kcal</Text>

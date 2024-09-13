@@ -5,8 +5,6 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  Image,
-  StyleSheet,
   Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -16,9 +14,8 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { api } from "../../services/api";
 import { IUsuario } from "../../interfaces/IUsuario";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import useRegister from "../../hooks/useRegister";
 
 type CadastroScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -32,6 +29,7 @@ type Props = {
 };
 
 const Cadastro: React.FC<Props> = ({ navigation }) => {
+  const { register, loading } = useRegister();
   const [formState, setFormState] = useState<IUsuario>({
     nome: "",
     sobrenome: "",
@@ -56,34 +54,26 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
       setFormState((prevState) => ({ ...prevState, [name]: value }));
     }
   };
+
   const handleDateConfirm = (date: Date) => {
     handleInputChange("dataDeNascimento", date);
     setShowDatePicker(false);
   };
 
-  const submitHandler = async () => {
+  const handleRegister = async () => {
+
     if (formState.senha !== formState.confirmarSenha) {
       Alert.alert("Erro", "As senhas não coincidem. Verifique e tente novamente.");
       return;
     }
 
-    const userData = {
-      ...formState,
-      dataDeNascimento: formState.dataDeNascimento.toISOString(),
-    };
-
-    try {
-      const response = await api.post("/usuario", userData);
-
-      const { token, refreshToken } = response.data;
-
-      await AsyncStorage.setItem('token', token);
-      await AsyncStorage.setItem('refreshToken', refreshToken);
-
+    const result = await register(formState);
+    if (result.success) {
       Alert.alert("Sucesso", "Cadastro realizado com sucesso!");
-      navigation.navigate("Selecao");
-    } catch (error) {
-      Alert.alert("Erro", "Houve um problema ao realizar o cadastro. Tente novamente.");
+      navigation.navigate('Selecao');
+    }
+    else {
+      Alert.alert("Erro", result.error);
     }
   };
 
@@ -261,11 +251,12 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
             />
           </Picker>
         </View>
-
-        <TouchableOpacity style={styles.button} onPress={submitHandler}>
-          <Text style={styles.buttonText}>Cadastrar</Text>
-        </TouchableOpacity>
       </ScrollView>
+      <TouchableOpacity style={styles.button} onPress={handleRegister}>
+        <Text style={styles.buttonText}>
+          {loading ? "Carregando..." : "Cadastrar"}
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };

@@ -1,12 +1,10 @@
-// hooks/useAlimentos.ts
 import { useState, useEffect, useCallback } from 'react';
-import { requestWithRefresh } from '../services/api'; // Ajuste o caminho conforme necessário
+import { requestWithRefresh } from '../services/api';
 import { IAlimento } from '../interfaces/IAlimento';
-import ICategoria from '../interfaces/ICategoria';
 
-const useAlimentos = () => {
+const useAlimentos = (searchTerm: string) => {
     const [alimentos, setAlimentos] = useState<IAlimento[]>([]);
-    const [categorias, setCategorias] = useState<ICategoria[]>([]);
+    const [categorias, setCategorias] = useState<{ _id: string; nome: string; codigo: number }[]>([]);
     const [selectedCategoria, setSelectedCategoria] = useState<string>('');
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -23,13 +21,14 @@ const useAlimentos = () => {
         }
     }, []);
 
-    const fetchAlimentos = useCallback(async (pageNumber: number, categoriaCodigo: string) => {
+    const fetchAlimentos = useCallback(async (pageNumber: number, categoriaCodigo: string, searchTerm: string) => {
         try {
+            if (categoriaCodigo === 'todascategorias') { categoriaCodigo = '' }
             const response = await requestWithRefresh({
                 method: 'GET',
-                url: `/alimento?page=${pageNumber}&limit=10${categoriaCodigo ? `&categoriaCodigo=${categoriaCodigo}` : ''}`,
+                url: `/alimento?page=${pageNumber}&limit=10${categoriaCodigo ? `&categoriaCodigo=${categoriaCodigo}` : ''}${searchTerm ? `&searchTerm=${searchTerm}` : ''}`,
             });
-            setAlimentos((prevAlimentos) => [...prevAlimentos, ...response.data.alimentosComCategoria]);
+            setAlimentos(response.data.alimentosComCategoria);
             setTotalPages(response.data.totalPages);
         } catch (error) {
             console.error('Erro ao buscar alimentos:', error);
@@ -42,15 +41,14 @@ const useAlimentos = () => {
 
     useEffect(() => {
         setPage(1);
-        setAlimentos([]);
-        fetchAlimentos(1, selectedCategoria);
-    }, [selectedCategoria, fetchAlimentos]);
+        fetchAlimentos(1, selectedCategoria, searchTerm);
+    }, [searchTerm, selectedCategoria, fetchAlimentos]);
 
     useEffect(() => {
         if (page > 1) {
-            fetchAlimentos(page, selectedCategoria);
+            fetchAlimentos(page, selectedCategoria, searchTerm);
         }
-    }, [page, selectedCategoria, fetchAlimentos]);
+    }, [page, selectedCategoria, searchTerm, fetchAlimentos]);
 
     const loadMore = () => {
         if (page < totalPages) {
@@ -58,15 +56,7 @@ const useAlimentos = () => {
         }
     };
 
-    return {
-        alimentos,
-        categorias,
-        selectedCategoria,
-        setSelectedCategoria,
-        page,
-        totalPages,
-        loadMore
-    };
+    return { alimentos, categorias, selectedCategoria, setSelectedCategoria, page, totalPages, loadMore };
 };
 
 export default useAlimentos;

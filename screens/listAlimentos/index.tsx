@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import AlimentoItem from '../../components/alimento';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
@@ -17,20 +17,33 @@ type Props = {
 };
 
 const AlimentosScreen: React.FC<Props> = ({ navigation }) => {
-    const { alimentos, categorias, selectedCategoria, setSelectedCategoria, page, totalPages, loadMore } = useAlimentos();
+    const [searchTerm, setSearchTerm] = useState<string>('');
+    const { alimentos, categorias, selectedCategoria, setSelectedCategoria, page, totalPages, loadMore } = useAlimentos(searchTerm);
+
+    const handleSearchChange = useCallback((text: string) => {
+        setSearchTerm(text);
+    }, []);
+
+    const handleCategoriaChange = useCallback((itemValue: string) => {
+        setSelectedCategoria(itemValue);
+    }, []);
 
     return (
         <View style={{ flex: 1 }}>
             <View style={styles.container}>
                 <Text style={styles.title}>Listar alimentos</Text>
+                <TextInput
+                    style={styles.searchInput}
+                    placeholder="Buscar alimentos..."
+                    value={searchTerm}
+                    onChangeText={handleSearchChange}
+                />
                 <Picker
                     selectedValue={selectedCategoria}
                     style={styles.picker}
-                    onValueChange={(itemValue: string) => {
-                        setSelectedCategoria(itemValue);
-                    }}
+                    onValueChange={handleCategoriaChange}
                 >
-                    <Picker.Item label="Todas as Categorias" value="" />
+                    <Picker.Item label="Todas as Categorias" value="todascategorias" />
                     {categorias.map(categoria => (
                         <Picker.Item key={categoria.codigo} label={categoria.nome} value={categoria.codigo.toString()} />
                     ))}
@@ -69,6 +82,13 @@ const styles = StyleSheet.create({
         height: 50,
         width: '100%',
         marginBottom: 10,
+    },
+    searchInput: {
+        height: 40,
+        borderColor: 'gray',
+        borderWidth: 1,
+        marginBottom: 10,
+        paddingHorizontal: 8,
     },
     row: {
         justifyContent: 'space-between',

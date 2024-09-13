@@ -1,5 +1,3 @@
-import ICategoria from './ICategoria';
-
 interface Detalhes {
     valorEnergetico: number;
     proteinas: number;
@@ -12,8 +10,9 @@ interface IAlimento {
     _id: string;
     nome: string;
     preparo: string;
-    categoria: ICategoria;
+    categoriaUrl: string;
     porcao: number;
+    categoriaNome: string;
     detalhes: Detalhes;
 }
 

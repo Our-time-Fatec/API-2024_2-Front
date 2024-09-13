@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     },
     closeButton: {
         marginTop: 15,
-        backgroundColor: '#ff5722',
+        backgroundColor: '#2d74da',
         paddingVertical: 8,
         borderRadius: 5,
         alignItems: 'center',

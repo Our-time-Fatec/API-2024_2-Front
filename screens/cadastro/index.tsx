@@ -237,18 +237,9 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
             style={styles.picker}
             onValueChange={(itemValue) => handleInputChange("objetivo", itemValue)}
           >
-            <Picker.Item
-              label="Dieta de emagrecimento"
-              value="Dieta de emagrecimento"
-            />
-            <Picker.Item
-              label="Dieta de Ganho de Massa Muscular"
-              value="Dieta de Ganho de Massa Muscular"
-            />
-            <Picker.Item
-              label="Manutenção do Peso"
-              value="Manutenção do Peso"
-            />
+            <Picker.Item label="Dieta de emagrecimento" value="Dieta de emagrecimento" />
+            <Picker.Item label="Dieta de Ganho de Massa Muscular" value="Dieta de Ganho de Massa Muscular" />
+            <Picker.Item label="Dieta Low Carb" value="Dieta Low Carb" />
           </Picker>
         </View>
       </ScrollView>

@@ -6,4 +6,5 @@ export type RootStackParamList = {
   Selecao: undefined;
   ListAlimentos: undefined;
   Profile: undefined;
+  EditProfile: undefined;
 };

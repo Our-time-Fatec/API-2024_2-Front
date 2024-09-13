@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -7,6 +7,7 @@ import { RouteProp } from '@react-navigation/native';
 import FooterMenu from '../../components/menus';
 import useUsuario from '../../hooks/useUsuario'; // Certifique-se de que o caminho está correto
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, "Profile">;
 type ProfileScreenRouteProp = RouteProp<RootStackParamList, "Profile">;
@@ -17,7 +18,13 @@ type Props = {
 };
 
 const PerfilScreen: React.FC<Props> = ({ navigation, route }) => {
-    const { usuario, loading, error } = useUsuario();
+    const { usuario, loading, error, refreshUser } = useUsuario(); // Adicione a função de refreshUser aqui
+
+    useFocusEffect(
+        useCallback(() => {
+            refreshUser(); // Recarrega os dados do usuário sempre que a tela ganhar foco
+        }, [])
+    );
 
     const handleLogout = async () => {
         try {
@@ -29,6 +36,10 @@ const PerfilScreen: React.FC<Props> = ({ navigation, route }) => {
             Alert.alert('Erro', 'Não foi possível realizar o logout. Tente novamente.');
         }
     };
+
+    const handleEdit = async () => {
+        navigation.navigate('EditProfile');
+    }
 
     if (loading) {
         return <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator} />;
@@ -84,22 +95,10 @@ const PerfilScreen: React.FC<Props> = ({ navigation, route }) => {
                 </View>
 
                 <View style={styles.menuSection}>
-                    {/* <TouchableOpacity style={styles.menuItem}>
+                    <TouchableOpacity style={styles.menuItem} onPress={handleEdit}>
                         <Ionicons name="pencil-outline" size={24} color="#2d74da" />
                         <Text style={styles.menuText}>Editar Perfil</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.menuItem}>
-                        <Ionicons name="heart-outline" size={24} color="#2d74da" />
-                        <Text style={styles.menuText}>Minhas Dietas</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.menuItem}>
-                        <Ionicons name="document-text-outline" size={24} color="#2d74da" />
-                        <Text style={styles.menuText}>Alimentos Cadastrados</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.menuItem}>
-                        <Ionicons name="chatbubble-outline" size={24} color="#2d74da" />
-                        <Text style={styles.menuText}>FAQs</Text>
-                    </TouchableOpacity> */}
                     <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
                         <Ionicons name="log-out-outline" size={24} color="#2d74da" />
                         <Text style={styles.menuText}>Logout</Text>

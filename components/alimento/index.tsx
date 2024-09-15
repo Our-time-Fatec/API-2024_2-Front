@@ -70,11 +70,11 @@ const AlimentoItem: React.FC<AlimentoProps> = ({ alimento, isUserAlimento, onEdi
                         <Text style={styles.modalInfo}>Categoria: {alimento.categoriaNome}</Text>
                         <Text style={styles.modalInfo}>Preparo: {alimento.preparo}</Text>
                         <Text style={styles.modalInfo}>Porção: {alimento.porcao}g</Text>
-                        <Text style={styles.modalInfo}>Valor Energético: {alimento.detalhes.valorEnergetico} kcal</Text>
-                        <Text style={styles.modalInfo}>Proteínas: {alimento.detalhes.proteinas}g</Text>
-                        <Text style={styles.modalInfo}>Carboidratos: {alimento.detalhes.carboidratos}g</Text>
-                        <Text style={styles.modalInfo}>Fibras: {alimento.detalhes.fibras}g</Text>
-                        <Text style={styles.modalInfo}>Lipídios: {alimento.detalhes.lipidios}g</Text>
+                        <Text style={styles.modalInfo}>Valor Energético: {alimento.detalhes.valorEnergetico.toFixed(2)} kcal</Text>
+                        <Text style={styles.modalInfo}>Proteínas: {alimento.detalhes.proteinas.toFixed(2)}g</Text>
+                        <Text style={styles.modalInfo}>Carboidratos: {alimento.detalhes.carboidratos.toFixed(2)}g</Text>
+                        <Text style={styles.modalInfo}>Fibras: {alimento.detalhes.fibras.toFixed(2)}g</Text>
+                        <Text style={styles.modalInfo}>Lipídios: {alimento.detalhes.lipidios.toFixed(2)}g</Text>
                         <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
                             <Text style={styles.closeButtonText}>Fechar</Text>
                         </TouchableOpacity>

@@ -2,9 +2,11 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ILoginRequest, ILoginSuccessResponse } from '../interfaces/ILogin';
 import { IUsuario } from '../interfaces/IUsuario';
+import { API_HOST } from '@env';
 
+const APIHOST = API_HOST || 'http://192.168.1.45:3010';
 const api = axios.create({
-    baseURL: 'http://192.168.1.45:3010',
+    baseURL: APIHOST,
 });
 
 async function getToken() {
@@ -15,7 +17,7 @@ async function refreshAuthToken() {
     const refreshToken = await AsyncStorage.getItem('refreshToken');
     if (!refreshToken) throw new Error('Refresh token não encontrado');
 
-    const response = await axios.post('http://192.168.1.45:3010/auth/refresh-token', { refreshToken });
+    const response = await axios.post(`${APIHOST}/auth/refresh-token`, { refreshToken });
     const { token, refreshToken: newRefreshToken } = response.data;
 
     await AsyncStorage.setItem('token', token);

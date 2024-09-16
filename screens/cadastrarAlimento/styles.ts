@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 30,
+    marginTop: 10,
   },
   inputContainer: {
     flexDirection: "row",
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 25,
     height: 60,
-    width: "100%", // Usa toda a largura disponível
+    width: "100%",
     maxWidth: 500,
     minWidth: 300,
     shadowColor: "#000",

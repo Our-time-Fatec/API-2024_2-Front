@@ -8,13 +8,13 @@ const useDietas = (onlyUser: boolean = false) => {
 
     const fetchDietas = useCallback(async (diaSemana: string) => {
         try {
+            if (diaSemana === 'Todos') { diaSemana = '' }
             const response = await requestWithRefresh({
                 method: 'GET',
                 url: `/dieta/me${diaSemana ? `?diaSemana=${diaSemana}` : ''}`,
             });
             setDietas(response.data);
         } catch (error) {
-            console.log(error)
             console.error('Erro ao buscar dietas:', error);
         }
     }, []);

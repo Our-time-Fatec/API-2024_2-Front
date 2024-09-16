@@ -18,6 +18,7 @@ import FAQs from './screens/FAQs';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { RootStackParamList } from './types/rootStack';
 import UserDietasScreen from './screens/userDietas';
+import CadastroDietaScreen from './screens/cadastrarDieta';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -36,6 +37,7 @@ const AuthenticatedStack = () => {
           <Stack.Screen name="CadastroAlimento" component={CadastroAlimentoScreen} />
           <Stack.Screen name="UserAlimentos" component={UserAlimentosScreen} />
           <Stack.Screen name="UserDietas" component={UserDietasScreen} />
+          <Stack.Screen name="CadastroDieta" component={CadastroDietaScreen} />
           <Stack.Screen name="FAQs" component={FAQs} />
         </>
       ) : (

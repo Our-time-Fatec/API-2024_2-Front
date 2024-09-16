@@ -30,11 +30,11 @@ const UserDietasScreen: React.FC<Props> = ({ navigation }) => {
     }, [isFocused, refreshDietas]);
 
     const handleCadastro = () => {
-        navigation.navigate('CadastroAlimento', { alimentoId: '' });
+        navigation.navigate('CadastroDieta', { dietaId: '' });
     };
 
     const handleEdit = (id: string) => {
-        navigation.navigate('CadastroAlimento', { alimentoId: id });
+        navigation.navigate('CadastroDieta', { dietaId: id });
     };
 
     const handleDelete = async (id: string) => {
@@ -68,7 +68,7 @@ const UserDietasScreen: React.FC<Props> = ({ navigation }) => {
                         <Picker.Item key={key} label={DiasSemana[key as keyof typeof DiasSemana]} value={key} />
                     ))}
                 </Picker>
-                <TouchableOpacity style={styles.button} onPress={handleCadastro} disabled>
+                <TouchableOpacity style={styles.button} onPress={handleCadastro} >
                     <Ionicons name="add" size={20} color="#fff" style={styles.icon} />
                     <Text style={styles.buttonText}>Cadastrar Dieta</Text>
                 </TouchableOpacity>

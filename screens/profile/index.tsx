@@ -20,6 +20,7 @@ type Props = {
 
 const PerfilScreen: React.FC<Props> = ({ navigation, route }) => {
     const { usuario, loading, error, refreshUser } = useUsuario(); // Adicione a função de refreshUser aqui
+    const { setIsAuthenticated } = useAuth();
 
     useFocusEffect(
         useCallback(() => {
@@ -28,7 +29,6 @@ const PerfilScreen: React.FC<Props> = ({ navigation, route }) => {
     );
 
     const handleLogout = async () => {
-        const { setIsAuthenticated } = useAuth();
         try {
             await AsyncStorage.removeItem('token');
             await AsyncStorage.removeItem('refreshToken');
@@ -71,7 +71,7 @@ const PerfilScreen: React.FC<Props> = ({ navigation, route }) => {
                     <View style={styles.infoItem}>
                         <Ionicons name="man-outline" size={24} color="#2d74da" />
                         <Text style={styles.infoLabel}>Altura</Text>
-                        <Text style={styles.infoValue}>{usuario?.altura} m</Text>
+                        <Text style={styles.infoValue}>{usuario?.altura} cm</Text>
                     </View>
                     <View style={styles.infoItem}>
                         <Ionicons name="scale-outline" size={24} color="#2d74da" />
@@ -93,7 +93,7 @@ const PerfilScreen: React.FC<Props> = ({ navigation, route }) => {
                     <View style={styles.infoItem}>
                         <Ionicons name="flame-outline" size={24} color="#2d74da" />
                         <Text style={styles.infoLabel}>Gasto de Calorias/dia</Text>
-                        <Text style={styles.infoValue}>{usuario?.gastoDeCaloria ?? 'N/A'}</Text>
+                        <Text style={styles.infoValue}>{usuario?.gastoDeCaloria?.toFixed(2) ?? 'N/A'}</Text>
                     </View>
                 </View>
 

@@ -12,9 +12,11 @@ interface IAlimento {
     preparo: string;
     categoriaUrl?: string;
     porcao: number;
+    quantidade?: number;
     categoriaNome?: string;
     categoriaCodigo: number;
     detalhes: Detalhes;
+    criadoEm?: Date;
 }
 
 export { IAlimento, Detalhes };

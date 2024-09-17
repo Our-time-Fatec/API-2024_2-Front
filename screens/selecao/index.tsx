@@ -1,12 +1,12 @@
-import { View, Text, Image, TextInput, TouchableOpacity } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import styles from './styles';
+import { View, Text, TouchableOpacity } from 'react-native';
+import React, { useCallback } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { RootStackParamList } from "../../types/rootStack";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RouteProp } from "@react-navigation/native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import FooterMenu from '../../components/menus';
+import useUsuario from '../../hooks/useUsuario';
+import styles from './styles';
 
 type SelecaoScreenNavigationProp = StackNavigationProp<RootStackParamList, "Selecao">;
 type SelecaoScreenRouteProp = RouteProp<RootStackParamList, "Selecao">;
@@ -16,26 +16,30 @@ type Props = {
   route: SelecaoScreenRouteProp;
 };
 
-const Selecao: React.FC<Props> = ({ navigation, route }) => {
-  const [nomeUsuario, setNomeUsuario] = useState<string>('User');
+const Selecao: React.FC<Props> = ({ navigation }) => {
+  const { usuario, refreshUser } = useUsuario();
+  const margem = 100;
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const usuario = await AsyncStorage.getItem('usuario');
-        if (usuario) {
-          const usuarioObj = JSON.parse(usuario);
-          console.log(usuarioObj)
-          const nome = `${usuarioObj.nome}`
-          setNomeUsuario(nome || 'User');
-        }
-      } catch (error) {
-        console.error('Erro ao buscar usuário no AsyncStorage:', error);
-      }
-    };
+  const verificarCalorias = () => {
+    const consumo = usuario?.totaisAlimentosConsumidos?.valorEnergetico || 0;
+    const meta = usuario?.consumoDeCaloriaPorDia || 0;
 
-    fetchUser();
-  }, []);
+    if (consumo > meta + margem) {
+      return { texto: 'Ultrapassou a meta', cor: 'red' };
+    } else if (consumo < meta - margem) {
+      return { texto: 'Ainda não atingiu a meta', cor: 'orange' };
+    } else {
+      return { texto: 'Você está dentro da meta', cor: 'green' };
+    }
+  };
+
+  const resultado = verificarCalorias();
+
+  useFocusEffect(
+    useCallback(() => {
+      refreshUser();
+    }, [])
+  );
 
   return (
     <View style={{ flex: 1 }}>
@@ -45,36 +49,29 @@ const Selecao: React.FC<Props> = ({ navigation, route }) => {
             <Ionicons name="person-circle-outline" size={50} color="white" />
             <View style={styles.textContainer}>
               <Text style={styles.welcomeText}>Bem vindo!</Text>
-              <Text style={styles.usernameText}>{nomeUsuario}</Text>
+              <Text style={styles.usernameText}>{usuario?.nome}</Text>
               <Text style={styles.questionText}>Como você está?</Text>
             </View>
           </View>
         </View>
 
-        {/* <View style={styles.searchContainer}>
-          <Ionicons name="search" size={20} color="#ccc" />
-          <TextInput style={styles.searchInput} placeholder="Procurar dietas..." />
-        </View> */}
-
         <View style={styles.content}>
-          <Text style={styles.selectText}>Ingestão diaria de calorias</Text>
+          <Text style={styles.selectText}>Ingestão diária de calorias</Text>
 
-          <TouchableOpacity style={styles.optionContainer}>
-            <Image />
+          <TouchableOpacity style={styles.optionContainer} disabled>
             <View style={styles.optionTextContainer}>
-              <Text style={styles.optionTitle}>1233 Kcal</Text>
-              <Text style={styles.optionSubtitle}>2g Proteinas</Text>
-              <Text style={styles.optionSubtitle}>2g Carboidratos</Text>
-              <Text style={styles.optionSubtitle}>2g Lipidios</Text>
+              <Text style={styles.optionTitle}>Meta/dia: {usuario?.consumoDeCaloriaPorDia?.toFixed(2)} Kcal</Text>
+              <Text style={[styles.optionSubtitle, { color: resultado.cor }]}> {resultado.texto} </Text>
             </View>
           </TouchableOpacity>
 
-          <Text style={styles.selectText}>Ingestão diaria de água</Text>
-          <TouchableOpacity style={styles.optionContainer}>
-            <Image />
+          <TouchableOpacity style={styles.optionContainer} disabled>
             <View style={styles.optionTextContainer}>
-              <Text style={styles.optionTitle}>2.3 L</Text>
-              <Text style={styles.optionSubtitle}>Restam: 2.4L</Text>
+              <Text style={styles.optionTitle}>Consumido: {usuario?.totaisAlimentosConsumidos?.valorEnergetico.toFixed(2)} Kcal</Text>
+              <Text style={styles.optionSubtitle}>{usuario?.totaisAlimentosConsumidos?.proteinas.toFixed(2)}g Proteínas</Text>
+              <Text style={styles.optionSubtitle}>{usuario?.totaisAlimentosConsumidos?.carboidratos.toFixed(2)}g Carboidratos</Text>
+              <Text style={styles.optionSubtitle}>{usuario?.totaisAlimentosConsumidos?.fibras.toFixed(2)}g Fibras</Text>
+              <Text style={styles.optionSubtitle}>{usuario?.totaisAlimentosConsumidos?.lipidios.toFixed(2)}g Lipídios</Text>
             </View>
           </TouchableOpacity>
         </View>

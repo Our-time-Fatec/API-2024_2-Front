@@ -15,7 +15,7 @@ const useUsuario = () => {
         try {
             const response = await requestWithRefresh({
                 method: 'GET',
-                url: '/usuario/me'
+                url: '/usuario/mydetails'
             });
             setUsuario(response.data);
         } catch (err: any) {

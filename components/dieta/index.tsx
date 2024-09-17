@@ -51,7 +51,7 @@ const DietaItem: React.FC<DietaProps> = ({ dieta, isUserDieta, onEdit, onDelete 
                             <Text style={styles.modalNome}>Dia: {dieta.diaSemana}</Text>
                             <Text style={styles.modalInfo}>Data de criação: {formatDate(dieta.criadoEm)}</Text>
                             <Text style={styles.modalNome}>Detalhes</Text>
-                            <Text style={styles.modalInfo}>Valor energético: {dieta.detalhes?.valorEnergetico.toFixed(2)} kcal</Text>
+                            <Text style={styles.modalInfo}>Valor energético: {dieta.detalhes?.valorEnergetico.toFixed(2)} Kcal</Text>
                             <Text style={styles.modalInfo}>Proteínas: {dieta.detalhes?.proteinas.toFixed(2)} g</Text>
                             <Text style={styles.modalInfo}>Carboidratos: {dieta.detalhes?.carboidratos.toFixed(2)} g</Text>
                             <Text style={styles.modalInfo}>Fibras: {dieta.detalhes?.fibras.toFixed(2)} g</Text>
@@ -63,7 +63,7 @@ const DietaItem: React.FC<DietaProps> = ({ dieta, isUserDieta, onEdit, onDelete 
                                     <Text style={styles.minimodalNome}>{grupo.nome}</Text>
                                     {grupo.alimentos.map((alimento) => (
                                         <Text key={alimento._id ? alimento._id : ''} style={styles.minimodalInfo}>
-                                            {alimento.quantidade}x - {alimento.nome} - {alimento.porcao.toString()}g - {alimento.detalhes?.valorEnergetico.toFixed(2)} kcal
+                                            {alimento.quantidade}x - {alimento.nome} - {alimento.porcao.toString()}g - Total: {alimento.detalhes?.valorEnergetico.toFixed(2)} Kcal
                                         </Text>
                                     ))}
                                 </View>

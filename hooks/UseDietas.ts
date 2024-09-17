@@ -1,12 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { requestWithRefresh } from '../services/api';
 import { IDietaFixa } from '../interfaces/IDieta';
+import { DiasSemana } from '../enums/diasSemana';
 
 const useDietas = (onlyUser: boolean = false) => {
     const [dietas, setDietas] = useState<IDietaFixa[]>([]);
     const [selectedDiaSemana, setSelectedDiaSemana] = useState<string>('');
 
     const fetchDietas = useCallback(async (diaSemana: string) => {
+        if (diaSemana === 'Todos') { diaSemana = '' }
         try {
             const response = await requestWithRefresh({
                 method: 'GET',

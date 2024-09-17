@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator, Alert, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types/rootStack';
@@ -53,78 +53,80 @@ const PerfilScreen: React.FC<Props> = ({ navigation, route }) => {
     }
 
     return (
-        <View style={styles.container}>
-            <View style={styles.content}>
-                <View style={styles.profileSection}>
-                    <Image
-                        source={{ uri: 'https://via.placeholder.com/150' }}
-                        style={styles.profileImage}
-                    />
-                    <Text style={styles.profileName}>{usuario?.nome} {usuario?.sobrenome}</Text>
-                </View>
-                <View style={styles.infoSection}>
-                    <View style={styles.infoItem}>
-                        <Ionicons name="calendar-outline" size={24} color="#2d74da" />
-                        <Text style={styles.infoLabel}>Idade</Text>
-                        <Text style={styles.infoValue}>{usuario?.idade ?? 'N/A'}</Text>
+        <View style={{ flex: 1 }}>
+            <ScrollView>
+                <View style={styles.content}>
+                    <View style={styles.profileSection}>
+                        <Image
+                            source={{ uri: 'https://via.placeholder.com/150' }}
+                            style={styles.profileImage}
+                        />
+                        <Text style={styles.profileName}>{usuario?.nome} {usuario?.sobrenome}</Text>
                     </View>
-                    <View style={styles.infoItem}>
-                        <Ionicons name="man-outline" size={24} color="#2d74da" />
-                        <Text style={styles.infoLabel}>Altura</Text>
-                        <Text style={styles.infoValue}>{usuario?.altura} cm</Text>
+                    <View style={styles.infoSection}>
+                        <View style={styles.infoItem}>
+                            <Ionicons name="calendar-outline" size={24} color="#2d74da" />
+                            <Text style={styles.infoLabel}>Idade</Text>
+                            <Text style={styles.infoValue}>{usuario?.idade ?? 'N/A'}</Text>
+                        </View>
+                        <View style={styles.infoItem}>
+                            <Ionicons name="man-outline" size={24} color="#2d74da" />
+                            <Text style={styles.infoLabel}>Altura</Text>
+                            <Text style={styles.infoValue}>{usuario?.altura} cm</Text>
+                        </View>
+                        <View style={styles.infoItem}>
+                            <Ionicons name="scale-outline" size={24} color="#2d74da" />
+                            <Text style={styles.infoLabel}>Peso</Text>
+                            <Text style={styles.infoValue}>{usuario?.peso} Kg</Text>
+                        </View>
                     </View>
-                    <View style={styles.infoItem}>
-                        <Ionicons name="scale-outline" size={24} color="#2d74da" />
-                        <Text style={styles.infoLabel}>Peso</Text>
-                        <Text style={styles.infoValue}>{usuario?.peso} Kg</Text>
+                    <View style={styles.infoSection}>
+                        <View style={styles.infoItem}>
+                            <Ionicons name="trophy-outline" size={24} color="#2d74da" />
+                            <Text style={styles.infoLabel}>Objetivo</Text>
+                            <Text style={styles.infoValue}>{usuario?.objetivo ?? 'N/A'}</Text>
+                        </View>
+                        <View style={styles.infoItem}>
+                            <Ionicons name="people-outline" size={24} color="#2d74da" />
+                            <Text style={styles.infoLabel}>Nível de Sedentarismo</Text>
+                            <Text style={styles.infoValue}>{usuario?.nivelDeSedentarismo ?? 'N/A'}</Text>
+                        </View>
+                        <View style={styles.infoItem}>
+                            <Ionicons name="flame-outline" size={24} color="#2d74da" />
+                            <Text style={styles.infoLabel}>Gasto de Calorias/dia</Text>
+                            <Text style={styles.infoValue}>{usuario?.gastoDeCaloria ? `${usuario?.gastoDeCaloria.toFixed(2)} Kcal` : 'N/A'}</Text>
+                        </View>
+                        <View style={styles.infoItem}>
+                            <Ionicons name="checkmark-circle-outline" size={24} color="#2d74da" />
+                            <Text style={styles.infoLabel}>Meta de consumo/dia</Text>
+                            <Text style={styles.infoValue}>{usuario?.consumoDeCaloriaPorDia ? `${usuario?.consumoDeCaloriaPorDia.toFixed(2)} Kcal` : 'N/A'}</Text>
+                        </View>
                     </View>
-                </View>
-                <View style={styles.infoSection}>
-                    <View style={styles.infoItem}>
-                        <Ionicons name="trophy-outline" size={24} color="#2d74da" />
-                        <Text style={styles.infoLabel}>Objetivo</Text>
-                        <Text style={styles.infoValue}>{usuario?.objetivo ?? 'N/A'}</Text>
-                    </View>
-                    <View style={styles.infoItem}>
-                        <Ionicons name="people-outline" size={24} color="#2d74da" />
-                        <Text style={styles.infoLabel}>Nível de Sedentarismo</Text>
-                        <Text style={styles.infoValue}>{usuario?.nivelDeSedentarismo ?? 'N/A'}</Text>
-                    </View>
-                    <View style={styles.infoItem}>
-                        <Ionicons name="flame-outline" size={24} color="#2d74da" />
-                        <Text style={styles.infoLabel}>Gasto de Calorias/dia</Text>
-                        <Text style={styles.infoValue}>{usuario?.gastoDeCaloria ? `${usuario?.gastoDeCaloria.toFixed(2)} Kcal` : 'N/A'}</Text>
-                    </View>
-                    <View style={styles.infoItem}>
-                        <Ionicons name="checkmark-circle-outline" size={24} color="#2d74da" />
-                        <Text style={styles.infoLabel}>Meta de consumo/dia</Text>
-                        <Text style={styles.infoValue}>{usuario?.consumoDeCaloriaPorDia ? `${usuario?.consumoDeCaloriaPorDia.toFixed(2)} Kcal` : 'N/A'}</Text>
-                    </View>
-                </View>
 
-                <View style={styles.menuSection}>
-                    <TouchableOpacity style={styles.menuItem} onPress={handleEdit}>
-                        <Ionicons name="pencil-outline" size={24} color="#2d74da" />
-                        <Text style={styles.menuText}>Editar Perfil</Text>
-                    </TouchableOpacity>
-                    {/* <TouchableOpacity style={styles.menuItem}>
-                        <Ionicons name="heart-outline" size={24} color="#2d74da" />
-                        <Text style={styles.menuText}>Minhas Dietas</Text>
-                    </TouchableOpacity> */}
-                    <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('UserAlimentos')}>
-                        <Ionicons name="document-text-outline" size={24} color="#2d74da" />
-                        <Text style={styles.menuText}>Alimentos Cadastrados</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('FAQs')}>
-                        <Ionicons name="chatbubble-outline" size={24} color="#2d74da" />
-                        <Text style={styles.menuText}>FAQs</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
-                        <Ionicons name="log-out-outline" size={24} color="#2d74da" />
-                        <Text style={styles.menuText}>Logout</Text>
-                    </TouchableOpacity>
+                    <View style={styles.menuSection}>
+                        <TouchableOpacity style={styles.menuItem} onPress={handleEdit}>
+                            <Ionicons name="pencil-outline" size={24} color="#2d74da" />
+                            <Text style={styles.menuText}>Editar Perfil</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('UserDietas')}>
+                            <Ionicons name="heart-outline" size={24} color="#2d74da" />
+                            <Text style={styles.menuText}>Minhas Dietas</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('UserAlimentos')}>
+                            <Ionicons name="document-text-outline" size={24} color="#2d74da" />
+                            <Text style={styles.menuText}>Alimentos Cadastrados</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('FAQs')}>
+                            <Ionicons name="chatbubble-outline" size={24} color="#2d74da" />
+                            <Text style={styles.menuText}>FAQs</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
+                            <Ionicons name="log-out-outline" size={24} color="#2d74da" />
+                            <Text style={styles.menuText}>Logout</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-            </View>
+            </ScrollView>
 
             <FooterMenu navigation={navigation} />
         </View>

@@ -1,3 +1,5 @@
+import { Detalhes } from "./IAlimento";
+
 export interface IUsuario {
     _id?: string;
     nome: string;
@@ -15,8 +17,10 @@ export interface IUsuario {
     IMC?: number;
     taxaMetabolismoBasal?: number;
     gastoDeCaloria?: number;
+    consumoDeCaloriaPorDia?: number;
     ultimaVezUtilizado?: Date;
     criadoEm?: Date;
     atualizadoEm?: Date | null;
     removidoEm?: Date | null;
+    totaisAlimentosConsumidos?: Detalhes;
 }

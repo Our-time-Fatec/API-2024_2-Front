@@ -4,7 +4,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
-    backgroundColor: "#fff",
     paddingHorizontal: 20,
     justifyContent: "center",
     alignItems: "center",

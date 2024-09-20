@@ -1,6 +1,7 @@
 import { View, Text, Image, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import React from 'react';
 import styles from './styles';
+import colors from '../../components/colors/colors';
 import { Ionicons } from '@expo/vector-icons';
 import { RootStackParamList } from "../../types/rootStack";
 import { StackNavigationProp } from "@react-navigation/stack";

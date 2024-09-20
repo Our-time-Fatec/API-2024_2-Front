@@ -13,7 +13,6 @@ import { RootStackParamList } from "../../types/rootStack";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { IUsuario } from "../../interfaces/IUsuario";
 import useRegister from "../../hooks/useRegister";
 
@@ -30,6 +29,7 @@ type Props = {
 
 const Cadastro: React.FC<Props> = ({ navigation }) => {
   const { register, loading } = useRegister();
+  const [dataNascimento, setDataNascimento] = useState<string>("");
   const [formState, setFormState] = useState<IUsuario>({
     nome: "",
     sobrenome: "",
@@ -44,8 +44,6 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
     sexo: "Masculino",
   });
 
-  const [showDatePicker, setShowDatePicker] = useState(false);
-
   const handleInputChange = (name: keyof IUsuario, value: any) => {
     if (name === "altura" || name === "peso") {
       const numericValue = value.trim() === "" ? 0 : parseFloat(value);
@@ -55,28 +53,87 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
     }
   };
 
-  const handleDateConfirm = (date: Date) => {
-    handleInputChange("dataDeNascimento", date);
-    setShowDatePicker(false);
+  // Função para formatar a data automaticamente conforme o usuário digita
+  const formatDateString = (text: string) => {
+    let formattedDate = text.replace(/\D/g, ""); // Remove tudo que não for número
+    if (formattedDate.length >= 2) {
+      formattedDate = `${formattedDate.substring(
+        0,
+        2
+      )}/${formattedDate.substring(2)}`;
+    }
+    if (formattedDate.length >= 5) {
+      formattedDate = `${formattedDate.substring(
+        0,
+        5
+      )}/${formattedDate.substring(5, 9)}`;
+    }
+    return formattedDate;
   };
 
-  const handleRegister = async () => {
+  const dateFormater = (date: string) => {
+    const dateString = date;
 
+    const [day, month, year] = dateString
+      .split("/")
+      .map((part) => parseInt(part, 11));
+
+    const birthDate = new Date(year, month - 1, day);
+
+    const isValidDate =
+      birthDate.getDate() === day &&
+      birthDate.getMonth() === month - 1 &&
+      birthDate.getFullYear() === year;
+
+    const today = new Date();
+
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(today.getFullYear() - 1);
+
+    if (!isValidDate) {
+      Alert.alert("Erro", "Data inválida: formato ou valor incorreto");
+      return;
+    } else if (birthDate >= today) {
+      Alert.alert("Erro", "Data inválida: não pode ser no futuro");
+      return;
+    } else if (birthDate > oneYearAgo) {
+      Alert.alert(
+        "Erro",
+        "Data inválida: não pode ser de menos de 1 ano atrás"
+      );
+      return;
+    } else{
+      return birthDate
+    }
+}
+
+
+  const handleDateChange = (text: string) => {
+    const formattedDate = formatDateString(text);
+    const nascimento = dateFormater(formattedDate)
+    setDataNascimento(formattedDate)
+    handleInputChange("dataDeNascimento", nascimento);
+  };
+
+ 
+  const handleRegister = async () => {
     if (formState.senha !== formState.confirmarSenha) {
-      Alert.alert("Erro", "As senhas não coincidem. Verifique e tente novamente.");
+      Alert.alert(
+        "Erro",
+        "As senhas não coincidem. Verifique e tente novamente."
+      );
       return;
     }
 
+    // Executa o cadastro
     const result = await register(formState);
     if (result.success) {
       Alert.alert("Sucesso", "Cadastro realizado com sucesso!");
-      navigation.navigate('Selecao');
-    }
-    else {
+      navigation.navigate("Selecao");
+    } else {
       Alert.alert("Erro", result.error);
     }
   };
-
   return (
     <View style={styles.container}>
       <ScrollView
@@ -158,24 +215,16 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
 
         <View style={styles.inputContainer}>
           <Ionicons name="calendar-outline" size={24} color="black" />
-          <TouchableOpacity
-            onPress={() => setShowDatePicker(true)}
+          <TextInput
+            placeholder="Data de nascimento (DD/MM/YYYY)"
             style={styles.input}
-          >
-            <Text>
-              {formState.dataDeNascimento
-                ? formState.dataDeNascimento.toLocaleDateString("pt-BR")
-                : "Selecionar data"}
-            </Text>
-          </TouchableOpacity>
+            value={dataNascimento}
+            keyboardType="numeric"
+            onChangeText={handleDateChange}
+            maxLength={10} // Limita a entrada para o formato DD/MM/YYYY
+            placeholderTextColor="rgba(163,162,163,255)"
+          />
         </View>
-
-        <DateTimePickerModal
-          isVisible={showDatePicker}
-          mode="date"
-          onConfirm={handleDateConfirm}
-          onCancel={() => setShowDatePicker(false)}
-        />
 
         <View style={styles.inputContainer}>
           <Ionicons name="barbell-outline" size={24} color="black" />

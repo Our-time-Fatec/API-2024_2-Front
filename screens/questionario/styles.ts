@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     editPhoto: {
       textAlign: "center",
       color: "#00f",
-      marginBottom: 10,
+      marginBottom: 20,
     },
     inputContainer: {
       flexDirection: "row",

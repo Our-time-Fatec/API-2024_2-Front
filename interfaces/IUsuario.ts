@@ -7,7 +7,7 @@ export interface IUsuario {
     email: string;
     senha?: string;
     confirmarSenha?: string;
-    dataDeNascimento: Date;
+    dataDeNascimento?: Date;
     idade?: number;
     peso: number;
     altura: number;

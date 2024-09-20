@@ -19,6 +19,9 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { RootStackParamList } from './types/rootStack';
 import UserDietasScreen from './screens/userDietas';
 import UserAlimentosConsumidosScreen from './screens/userAlimentosConsumidos';
+import DietasPredefinidas from './screens/dietasPredefinidas';
+import DietasPersonalizadas from './screens/dietasPersonalizadas';
+
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -39,6 +42,8 @@ const AuthenticatedStack = () => {
           <Stack.Screen name="UserAlimentosConsumidos" component={UserAlimentosConsumidosScreen} />
           <Stack.Screen name="UserDietas" component={UserDietasScreen} />
           <Stack.Screen name="FAQs" component={FAQs} />
+          <Stack.Screen name="DietasPredefinidas" component={DietasPredefinidas} />
+        <Stack.Screen name="DietasPersonalizadas" component={DietasPersonalizadas} />
         </>
       ) : (
         <>

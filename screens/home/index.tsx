@@ -4,6 +4,7 @@ import { useFonts, Poppins_700Bold, Poppins_600SemiBold, Poppins_400Regular } fr
 import * as SplashScreen from 'expo-splash-screen';
 import { BotaoAzul, BotaoBranco } from '../../components/buttons';
 import styles from './styles';
+import colors from '../../components/colors/colors';
 import logo from "../../assets/logo.png";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";

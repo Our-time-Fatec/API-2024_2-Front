@@ -4,10 +4,11 @@ import { ILoginRequest, ILoginSuccessResponse } from '../interfaces/ILogin';
 import { IUsuario } from '../interfaces/IUsuario';
 import { API_HOST } from '@env';
 
-const APIHOST = API_HOST || 'http://192.168.0.48:3010';
+const APIHOST = API_HOST
 const api = axios.create({
     baseURL: APIHOST,
 });
+console.log(APIHOST)
 
 async function getToken() {
     return await AsyncStorage.getItem('token');

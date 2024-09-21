@@ -29,7 +29,7 @@ type Props = {
 
 const Cadastro: React.FC<Props> = ({ navigation }) => {
   const { register, loading } = useRegister();
-  const [dataNascimento, setDataNascimento] = useState<string>("");
+  const [dataNascimento, setDataNascimento] = useState("");
   const [formState, setFormState] = useState<IUsuario>({
     nome: "",
     sobrenome: "",
@@ -57,64 +57,75 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
   const formatDateString = (text: string) => {
     let formattedDate = text.replace(/\D/g, ""); // Remove tudo que não for número
     if (formattedDate.length >= 2) {
-      formattedDate = `${formattedDate.substring(
-        0,
-        2
-      )}/${formattedDate.substring(2)}`;
+      formattedDate = `${formattedDate.substring(0, 2)}/${formattedDate.substring(2)}`;
     }
     if (formattedDate.length >= 5) {
-      formattedDate = `${formattedDate.substring(
-        0,
-        5
-      )}/${formattedDate.substring(5, 9)}`;
+      formattedDate = `${formattedDate.substring(0, 5)}/${formattedDate.substring(5, 9)}`;
     }
     return formattedDate;
   };
-
+  
+  // Função para validar e formatar a data para o formato ISO
   const dateFormater = (date: string) => {
     const dateString = date;
+  
+    const [day, month, year] = dateString.split("/").map((part) => parseInt(part, 10));
+  
+    if (!day || !month || !year) {
+      return;
+    }
+    const tamanhoYear:string = year.toString();
 
-    const [day, month, year] = dateString
-      .split("/")
-      .map((part) => parseInt(part, 11));
-
+    if (tamanhoYear.length < 4) {
+      return;
+    }
+  
+  
     const birthDate = new Date(year, month - 1, day);
 
     const isValidDate =
       birthDate.getDate() === day &&
       birthDate.getMonth() === month - 1 &&
       birthDate.getFullYear() === year;
-
+  
     const today = new Date();
-
+  
     const oneYearAgo = new Date();
     oneYearAgo.setFullYear(today.getFullYear() - 1);
 
     if (!isValidDate) {
-      Alert.alert("Erro", "Data inválida: formato ou valor incorreto");
+      Alert.alert("Data inválida", "Formato ou valor incorreto");
       return;
     } else if (birthDate >= today) {
-      Alert.alert("Erro", "Data inválida: não pode ser no futuro");
+      Alert.alert("Data inválida", "Tem certeza que voce nasceu daqui a pouco?");
       return;
     } else if (birthDate > oneYearAgo) {
-      Alert.alert(
-        "Erro",
-        "Data inválida: não pode ser de menos de 1 ano atrás"
-      );
+      Alert.alert("Data inválida", "Um pouco novo demais, não acha?");
       return;
-    } else{
-      return birthDate
     }
-}
 
+    const currentDate = new Date();
+    const hours = currentDate.getHours();
+    const minutes = currentDate.getMinutes();
+    const seconds = currentDate.getSeconds();
 
+    birthDate.setHours(hours, minutes, seconds, 0);
+
+    console.log(birthDate)
+  
+    return birthDate; 
+  };
+  
   const handleDateChange = (text: string) => {
     const formattedDate = formatDateString(text);
-    const nascimento = dateFormater(formattedDate)
-    setDataNascimento(formattedDate)
-    handleInputChange("dataDeNascimento", nascimento);
+    const nascimento = dateFormater(formattedDate);
+    setDataNascimento(formattedDate);
+    
+    // Se a data de nascimento for válida, passa a data formatada para o handleInputChange
+    if (nascimento) {
+      handleInputChange("dataDeNascimento", nascimento);
+    }
   };
-
  
   const handleRegister = async () => {
     if (formState.senha !== formState.confirmarSenha) {
@@ -123,6 +134,14 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
         "As senhas não coincidem. Verifique e tente novamente."
       );
       return;
+    }
+
+    if(formState.altura >= 250){
+      return Alert.alert("Altura inválida", "Acho que nosso aplicativo não será suficiente para um gigante como você!")
+    }
+
+    if(formState.peso >= 500){
+      return Alert.alert("Peso inválido", "Espertinho, tome cuidado com os seus dados!")
     }
 
     // Executa o cadastro

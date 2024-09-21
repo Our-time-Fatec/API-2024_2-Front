@@ -32,7 +32,7 @@ const AuthenticatedStack = () => {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {isAuthenticated ? (
         <>
-          <Stack.Screen name="Selecao" component={Selecao} />
+          <Stack.Screen name="Selecao" component={Selecao}  />
           <Stack.Screen name="Questionario" component={Questionario} />
           <Stack.Screen name="ListAlimentos" component={AlimentosScreen} />
           <Stack.Screen name="Profile" component={PerfilScreen} />
@@ -43,7 +43,7 @@ const AuthenticatedStack = () => {
           <Stack.Screen name="UserDietas" component={UserDietasScreen} />
           <Stack.Screen name="FAQs" component={FAQs} />
           <Stack.Screen name="DietasPredefinidas" component={DietasPredefinidas} />
-        <Stack.Screen name="DietasPersonalizadas" component={DietasPersonalizadas} />
+          <Stack.Screen name="DietasPersonalizadas" component={DietasPersonalizadas} />
         </>
       ) : (
         <>

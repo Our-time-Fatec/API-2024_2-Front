@@ -16,8 +16,8 @@ type Props = {
 
 const DietasPersonalizadas: React.FC<Props> = ({ navigation }) => {
   return (
-    <ScrollView style={[styles.container, {backgroundColor: colors.background}]}>
-
+    // <ScrollView style={[styles.container, {backgroundColor: colors.background}]}>
+<ScrollView style={styles.container}>
       <Text style={styles.header}>Dietas Personalizadas.</Text>
       
       <View style={styles.card}>

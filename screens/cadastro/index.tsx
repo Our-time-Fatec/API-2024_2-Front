@@ -53,106 +53,159 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
     }
   };
 
-  // Função para formatar a data automaticamente conforme o usuário digita
-  const formatDateString = (text: string) => {
-    let formattedDate = text.replace(/\D/g, ""); // Remove tudo que não for número
-    if (formattedDate.length >= 2) {
-      formattedDate = `${formattedDate.substring(0, 2)}/${formattedDate.substring(2)}`;
-    }
-    if (formattedDate.length >= 5) {
-      formattedDate = `${formattedDate.substring(0, 5)}/${formattedDate.substring(5, 9)}`;
-    }
-    return formattedDate;
-  };
-  
-  // Função para validar e formatar a data para o formato ISO
-  const dateFormater = (date: string) => {
-    const dateString = date;
-  
-    const [day, month, year] = dateString.split("/").map((part) => parseInt(part, 10));
-  
+ // Função para formatar a data automaticamente conforme o usuário digita  
+const formatDateString = (text: string) => {
+  let formattedDate = text.replace(/\D/g, ""); // Remove tudo que não for número
+  if (formattedDate.length >= 2) {
+    formattedDate = `${formattedDate.substring(0, 2)}/${formattedDate.substring(2)}`;
+  }
+  if (formattedDate.length >= 5) {
+    formattedDate = `${formattedDate.substring(0, 5)}/${formattedDate.substring(5, 9)}`;
+  }
+  return formattedDate;
+};
+
+// Função para validar e formatar a data para o formato ISO
+const dateFormater = (date: string) => {
+  const dateString = date;
+
+  // Divide a data pelo separador "/"
+  const [day, month, year] = dateString.split("/").map((part) => parseInt(part, 10));
+
+  // Verifica se os valores são válidos
+  if (!day || !month || !year) {
+    return null; // Retorna null se a data for inválida
+  }
+
+  const tamanhoYear = year.toString();
+  if (tamanhoYear.length < 4) {
+    return;
+  }
+
+  // Verifica se o dia está entre 1 e 31
+  if (day < 1 || day > 31) {
+    Alert.alert("Dia inválido", "O dia deve estar entre 1 e 31.");
+    return;
+  }
+
+  // Verifica se o mês está entre 1 e 12
+  if (month < 1 || month > 12) {
+    Alert.alert("Mês inválido", "O mês deve estar entre 1 e 12.");
+    return;
+  }
+
+  // Cria o objeto Date, pois temos certeza que os valores são válidos
+  const birthDate = new Date(year, month - 1, day); // Lembre-se que o mês em JavaScript começa do 0 (Janeiro é 0)
+
+  // Ajusta as horas para o horário atual
+  const currentDate = new Date();
+  const hours = currentDate.getHours();
+  const minutes = currentDate.getMinutes();
+  const seconds = currentDate.getSeconds();
+
+  birthDate.setHours(hours, minutes, seconds, 0);
+
+  return birthDate;
+};
+const isValidBirthDate = (date: string): { valid: boolean } => {
+  // Verifica se é um objeto Date ou string
+  let birthDate: Date;
+
+    const [day, month, year] = date.split("/").map((part) => parseInt(part, 10));
+
     if (!day || !month || !year) {
-      return;
-    }
-    const tamanhoYear:string = year.toString();
-
-    if (tamanhoYear.length < 4) {
-      return;
-    }
-  
-  
-    const birthDate = new Date(year, month - 1, day);
-
-    const isValidDate =
-      birthDate.getDate() === day &&
-      birthDate.getMonth() === month - 1 &&
-      birthDate.getFullYear() === year;
-  
-    const today = new Date();
-  
-    const oneYearAgo = new Date();
-    oneYearAgo.setFullYear(today.getFullYear() - 1);
-
-    if (!isValidDate) {
-      Alert.alert("Data inválida", "Formato ou valor incorreto");
-      return;
-    } else if (birthDate >= today) {
-      Alert.alert("Data inválida", "Tem certeza que voce nasceu daqui a pouco?");
-      return;
-    } else if (birthDate > oneYearAgo) {
-      Alert.alert("Data inválida", "Um pouco novo demais, não acha?");
-      return;
+      return { valid: false };
     }
 
-    const currentDate = new Date();
-    const hours = currentDate.getHours();
-    const minutes = currentDate.getMinutes();
-    const seconds = currentDate.getSeconds();
+    if (day < 1 || day > 31) {
+      return { valid: false};
+    }
 
-    birthDate.setHours(hours, minutes, seconds, 0);
+    if (month < 1 || month > 12) {
+      return { valid: false };
+    }
 
-    console.log(birthDate)
+    const tamanhoYear = year.toString();
+    if (tamanhoYear.length !== 4) {
+      return { valid: false };
+    }
+
+
+    birthDate = new Date(year, month - 1, day);
   
-    return birthDate; 
+  // Se tudo estiver correto
+  return { valid: true };
+};
+
+const handleDateChange = (text: string) => {
+  const formattedDateString = formatDateString(text);
+  const isValidDate = isValidBirthDate(formattedDateString);
+  let formattedDate
+  if(isValidDate){
+   formattedDate = dateFormater(formattedDateString)
+  }else{
+    formattedDate = new Date()
   };
-  
-  const handleDateChange = (text: string) => {
-    const formattedDate = formatDateString(text);
-    const nascimento = dateFormater(formattedDate);
-    setDataNascimento(formattedDate);
-    
-    // Se a data de nascimento for válida, passa a data formatada para o handleInputChange
-    if (nascimento) {
-      handleInputChange("dataDeNascimento", nascimento);
-    }
-  };
- 
-  const handleRegister = async () => {
-    if (formState.senha !== formState.confirmarSenha) {
-      Alert.alert(
-        "Erro",
-        "As senhas não coincidem. Verifique e tente novamente."
-      );
-      return;
-    }
+  setDataNascimento(formattedDateString);
 
-    if(formState.altura >= 250){
-      return Alert.alert("Altura inválida", "Acho que nosso aplicativo não será suficiente para um gigante como você!")
-    }
+  if (formattedDate) {
+    handleInputChange("dataDeNascimento", formattedDate);
+  }
+};
 
-    if(formState.peso >= 500){
-      return Alert.alert("Peso inválido", "Espertinho, tome cuidado com os seus dados!")
-    }
+const handleRegister = async () => {
+  // Validação de senha
+  if (formState.senha !== formState.confirmarSenha) {
+    Alert.alert("Erro", "As senhas não coincidem. Verifique e tente novamente.");
+    return;
+  }
 
-    // Executa o cadastro
-    const result = await register(formState);
-    if (result.success) {
-      Alert.alert("Sucesso", "Cadastro realizado com sucesso!");
-      navigation.navigate("Selecao");
-    } else {
-      Alert.alert("Erro", result.error);
-    }
-  };
+  // Validação de data de nascimento
+  const today = new Date();
+  const oneYearAgo = new Date();
+  oneYearAgo.setFullYear(today.getFullYear() - 1);
+
+  const birthDate = formState.dataDeNascimento;
+
+  if (birthDate.getFullYear() === today.getFullYear() &&
+      birthDate.getMonth() === today.getMonth() &&
+      birthDate.getDate() === today.getDate()) {
+    Alert.alert("Data inválida", "Formato ou valor incorreto.");
+    return;
+  }
+
+  // Validações de idade
+  if (birthDate > today) {
+    Alert.alert("Data inválida", "Tem certeza que você nasceu daqui a pouco?");
+    return;
+  } else if (birthDate > oneYearAgo) {
+    Alert.alert("Data inválida", "Um pouco novo demais, não acha?");
+    return;
+  }
+
+  // Validações de altura e peso
+  if (formState.altura >= 250) {
+    return Alert.alert("Altura inválida", "Acho que nosso aplicativo não será suficiente para um gigante como você!");
+  }
+  if (formState.altura <= 80) {
+    return Alert.alert("Altura inválida", "Tem certeza que essa é sua altura?");
+  }
+
+  if (formState.peso >= 500 || formState.peso <= 20) {
+    return Alert.alert("Peso inválido", "Espertinho, tome cuidado com os seus dados!");
+  }
+
+  // Executa o cadastro
+  const result = await register(formState);
+  if (result.success) {
+    Alert.alert("Sucesso", "Cadastro realizado com sucesso!");
+    navigation.navigate("Selecao");
+  } else {
+    Alert.alert("Erro", result.error);
+  }
+};
+
+
   return (
     <View style={styles.container}>
       <ScrollView

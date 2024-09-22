@@ -18,6 +18,7 @@ import { requestWithRefresh } from "../../services/api";
 import { IAlimento, Detalhes } from "../../interfaces/IAlimento";
 import ICategoria from "../../interfaces/ICategoria";
 import FooterMenu from "../../components/menus";
+import nutritionalValidator from "../../utils/nutritionalValidator";
 
 type CadastroAlimentoScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -153,29 +154,8 @@ const CadastroAlimentoScreen: React.FC<Props> = ({ navigation, route }) => {
       lipidios: parseFloat(lipidios),
     };
 
-    const checkout: Detalhes = {
-      valorEnergetico: (detalhes.valorEnergetico * 100) / parseFloat(porcao),
-      proteinas: (detalhes.proteinas * 100) / parseFloat(porcao),
-      carboidratos: (detalhes.carboidratos * 100) / parseFloat(porcao),
-      fibras: (detalhes.fibras * 100) / parseFloat(porcao),
-      lipidios: (detalhes.lipidios * 100) / parseFloat(porcao),
-    };
-
-    if (checkout.valorEnergetico > 900 || checkout.valorEnergetico < 1) {
-      return Alert.alert("Erro", "Tem certeza que esse é o valor energético?");
-    }
-    if (checkout.proteinas > 100 || checkout.proteinas < 0.1) {
-      return Alert.alert("Erro", "Tem certeza que esse é o valor de proteínas?");
-    }
-    if (checkout.carboidratos > 100 || checkout.carboidratos < 0.1) {
-      return Alert.alert("Erro", "Tem certeza que esse é o valor de carboidratos?");
-    }
-    if (checkout.fibras > 60 || checkout.fibras < 0.1) {
-      return Alert.alert("Erro", "Tem certeza que esse é o valor de fibras?");
-    }
-    if (checkout.lipidios > 100 || checkout.lipidios < 0.1) {
-      return Alert.alert("Erro", "Tem certeza que esse é o valor de lipidios?");
-    }
+    const isValid = nutritionalValidator.validateNutrients(detalhes, porcao);
+    if (!isValid) return;
 
     const alimento: IAlimento = {
       nome,

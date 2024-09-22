@@ -2,7 +2,7 @@ import { Alert } from "react-native";
 import { IUsuario } from "../interfaces/IUsuario";
 
 class ResultChecker {
-  public checkPassword = (formState: IUsuario) => {
+  public checkSenha = (formState: IUsuario) => {
     if (formState.senha !== formState.confirmarSenha) {
       Alert.alert(
         "Erro",
@@ -13,7 +13,7 @@ class ResultChecker {
     return true
   };
 
-  public checkBirthday = (formState: IUsuario) => {
+  public checkNascimento = (formState: IUsuario) => {
     const today = new Date();
     const oneYearAgo = new Date();
     oneYearAgo.setFullYear(today.getFullYear() - 1);

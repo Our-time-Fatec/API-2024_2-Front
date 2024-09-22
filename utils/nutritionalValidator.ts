@@ -2,7 +2,9 @@ import { Alert } from "react-native";
 import { Detalhes } from "../interfaces/IAlimento";
 
 class NutritionalValidator {
+
     public validateNutrients(detalhes: Detalhes, porcao: string) {
+
       const checkout: Detalhes = {
         valorEnergetico: (detalhes.valorEnergetico * 100) / parseFloat(porcao),
         proteinas: (detalhes.proteinas * 100) / parseFloat(porcao),
@@ -25,7 +27,6 @@ class NutritionalValidator {
           return false;
         }
       }
-  
       return true;
     }
   }

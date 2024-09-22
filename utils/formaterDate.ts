@@ -3,13 +3,13 @@ import { Alert } from "react-native";
 class DateFormater {
   public formatDateString = (text: string) => {
     let formattedDate = text.replace(/\D/g, "");
-    if (formattedDate.length >= 2) {
+    if (formattedDate.length > 2) {
       formattedDate = `${formattedDate.substring(
         0,
         2
       )}/${formattedDate.substring(2)}`;
     }
-    if (formattedDate.length >= 5) {
+    if (formattedDate.length > 5) {
       formattedDate = `${formattedDate.substring(
         0,
         5

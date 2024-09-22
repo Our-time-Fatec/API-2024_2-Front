@@ -49,54 +49,47 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
   const handleInputChange = (name: keyof IUsuario, value: any) => {
     if (name === "altura" || name === "peso") {
       const numericValue = value.trim() === "" ? 0 : parseFloat(value);
-      setFormState((prevState) => ({ ...prevState, [name]: isNaN(numericValue) ? 0 : numericValue }));
+      setFormState((prevState) => ({
+        ...prevState,
+        [name]: isNaN(numericValue) ? 0 : numericValue,
+      }));
     } else {
       setFormState((prevState) => ({ ...prevState, [name]: value }));
     }
   };
 
- // Função para formatar a data automaticamente conforme o usuário digita  
-
-
-const handleDateChange = (text: string) => {
-  const formattedDateString = formaterDate.formatDateString(text);
-  const isValidDate = formaterDate.isValidBirthDate(formattedDateString);
-  let formattedDate
-  if(isValidDate){
-   formattedDate = formaterDate.dateFormater(formattedDateString)
-  }else{
-    formattedDate = new Date()
+  const handleDateChange = (text: string) => {
+    const formattedDateString = formaterDate.formatDateString(text);
+    const isValidDate = formaterDate.isValidBirthDate(formattedDateString);
+    let formattedDate = isValidDate
+      ? formaterDate.dateFormater(formattedDateString)
+      : new Date();
+    setDataNascimento(formattedDateString);
+    formattedDate && handleInputChange("dataDeNascimento", formattedDate);
   };
-  setDataNascimento(formattedDateString);
 
-  if (formattedDate) {
-    handleInputChange("dataDeNascimento", formattedDate);
-  }
-};
-
-const handleRegister = async () => {
+  const handleRegister = async () => {
     // Verificação de todas as validações
-  const validators = [
-    resultChecker.checkPassword,
-    resultChecker.checkBirthday,
-    resultChecker.checkAltura,
-    resultChecker.checkPeso,
-  ];
+    const validators = [
+      resultChecker.checkSenha,
+      resultChecker.checkNascimento,
+      resultChecker.checkAltura,
+      resultChecker.checkPeso,
+    ];
 
-  // Se qualquer validação falhar, o fluxo é interrompido
-  const hasValidationError = validators.some((validator) => !validator(formState));
-  if (hasValidationError) return;
+    // Se qualquer validação falhar, o fluxo é interrompido
+    if (validators.some(validator => !validator(formState))) return;
 
-  // Executa o cadastro
-  const result = await register(formState);
-  if (result.success) {
-    Alert.alert("Sucesso", "Cadastro realizado com sucesso!");
-    navigation.navigate("Selecao");
-  } else {
-    Alert.alert("Erro", result.error);
-  }
-};
 
+    // Executa o cadastro
+    const result = await register(formState);
+    if (result.success) {
+      Alert.alert("Sucesso", "Cadastro realizado com sucesso!");
+      navigation.navigate("Selecao");
+    } else {
+      Alert.alert("Erro", result.error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -181,7 +174,7 @@ const handleRegister = async () => {
           <Ionicons name="calendar-outline" size={24} color="black" />
           <TextInput
             placeholder="Data de nascimento (DD/MM/YYYY)"
-            style={styles.input}
+            style={[styles.input, { fontSize: 14 }]}
             value={dataNascimento}
             keyboardType="numeric"
             onChangeText={handleDateChange}
@@ -225,9 +218,15 @@ const handleRegister = async () => {
           >
             <Picker.Item label="Sedentário" value="Sedentário" />
             <Picker.Item label="Levemente ativo" value="Levemente ativo" />
-            <Picker.Item label="Moderadamente ativo" value="Moderadamente ativo" />
+            <Picker.Item
+              label="Moderadamente ativo"
+              value="Moderadamente ativo"
+            />
             <Picker.Item label="Altamente ativo" value="Altamente ativo" />
-            <Picker.Item label="Extremamente ativo" value="Extremamente ativo" />
+            <Picker.Item
+              label="Extremamente ativo"
+              value="Extremamente ativo"
+            />
           </Picker>
         </View>
 
@@ -248,10 +247,18 @@ const handleRegister = async () => {
           <Picker
             selectedValue={formState.objetivo}
             style={styles.picker}
-            onValueChange={(itemValue) => handleInputChange("objetivo", itemValue)}
+            onValueChange={(itemValue) =>
+              handleInputChange("objetivo", itemValue)
+            }
           >
-            <Picker.Item label="Dieta de emagrecimento" value="Dieta de emagrecimento" />
-            <Picker.Item label="Dieta de Ganho de Massa Muscular" value="Dieta de Ganho de Massa Muscular" />
+            <Picker.Item
+              label="Dieta de emagrecimento"
+              value="Dieta de emagrecimento"
+            />
+            <Picker.Item
+              label="Dieta de Ganho de Massa Muscular"
+              value="Dieta de Ganho de Massa Muscular"
+            />
             <Picker.Item label="Dieta Low Carb" value="Dieta Low Carb" />
           </Picker>
         </View>

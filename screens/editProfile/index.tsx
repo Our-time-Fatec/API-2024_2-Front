@@ -19,7 +19,6 @@ import useUsuario from "../../hooks/useUsuario";
 import useUpdateUser from "../../hooks/useUpdateUser";
 import FooterMenu from "../../components/menus";
 import formaterDate from "../../utils/formaterDate";
-import isoDateFormater from "../../utils/isoDateFormater";
 import resultChecker from "../../utils/resultChecker";
 
 type EditProfileScreenNavigationProp = StackNavigationProp<
@@ -67,7 +66,8 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
         email: usuario.email,
         senha: "",
         confirmarSenha: "",
-        dataDeNascimento: usuario.dataDeNascimento,
+        dataDeNascimento:
+          usuario.dataDeNascimento ?? new Date(usuario.dataDeNascimento),
         altura: usuario.altura,
         peso: usuario.peso,
         objetivo: usuario.objetivo,
@@ -100,10 +100,10 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
   };
 
   const handleDateConfirm = (date: Date) => {
-    handleInputChange("dataDeNascimento", date);  
+    handleInputChange("dataDeNascimento", date);
     setDataNascimento(date.toLocaleDateString("pt-BR"));
     setShowDatePicker(false);
-  };  
+  };
 
   const handleUpdate = async () => {
     const validators = [
@@ -114,8 +114,7 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
     ];
 
     // Se qualquer validação falhar, o fluxo é interrompido
-    if (validators.some(validator => !validator(formState))) return;
-
+    if (validators.some((validator) => !validator(formState))) return;
 
     const result = await updateUser(formState);
     if (result.success) {
@@ -125,7 +124,6 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
       Alert.alert("Erro", result.error);
     }
   };
-
 
 
   if (loadingUsuario) {
@@ -184,13 +182,20 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
           </View>
 
           <View style={styles.inputContainer}>
-          <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-          <Ionicons name="calendar-outline" size={24} color="black" />
-          </TouchableOpacity>
+            <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+              <Ionicons name="calendar-outline" size={24} color="black" />
+            </TouchableOpacity>
             <TextInput
               placeholder="Data de nascimento (DD/MM/YYYY)"
               style={styles.input}
-              value={dataNascimento}
+              value={
+                dataNascimento ||
+                (formState?.dataDeNascimento
+                  ? new Date(formState.dataDeNascimento).toLocaleDateString(
+                      "pt-BR"
+                    )
+                  : "")
+              }
               keyboardType="numeric"
               onChangeText={handleDateChange}
               maxLength={10} // Limita a entrada para o formato DD/MM/YYYY
@@ -199,12 +204,11 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
           </View>
 
           <DateTimePickerModal
-          isVisible={showDatePicker}
-          mode="date"
-          onConfirm={handleDateConfirm}
-          onCancel={() => setShowDatePicker(false)}
-        />
-
+            isVisible={showDatePicker}
+            mode="date"
+            onConfirm={handleDateConfirm}
+            onCancel={() => setShowDatePicker(false)}
+          />
 
           <View style={styles.inputContainer}>
             <Ionicons name="barbell-outline" size={24} color="black" />

@@ -43,6 +43,17 @@ class ResultChecker {
     return true
   };
 
+  public checkDateConscile = (formState : IUsuario, formattedDate: Date | null | undefined) => {
+    console.log(formState.dataDeNascimento)
+    console.log(formattedDate)
+
+    if(formState.dataDeNascimento !== formattedDate){
+      Alert.alert("Data inválida", "Formato ou valor incorreto.");
+      return false;
+    }
+    return true
+  }
+
   public checkAltura = (formState:IUsuario) => {
     if (formState.altura >= 250) {
         Alert.alert("Altura inválida", "Acho que nosso aplicativo não será suficiente para um gigante como você!")

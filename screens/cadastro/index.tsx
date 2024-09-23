@@ -48,6 +48,7 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date)
+  const [dataFormatada, setDataFormatada] = useState<Date | null |undefined >()
 
   const handleInputChange = (name: keyof IUsuario, value: any) => {
     if (name === "altura" || name === "peso") {
@@ -64,12 +65,14 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
   const handleDateChange = (text: string) => {
     const formattedDateString = formaterDate.formatDateString(text);
     const isValidDate = formaterDate.isValidBirthDate(formattedDateString);
-    let formattedDate = isValidDate
+    let formattedDate: Date | null | undefined = isValidDate
       ? formaterDate.dateFormater(formattedDateString)
       : new Date();
     setDataNascimento(formattedDateString);
+    setDataFormatada(formattedDate)
     formattedDate && handleInputChange("dataDeNascimento", formattedDate);
     formattedDate && setSelectedDate(formattedDate);
+    
   };
 
   const handleDateConfirm = (date: Date) => {
@@ -77,10 +80,15 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
     setDataNascimento(date.toLocaleDateString("pt-BR"));
     setShowDatePicker(false);
     setSelectedDate(date);
+    setDataFormatada(date)
   };  
 
   const handleRegister = async () => {
+
+    
     // Verificação de todas as validações
+    if(!resultChecker.checkDateConscile(formState, dataFormatada)) return
+    
     const validators = [
       resultChecker.checkSenha,
       resultChecker.checkNascimento,

@@ -58,6 +58,7 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
   const [dataNascimento, setDataNascimento] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [dataFormatada, setDataFormatada] = useState<Date | null | undefined>();
 
   useEffect(() => {
     if (usuario) {
@@ -75,9 +76,6 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
         sexo: usuario.sexo,
       });
       setSelectedDate(new Date(usuario.dataDeNascimento));
-      setDataNascimento(
-        new Date(usuario.dataDeNascimento).toLocaleDateString("pt-BR")
-      );
     }
   }, [usuario]);
 
@@ -96,10 +94,11 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
   const handleDateChange = (text: string) => {
     const formattedDateString = formaterDate.formatDateString(text);
     const isValidDate = formaterDate.isValidBirthDate(formattedDateString);
-    let formattedDate = isValidDate
+    let formattedDate: Date | null | undefined = isValidDate
       ? formaterDate.dateFormater(formattedDateString)
       : new Date();
     setDataNascimento(formattedDateString);
+    setDataFormatada(formattedDate);
     formattedDate && handleInputChange("dataDeNascimento", formattedDate);
     formattedDate && setSelectedDate(formattedDate);
   };
@@ -109,9 +108,12 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
     setDataNascimento(date.toLocaleDateString("pt-BR"));
     setShowDatePicker(false);
     setSelectedDate(date);
+    setDataFormatada(date);
   };
 
   const handleUpdate = async () => {
+    if (!resultChecker.checkDateConscile(formState, dataFormatada)) return;
+
     const validators = [
       resultChecker.checkSenha,
       resultChecker.checkNascimento,
@@ -193,7 +195,14 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
             <TextInput
               placeholder="Data de nascimento (DD/MM/YYYY)"
               style={styles.input}
-              value={dataNascimento}
+              value={
+                dataNascimento ||
+                (formState?.dataDeNascimento
+                  ? new Date(formState.dataDeNascimento).toLocaleDateString(
+                      "pt-BR"
+                    )
+                  : "")
+              }
               keyboardType="numeric"
               onChangeText={handleDateChange}
               maxLength={10} // Limita a entrada para o formato DD/MM/YYYY

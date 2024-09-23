@@ -57,8 +57,6 @@ class DateFormater {
   };
 
   public isValidBirthDate = (date: string): { valid: boolean } => {
-    let birthDate: Date;
-
     const [day, month, year] = date
       .split("/")
       .map((part) => parseInt(part, 10));
@@ -80,7 +78,7 @@ class DateFormater {
       return { valid: false };
     }
 
-    birthDate = new Date(year, month - 1, day);
+    let birthDate = new Date(year, month - 1, day);
 
     return { valid: true };
   };

@@ -44,9 +44,8 @@ class ResultChecker {
   };
 
   public checkDateConscile = (formState : IUsuario, formattedDate: Date | null | undefined) => {
-    console.log(formState.dataDeNascimento)
-    console.log(formattedDate)
 
+    // Função feita para detectar se a data de nascimento posta é igual à ultima salva, pois o programa salva o ultimo estado VÁLIDO e ignora qualquer novo
     if(formState.dataDeNascimento !== formattedDate){
       Alert.alert("Data inválida", "Formato ou valor incorreto.");
       return false;

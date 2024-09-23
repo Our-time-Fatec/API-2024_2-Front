@@ -58,6 +58,8 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
   const [dataNascimento, setDataNascimento] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  
+  // State para salvar as  informações ATUAIS do estado da data de nascimento
   const [dataFormatada, setDataFormatada] = useState<Date | null | undefined>();
 
   useEffect(() => {

@@ -18,6 +18,9 @@ import { IUsuario } from "../../interfaces/IUsuario";
 import useUsuario from "../../hooks/useUsuario";
 import useUpdateUser from "../../hooks/useUpdateUser";
 import FooterMenu from "../../components/menus";
+import formaterDate from "../../utils/formaterDate";
+import isoDateFormater from "../../utils/isoDateFormater";
+import resultChecker from "../../utils/resultChecker";
 
 type EditProfileScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -36,7 +39,7 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
     loading: loadingUsuario,
     error: errorUsuario,
   } = useUsuario();
-  const [dataNascimento, setDataNascimento] = useState("");
+
   const { updateUser, loading } = useUpdateUser();
 
   const [formState, setFormState] = useState<IUsuario>({
@@ -53,6 +56,7 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
     sexo: "Masculino",
   });
 
+  const [dataNascimento, setDataNascimento] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   useEffect(() => {
@@ -63,7 +67,7 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
         email: usuario.email,
         senha: "",
         confirmarSenha: "",
-        dataDeNascimento: new Date(usuario.dataDeNascimento),
+        dataDeNascimento: usuario.dataDeNascimento,
         altura: usuario.altura,
         peso: usuario.peso,
         objetivo: usuario.objetivo,
@@ -84,111 +88,34 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
       setFormState((prevState) => ({ ...prevState, [name]: value }));
     }
   };
-  const formatDateString = (text: string) => {
-    let formattedDate = text.replace(/\D/g, ""); // Remove tudo que não for número
-    if (formattedDate.length >= 2) {
-      formattedDate = `${formattedDate.substring(
-        0,
-        2
-      )}/${formattedDate.substring(2)}`;
-    }
-    if (formattedDate.length >= 5) {
-      formattedDate = `${formattedDate.substring(
-        0,
-        5
-      )}/${formattedDate.substring(5, 9)}`;
-    }
-    return formattedDate;
-  };
-
-  // Função para validar e formatar a data para o formato ISO
-  const dateFormater = (date: string) => {
-    const dateString = date;
-
-    const [day, month, year] = dateString
-      .split("/")
-      .map((part) => parseInt(part, 10));
-
-    if (!day || !month || !year) {
-      return;
-    }
-    const tamanhoYear: string = year.toString();
-
-    if (tamanhoYear.length < 4) {
-      return;
-    }
-
-    const birthDate = new Date(year, month - 1, day);
-
-    const isValidDate =
-      birthDate.getDate() === day &&
-      birthDate.getMonth() === month - 1 &&
-      birthDate.getFullYear() === year;
-
-    const today = new Date();
-
-    const oneYearAgo = new Date();
-    oneYearAgo.setFullYear(today.getFullYear() - 1);
-
-    if (!isValidDate) {
-      Alert.alert("Data inválida", "Formato ou valor incorreto");
-      return;
-    } else if (birthDate >= today) {
-      Alert.alert(
-        "Data inválida",
-        "Tem certeza que voce nasceu daqui a pouco?"
-      );
-      return;
-    } else if (birthDate > oneYearAgo) {
-      Alert.alert("Data inválida", "Um pouco novo demais, não acha?");
-      return;
-    }
-
-    const currentDate = new Date();
-    const hours = currentDate.getHours();
-    const minutes = currentDate.getMinutes();
-    const seconds = currentDate.getSeconds();
-
-    birthDate.setHours(hours, minutes, seconds, 0);
-
-    console.log(birthDate);
-
-    return birthDate;
-  };
 
   const handleDateChange = (text: string) => {
-    const formattedDate = formatDateString(text);
-    const nascimento = dateFormater(formattedDate);
-    setDataNascimento(formattedDate);
-
-    // Se a data de nascimento for válida, passa a data formatada para o handleInputChange
-    if (nascimento) {
-      handleInputChange("dataDeNascimento", nascimento);
-    }
+    const formattedDateString = formaterDate.formatDateString(text);
+    const isValidDate = formaterDate.isValidBirthDate(formattedDateString);
+    let formattedDate = isValidDate
+      ? formaterDate.dateFormater(formattedDateString)
+      : new Date();
+    setDataNascimento(formattedDateString);
+    formattedDate && handleInputChange("dataDeNascimento", formattedDate);
   };
 
-  const handleUpdate = async () => {
-    if (formState.senha !== formState.confirmarSenha) {
-      Alert.alert(
-        "Erro",
-        "As senhas não coincidem. Verifique e tente novamente."
-      );
-      return;
-    }
-    
-    if (formState.altura >= 250) {
-      return Alert.alert(
-        "Altura inválida",
-        "Acho que nosso aplicativo não será suficiente para um gigante como você!"
-      );
-    }
+  const handleDateConfirm = (date: Date) => {
+    handleInputChange("dataDeNascimento", date);  
+    setDataNascimento(date.toLocaleDateString("pt-BR"));
+    setShowDatePicker(false);
+  };  
 
-    if (formState.peso >= 500) {
-      return Alert.alert(
-        "Peso inválido",
-        "Espertinho, tome cuidado com os seus dados!"
-      );
-    }
+  const handleUpdate = async () => {
+    const validators = [
+      resultChecker.checkSenha,
+      resultChecker.checkNascimento,
+      resultChecker.checkAltura,
+      resultChecker.checkPeso,
+    ];
+
+    // Se qualquer validação falhar, o fluxo é interrompido
+    if (validators.some(validator => !validator(formState))) return;
+
 
     const result = await updateUser(formState);
     if (result.success) {
@@ -198,6 +125,8 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
       Alert.alert("Erro", result.error);
     }
   };
+
+
 
   if (loadingUsuario) {
     return <Text>Carregando dados...</Text>;
@@ -255,7 +184,9 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
           </View>
 
           <View style={styles.inputContainer}>
-            <Ionicons name="calendar-outline" size={24} color="black" />
+          <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+          <Ionicons name="calendar-outline" size={24} color="black" />
+          </TouchableOpacity>
             <TextInput
               placeholder="Data de nascimento (DD/MM/YYYY)"
               style={styles.input}
@@ -266,6 +197,14 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
               placeholderTextColor="rgba(163,162,163,255)"
             />
           </View>
+
+          <DateTimePickerModal
+          isVisible={showDatePicker}
+          mode="date"
+          onConfirm={handleDateConfirm}
+          onCancel={() => setShowDatePicker(false)}
+        />
+
 
           <View style={styles.inputContainer}>
             <Ionicons name="barbell-outline" size={24} color="black" />

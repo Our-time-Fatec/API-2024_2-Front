@@ -12,6 +12,7 @@ import { styles } from "./styles";
 import { RootStackParamList } from "../../types/rootStack";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Picker } from "@react-native-picker/picker";
 import { IUsuario } from "../../interfaces/IUsuario";
 import useRegister from "../../hooks/useRegister";
@@ -45,6 +46,7 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
     nivelDeSedentarismo: "Sedentário",
     sexo: "Masculino",
   });
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const handleInputChange = (name: keyof IUsuario, value: any) => {
     if (name === "altura" || name === "peso") {
@@ -68,6 +70,12 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
     formattedDate && handleInputChange("dataDeNascimento", formattedDate);
   };
 
+  const handleDateConfirm = (date: Date) => {
+    handleInputChange("dataDeNascimento", date);  
+    setDataNascimento(date.toLocaleDateString("pt-BR"));
+    setShowDatePicker(false);
+  };  
+
   const handleRegister = async () => {
     // Verificação de todas as validações
     const validators = [
@@ -79,7 +87,6 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
 
     // Se qualquer validação falhar, o fluxo é interrompido
     if (validators.some(validator => !validator(formState))) return;
-
 
     // Executa o cadastro
     const result = await register(formState);
@@ -171,7 +178,9 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
         </View>
 
         <View style={styles.inputContainer}>
+          <TouchableOpacity onPress={() => setShowDatePicker(true)}>
           <Ionicons name="calendar-outline" size={24} color="black" />
+          </TouchableOpacity>
           <TextInput
             placeholder="Data de nascimento (DD/MM/YYYY)"
             style={[styles.input, { fontSize: 14 }]}
@@ -182,6 +191,14 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
             placeholderTextColor="rgba(163,162,163,255)"
           />
         </View>
+
+        <DateTimePickerModal
+          isVisible={showDatePicker}
+          mode="date"
+          date={formState.dataDeNascimento}
+          onConfirm={handleDateConfirm}
+          onCancel={() => setShowDatePicker(false)}
+        />
 
         <View style={styles.inputContainer}>
           <Ionicons name="barbell-outline" size={24} color="black" />

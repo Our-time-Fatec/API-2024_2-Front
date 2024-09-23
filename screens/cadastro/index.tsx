@@ -47,6 +47,7 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
     sexo: "Masculino",
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date)
 
   const handleInputChange = (name: keyof IUsuario, value: any) => {
     if (name === "altura" || name === "peso") {
@@ -68,12 +69,14 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
       : new Date();
     setDataNascimento(formattedDateString);
     formattedDate && handleInputChange("dataDeNascimento", formattedDate);
+    formattedDate && setSelectedDate(formattedDate);
   };
 
   const handleDateConfirm = (date: Date) => {
     handleInputChange("dataDeNascimento", date);  
     setDataNascimento(date.toLocaleDateString("pt-BR"));
     setShowDatePicker(false);
+    setSelectedDate(date);
   };  
 
   const handleRegister = async () => {
@@ -195,7 +198,7 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
         <DateTimePickerModal
           isVisible={showDatePicker}
           mode="date"
-          date={formState.dataDeNascimento}
+          date={selectedDate}
           onConfirm={handleDateConfirm}
           onCancel={() => setShowDatePicker(false)}
         />

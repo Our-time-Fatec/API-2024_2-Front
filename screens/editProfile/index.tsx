@@ -57,6 +57,7 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
 
   const [dataNascimento, setDataNascimento] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   useEffect(() => {
     if (usuario) {
@@ -66,14 +67,17 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
         email: usuario.email,
         senha: "",
         confirmarSenha: "",
-        dataDeNascimento:
-          usuario.dataDeNascimento ?? new Date(usuario.dataDeNascimento),
+        dataDeNascimento: new Date(usuario.dataDeNascimento) || new Date(),
         altura: usuario.altura,
         peso: usuario.peso,
         objetivo: usuario.objetivo,
         nivelDeSedentarismo: usuario.nivelDeSedentarismo,
         sexo: usuario.sexo,
       });
+      setSelectedDate(new Date(usuario.dataDeNascimento));
+      setDataNascimento(
+        new Date(usuario.dataDeNascimento).toLocaleDateString("pt-BR")
+      );
     }
   }, [usuario]);
 
@@ -97,12 +101,14 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
       : new Date();
     setDataNascimento(formattedDateString);
     formattedDate && handleInputChange("dataDeNascimento", formattedDate);
+    formattedDate && setSelectedDate(formattedDate);
   };
 
   const handleDateConfirm = (date: Date) => {
     handleInputChange("dataDeNascimento", date);
     setDataNascimento(date.toLocaleDateString("pt-BR"));
     setShowDatePicker(false);
+    setSelectedDate(date);
   };
 
   const handleUpdate = async () => {
@@ -124,7 +130,6 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
       Alert.alert("Erro", result.error);
     }
   };
-
 
   if (loadingUsuario) {
     return <Text>Carregando dados...</Text>;
@@ -188,14 +193,7 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
             <TextInput
               placeholder="Data de nascimento (DD/MM/YYYY)"
               style={styles.input}
-              value={
-                dataNascimento ||
-                (formState?.dataDeNascimento
-                  ? new Date(formState.dataDeNascimento).toLocaleDateString(
-                      "pt-BR"
-                    )
-                  : "")
-              }
+              value={dataNascimento}
               keyboardType="numeric"
               onChangeText={handleDateChange}
               maxLength={10} // Limita a entrada para o formato DD/MM/YYYY
@@ -206,6 +204,7 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
           <DateTimePickerModal
             isVisible={showDatePicker}
             mode="date"
+            date={selectedDate}
             onConfirm={handleDateConfirm}
             onCancel={() => setShowDatePicker(false)}
           />

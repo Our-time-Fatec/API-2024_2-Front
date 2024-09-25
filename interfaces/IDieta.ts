@@ -20,13 +20,13 @@ export interface IGrupo {
     alimentos: IAlimentoDieta[];
 }
 
-export interface IDietaFixa extends Document {
+export interface IDietaFixa {
     _id?: string;
-    usuarioId: string;
-    diaSemana: DiasSemana;
-    criadoEm: Date;
+    usuarioId?: string;
+    diaSemana: DiasSemana[] | DiasSemana;
+    criadoEm?: Date;
     atualizadoEm?: Date | null;
     removidoEm?: Date | null;
-    detalhes: IDietaDetalhes;
+    detalhes?: IDietaDetalhes;
     grupos: IGrupo[];
 }

@@ -15,10 +15,10 @@ class NutritionalValidator {
   
       const messages = [
         { field: 'valorEnergetico', value: checkout.valorEnergetico, max: 900, min: 1, message: "Tem certeza que esse é o valor energético?" },
-        { field: 'proteinas', value: checkout.proteinas, max: 100, min: 0.1, message: "Tem certeza que esse é o valor de proteínas?" },
-        { field: 'carboidratos', value: checkout.carboidratos, max: 100, min: 0.1, message: "Tem certeza que esse é o valor de carboidratos?" },
-        { field: 'fibras', value: checkout.fibras, max: 60, min: 0.1, message: "Tem certeza que esse é o valor de fibras?" },
-        { field: 'lipidios', value: checkout.lipidios, max: 100, min: 0.1, message: "Tem certeza que esse é o valor de lipídios?" },
+        { field: 'proteinas', value: checkout.proteinas, max: 100, min: 0, message: "Tem certeza que esse é o valor de proteínas?" },
+        { field: 'carboidratos', value: checkout.carboidratos, max: 100, min: 0, message: "Tem certeza que esse é o valor de carboidratos?" },
+        { field: 'fibras', value: checkout.fibras, max: 60, min: 0, message: "Tem certeza que esse é o valor de fibras?" },
+        { field: 'lipidios', value: checkout.lipidios, max: 100, min: 0, message: "Tem certeza que esse é o valor de lipídios?" },
       ];
   
       for (const { field, value, max, min, message } of messages) {

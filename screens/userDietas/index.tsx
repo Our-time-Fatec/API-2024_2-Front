@@ -10,6 +10,7 @@ import { requestWithRefresh } from '../../services/api';
 import { DiasSemana } from '../../enums/diasSemana';
 import DietaItem from '../../components/dieta';
 import useDietas from '../../hooks/UseDietas';
+import styles from './styles';
 
 type UserDietasScreenNavigationProp = StackNavigationProp<RootStackParamList, "UserDietas">;
 type UserDietasScreenRouteProp = RouteProp<RootStackParamList, "UserDietas">;
@@ -30,11 +31,11 @@ const UserDietasScreen: React.FC<Props> = ({ navigation }) => {
     }, [isFocused, refreshDietas]);
 
     const handleCadastro = () => {
-        navigation.navigate('CadastroAlimento', { alimentoId: '' });
+        navigation.navigate('CadastroDieta', { dietaId: '' });
     };
 
     const handleEdit = (id: string) => {
-        navigation.navigate('CadastroAlimento', { alimentoId: id });
+        navigation.navigate('CadastroDieta', { dietaId: id });
     };
 
     const handleDelete = async (id: string) => {
@@ -68,7 +69,7 @@ const UserDietasScreen: React.FC<Props> = ({ navigation }) => {
                         <Picker.Item key={key} label={DiasSemana[key as keyof typeof DiasSemana]} value={key} />
                     ))}
                 </Picker>
-                <TouchableOpacity style={styles.button} onPress={handleCadastro} disabled>
+                <TouchableOpacity style={styles.button} onPress={handleCadastro} >
                     <Ionicons name="add" size={20} color="#fff" style={styles.icon} />
                     <Text style={styles.buttonText}>Cadastrar Dieta</Text>
                 </TouchableOpacity>
@@ -91,54 +92,5 @@ const UserDietasScreen: React.FC<Props> = ({ navigation }) => {
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 16,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    picker: {
-        height: 50,
-        width: '100%',
-        marginBottom: 10,
-    },
-    row: {
-        justifyContent: 'space-between',
-    },
-    loadMoreButton: {
-        padding: 10,
-        alignItems: 'center',
-    },
-    loadMoreText: {
-        fontSize: 16,
-        color: '#007bff',
-    },
-    button: {
-        backgroundColor: "#007bff",
-        paddingVertical: 9,
-        paddingHorizontal: "25%",
-        borderRadius: 30,
-        marginBottom: 10,
-        width: "100%",
-        maxWidth: 400,
-        marginTop: 15,
-        alignSelf: "center",
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    buttonText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
-        textAlign: "center",
-    },
-    icon: {
-        marginRight: 10,
-    },
-});
 
 export default UserDietasScreen;

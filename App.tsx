@@ -21,6 +21,7 @@ import UserDietasScreen from './screens/userDietas';
 import UserAlimentosConsumidosScreen from './screens/userAlimentosConsumidos';
 import DietasPredefinidas from './screens/dietasPredefinidas';
 import DietasPersonalizadas from './screens/dietasPersonalizadas';
+import CadastroDietaScreen from './screens/cadastrarDieta';
 
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -44,6 +45,7 @@ const AuthenticatedStack = () => {
           <Stack.Screen name="FAQs" component={FAQs} />
           <Stack.Screen name="DietasPredefinidas" component={DietasPredefinidas} />
           <Stack.Screen name="DietasPersonalizadas" component={DietasPersonalizadas} />
+          <Stack.Screen name="CadastroDieta" component={CadastroDietaScreen} />
         </>
       ) : (
         <>

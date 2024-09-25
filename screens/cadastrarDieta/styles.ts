@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
   },
   picker: {
     height: 50,
-    marginBottom: 20,
+    marginBottom: 5,
     borderColor: '#ddd',
     borderWidth: 1,
     borderRadius: 5,
@@ -88,4 +88,19 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 30,
   },
+  multiSelectDropdown: {
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: 'transparent',
+    borderRadius: 5,
+    padding: 5,
+  },
+  multiSelectWrapper: {
+    height: 'auto',  // Deixa o MultiSelect ocupar o espaço necessário
+    marginBottom: 10,  // Espaço abaixo do componente
+    borderWidth: 1,
+    borderColor: 'transparent',
+    borderRadius: 5,
+  },
+  
 });

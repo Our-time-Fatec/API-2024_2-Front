@@ -8,7 +8,7 @@ export interface IAlimentoDieta {
     _id?: string;
     nome: string;
     preparo: string;
-    porcao: Number;
+    porcao: number;
     quantidade: number;
     categoriaCodigo: Number;
     detalhes: Detalhes;

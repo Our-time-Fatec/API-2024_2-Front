@@ -7,7 +7,7 @@ interface Detalhes {
 }
 
 interface IAlimento {
-    _id?: string;
+    _id: string;
     nome: string;
     preparo: string;
     categoriaUrl?: string;

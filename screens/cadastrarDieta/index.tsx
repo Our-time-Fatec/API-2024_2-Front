@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
-  FlatList,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { styles } from "./styles";
@@ -14,13 +13,13 @@ import { RootStackParamList } from "../../types/rootStack";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import { requestWithRefresh } from "../../services/api";
-import FooterMenu from "../../components/menus";
 import { IAlimentoDieta, IDietaFixa, IGrupo } from "../../interfaces/IDieta";
 import { DiasSemana } from "../../enums/diasSemana";
 import { IAlimento } from "../../interfaces/IAlimento";
 import MultiSelect from "react-native-multiple-select";
 import { Picker } from "@react-native-picker/picker";
 import useAlimentos from "../../hooks/useAlimentos";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 enum GruposEnum {
   cafedamanha = "Café da Manhã",
@@ -67,7 +66,6 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const { alimentos: allAlimentos, refreshAlimentos } =
     useAlimentos(searchTerm);
-
   const [selectedDiasSemana, setSelectedDiasSemana] = useState<DiasSemana[]>(
     []
   );
@@ -111,93 +109,111 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     }
   }, [route.params]);
 
+  const saveDietaToStorage = async (dieta:any) => {
+    try {
+      await AsyncStorage.setItem('dieta', JSON.stringify(dieta));
+    } catch (error) {
+      console.error("Erro ao salvar dieta no AsyncStorage:", error);
+    }
+  };
+
   const handleChange = (field: string, value: any) => {
     setFormState((prevState) => ({ ...prevState, [field]: value }));
-    setErrorMessage(null); // Limpa mensagem de erro ao alterar campos
+    setErrorMessage(null);
+    saveDietaToStorage({ ...formState, [field]: value });
   };
 
   const handleAddGroup = () => {
-    const { grupoNome, alimentos } = formState;
-
-    if (grupoNome === null || alimentos.length === 0) {
+    if (!formState.grupoNome || formState.alimentos.length === 0) {
       setErrorMessage("Todos os campos do grupo são obrigatórios.");
-      Alert.alert("Erro","Todos os campos da refeição são obrigatórios.")
+      Alert.alert("Erro", "Todos os campos da refeição são obrigatórios")
       return;
     }
-
-    setFormState((prevState) => ({
-      ...prevState,
-      grupos: [...prevState.grupos, { nome: grupoNome, alimentos }],
+    const newGroup = {
+      nome: formState.grupoNome,
+      alimentos: formState.alimentos,
+    };
+    setFormState((prev) => ({
+      ...prev,
+      grupos: [...prev.grupos, newGroup],
       grupoNome: null,
       alimentos: [],
     }));
+
+    Alert.alert("Sucesso", "Refeição cadastrada com sucesso!")
   };
 
   const handleAddAlimento = () => {
-    const { alimentoId, porcao, quantidade } = formState;
-
-    if (!alimentoId || !porcao || !quantidade) {
+    const { porcao, quantidade } = formState;
+    const alimentoIds = selectedAlimentos;
+  
+    if (alimentoIds.length === 0 || !porcao || !quantidade) {
       setErrorMessage("Todos os campos do alimento são obrigatórios.");
-      Alert.alert("Erro","Todos os campos do alimento são obrigatórios.")
       return;
     }
-
-    const alimento = allAlimentos.find((a) => a._id === alimentoId);
-
-    if (alimento) {
-      const novoAlimento: IAlimentoDieta = {
-        _id: alimento._id,
-        nome: alimento.nome,
-        preparo: alimento.preparo,
-        porcao: parseFloat(porcao),
-        quantidade: parseInt(quantidade, 10),
-        categoriaCodigo: alimento.categoriaCodigo,
-        detalhes: alimento.detalhes,
-      };
-
-      setFormState((prevState) => ({
-        ...prevState,
-        alimentos: [...prevState.alimentos, novoAlimento],
-        alimentoId: null,
-        porcao: "",
-        quantidade: "",
-      }));
-    }
+  
+    alimentoIds.forEach((id) => {
+      const alimento = allAlimentos.find((a) => a._id === id._id);
+      if (alimento) {
+        const novoAlimento: IAlimentoDieta = {
+          _id: alimento._id,
+          nome: alimento.nome,
+          preparo: alimento.preparo,
+          porcao: parseFloat(porcao),
+          quantidade: parseInt(quantidade, 10),
+          categoriaCodigo: alimento.categoriaCodigo,
+          detalhes: alimento.detalhes,
+        };
+  
+        // Atualiza o estado do formulário sem sobrescrever o estado inteiro
+        setFormState((prevState) => {
+          const newAlimentos = [...prevState.alimentos, novoAlimento];
+          const updatedState = { ...prevState, alimentos: newAlimentos };
+  
+          // Salva o estado atualizado no AsyncStorage
+          saveDietaToStorage(updatedState);
+          return updatedState; // Retorna o estado atualizado
+        });
+      }
+    });
+  
+    // Limpa os campos de entrada
+    setFormState((prevState) => ({
+      ...prevState,
+      alimentoId: null,
+      porcao: "",
+      quantidade: "",
+    }));
+  
+    // Limpa os alimentos selecionados
+    Alert.alert("Sucesso", "Alimentos adicionados com sucesso!");
+    setSelectedAlimentos([]);
   };
+  
+
 
   const cadastrarDieta = async () => {
-    const { diaSemana, grupos } = formState;
-
-    if (diaSemana.length === 0 || grupos.length === 0) {
+    if (formState.diaSemana.length === 0 || formState.grupos.length === 0) {
       setErrorMessage("Todos os campos são obrigatórios.");
       return;
     }
-
-    const dieta: IDietaFixa = {
-      diaSemana,
-      grupos,
-    };
-
     try {
-      if (isEditing) {
-        await requestWithRefresh({
-          method: "PUT",
-          url: `/dieta/${dietaId}`,
-          data: dieta,
-        });
-        Alert.alert("Sucesso", "Dieta atualizada com sucesso!");
-      } else {
-        await requestWithRefresh({
-          method: "POST",
-          url: "/dieta",
-          data: dieta,
-        });
-        Alert.alert("Sucesso", "Dieta cadastrada com sucesso!");
-      }
+      const dieta: IDietaFixa = {
+        diaSemana: formState.diaSemana,
+        grupos: formState.grupos,
+      };
+      await requestWithRefresh({
+        method: isEditing ? "PUT" : "POST",
+        url: isEditing ? `/dieta/${dietaId}` : "/dieta",
+        data: dieta,
+      });
+      Alert.alert(
+        "Sucesso",
+        `Dieta ${isEditing ? "atualizada" : "cadastrada"} com sucesso!`
+      );
       limparFormState();
       navigation.goBack();
     } catch (error) {
-      console.error("Erro ao cadastrar/atualizar dieta:", error);
       Alert.alert("Erro", "Ocorreu um erro ao cadastrar/atualizar a dieta.");
     }
   };
@@ -212,7 +228,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       porcao: "",
       quantidade: "",
     });
-    setErrorMessage(null); // Limpa mensagem de erro ao limpar o formulário
+    setErrorMessage(null);
   };
 
   const handleSelectDiaSemana = (selectedItems: string[]) => {
@@ -220,14 +236,17 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       (id) => DiasSemana[id as keyof typeof DiasSemana]
     );
     setSelectedDiasSemana(validDiasSemana);
+    handleChange("diaSemana", validDiasSemana);
+
   };
-  
 
   const handleSelectAlimentos = (selectedItems: string[]) => {
-    const alimentosSelecionados = allAlimentos.filter((alimento) =>
-      selectedItems.includes(alimento._id ? alimento._id : "")
+    console.log(selectedItems)
+    const alimentosSelecionados = allAlimentos.filter(
+      (alimento) => selectedItems.includes(alimento._id) // Filtra os alimentos com base nos IDs selecionados
     );
-    setSelectedAlimentos(alimentosSelecionados);
+
+    setSelectedAlimentos(alimentosSelecionados); // Atualiza o estado com os alimentos selecionados
   };
 
   return (
@@ -235,40 +254,37 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       <Text style={styles.title}>Cadastro de Dieta</Text>
 
       <Text style={styles.pickerLabel}>Dias da Semana</Text>
-  <View style={styles.pickerContainer}>
-    <MultiSelect
-      items={Object.keys(DiasSemana).map((dia) => ({
-        id: dia,
-        name: DiasSemana[dia as keyof typeof DiasSemana],
-      }))}
-      uniqueKey="id"
-      onSelectedItemsChange={handleSelectDiaSemana}
-      selectedItems={selectedDiasSemana.map((dia) =>
-        Object.keys(DiasSemana).find(
-          (key) => DiasSemana[key as keyof typeof DiasSemana] === dia
-        )
-      )}
-      selectText="Selecione os dias da semana"
-      searchInputPlaceholderText="Buscar dias"
-      tagRemoveIconColor="#CCC"
-      tagBorderColor="#CCC"
-      tagTextColor="#000"
-      selectedItemTextColor="#007BFF"
-      selectedItemIconColor="#007BFF"
-      itemTextColor="#000"
-      displayKey="name"
-      searchInputStyle={{ color: "#CCC" }}
-      submitButtonColor="#007BFF"
-      submitButtonText="Adicionar"
-      styleDropdownMenuSubsection={styles.multiSelectDropdown}
-      styleMainWrapper={styles.multiSelectWrapper}
-      fontSize={15}
-    />
-  </View>
+      <View style={styles.pickerContainer}>
+        <MultiSelect
+          items={Object.keys(DiasSemana).map((dia) => ({
+            id: dia,
+            name: DiasSemana[dia as keyof typeof DiasSemana],
+          }))}
+          uniqueKey="id"
+          onSelectedItemsChange={handleSelectDiaSemana}
+          selectedItems={selectedDiasSemana.map((dia) =>
+            Object.keys(DiasSemana).find(
+              (key) => DiasSemana[key as keyof typeof DiasSemana] === dia
+            )
+          )}
+          selectText="Selecione os dias da semana"
+          searchInputPlaceholderText="Buscar dias"
+          tagRemoveIconColor="#CCC"
+          tagBorderColor="#CCC"
+          tagTextColor="#000"
+          selectedItemTextColor="#007BFF"
+          selectedItemIconColor="#007BFF"
+          itemTextColor="#000"
+          displayKey="name"
+          searchInputStyle={{ color: "#CCC" }}
+          submitButtonColor="#007BFF"
+          submitButtonText="Adicionar"
+          styleDropdownMenuSubsection={styles.multiSelectDropdown}
+          styleMainWrapper={styles.multiSelectWrapper}
+          fontSize={15}
+        />
+      </View>
 
-
-
-      {/* Nome do Grupo */}
       <Text style={styles.pickerLabel}> Nome da Refeição</Text>
       <View style={styles.pickerContainer}>
         <Picker
@@ -287,7 +303,6 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
         </Picker>
       </View>
 
-      {/* Buscar Alimentos */}
       <Text style={styles.pickerLabel}>Buscar Alimentos</Text>
       <TextInput
         style={styles.input}
@@ -300,12 +315,12 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       <View style={styles.pickerContainer}>
         <MultiSelect
           items={allAlimentos.map((alimento) => ({
-            id: alimento._id,
-            name: alimento.nome,
+            id: alimento._id, // Identificador único
+            name: alimento.nome, // Nome do alimento
           }))}
           uniqueKey="id"
-          onSelectedItemsChange={handleSelectAlimentos}
-          selectedItems={selectedAlimentos.map((alimento) => alimento._id)}
+          onSelectedItemsChange={handleSelectAlimentos} // Função chamada quando a seleção muda
+          selectedItems={selectedAlimentos.map((alimento) => alimento._id)} // IDs dos alimentos selecionados
           selectText="Selecione os alimentos"
           searchInputPlaceholderText="Buscar alimentos"
           tagRemoveIconColor="#CCC"
@@ -323,7 +338,6 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
         />
       </View>
 
-      {/* Porção */}
       <Text style={styles.pickerLabel}>Porção (g)</Text>
       <TextInput
         style={styles.input}
@@ -333,7 +347,6 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
         keyboardType="numeric"
       />
 
-      {/* Quantidade */}
       <Text style={styles.pickerLabel}>Quantidade</Text>
       <TextInput
         style={styles.input}
@@ -343,13 +356,12 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
         keyboardType="numeric"
       />
 
-      {/* Botões */}
       <TouchableOpacity style={styles.button} onPress={handleAddAlimento}>
         <Text style={styles.buttonText}>Adicionar Alimento</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={handleAddGroup}>
-        <Text style={styles.buttonText}>Adicionar refeição</Text>
+        <Text style={styles.buttonText}>Adicionar Refeição</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.submitButton} onPress={cadastrarDieta}>

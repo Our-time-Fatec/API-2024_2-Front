@@ -19,7 +19,7 @@ import { IAlimento } from "../../interfaces/IAlimento";
 import MultiSelect from "react-native-multiple-select";
 import { Picker } from "@react-native-picker/picker";
 import useAlimentos from "../../hooks/useAlimentos";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import useDietaStorage from "../../hooks/useDietaStorage";
 
 enum GruposEnum {
   cafedamanha = "Café da Manhã",
@@ -71,6 +71,12 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
   );
   const [selectedAlimentos, setSelectedAlimentos] = useState<IAlimento[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const {
+    getItem,
+    saveGrupo,
+    removeGrupo,
+    clearStorage,
+  } = useDietaStorage();
 
   useEffect(() => {
     refreshAlimentos();
@@ -109,49 +115,66 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     }
   }, [route.params]);
 
-  const saveDietaToStorage = async (dieta:any) => {
-    try {
-      await AsyncStorage.setItem('dieta', JSON.stringify(dieta));
-    } catch (error) {
-      console.error("Erro ao salvar dieta no AsyncStorage:", error);
-    }
-  };
+  useEffect(() => {
+
+    return () => {
+      const clearData = async () => {
+        try {
+          await clearStorage(); 
+        } catch (error) {
+          console.error("Erro ao limpar o armazenamento:", error);
+        }
+      };
+  
+      clearData(); 
+    };
+  }, []);
 
   const handleChange = (field: string, value: any) => {
     setFormState((prevState) => ({ ...prevState, [field]: value }));
     setErrorMessage(null);
-    saveDietaToStorage({ ...formState, [field]: value });
   };
 
-  const handleAddGroup = () => {
+  const handleAddGroup = async () => {
     if (!formState.grupoNome || formState.alimentos.length === 0) {
       setErrorMessage("Todos os campos do grupo são obrigatórios.");
-      Alert.alert("Erro", "Todos os campos da refeição são obrigatórios")
+      Alert.alert("Erro", "Todos os campos da refeição são obrigatórios");
       return;
     }
-    const newGroup = {
+  
+    // Cria um novo grupo com os dados do formulário
+    const newGroup: IGrupo = {
       nome: formState.grupoNome,
       alimentos: formState.alimentos,
     };
-    setFormState((prev) => ({
-      ...prev,
-      grupos: [...prev.grupos, newGroup],
-      grupoNome: null,
-      alimentos: [],
-    }));
-
-    Alert.alert("Sucesso", "Refeição cadastrada com sucesso!")
+  
+    // Salva o novo grupo no AsyncStorage
+    try {
+      await saveGrupo(newGroup.nome, newGroup.alimentos); // Chama a função para salvar o grupo
+      setFormState((prev) => ({
+        ...prev,
+        grupos: [...prev.grupos, newGroup], // Atualiza o estado com o novo grupo
+        grupoNome: null, // Limpa o campo de nome do grupo para null
+        alimentos: [], // Limpa a lista de alimentos
+      }));
+  
+      Alert.alert("Sucesso", "Refeição cadastrada com sucesso!");
+      
+    } catch (error) {
+      Alert.alert("Erro", "Ocorreu um erro ao salvar o grupo.");
+    }
   };
+  
 
   const handleAddAlimento = () => {
     const { porcao, quantidade } = formState;
     const alimentoIds = selectedAlimentos;
-  
+
     if (alimentoIds.length === 0 || !porcao || !quantidade) {
       setErrorMessage("Todos os campos do alimento são obrigatórios.");
       return;
     }
-  
+
     alimentoIds.forEach((id) => {
       const alimento = allAlimentos.find((a) => a._id === id._id);
       if (alimento) {
@@ -164,19 +187,16 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
           categoriaCodigo: alimento.categoriaCodigo,
           detalhes: alimento.detalhes,
         };
-  
+
         // Atualiza o estado do formulário sem sobrescrever o estado inteiro
         setFormState((prevState) => {
           const newAlimentos = [...prevState.alimentos, novoAlimento];
           const updatedState = { ...prevState, alimentos: newAlimentos };
-  
-          // Salva o estado atualizado no AsyncStorage
-          saveDietaToStorage(updatedState);
           return updatedState; // Retorna o estado atualizado
         });
       }
     });
-  
+
     // Limpa os campos de entrada
     setFormState((prevState) => ({
       ...prevState,
@@ -184,33 +204,44 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       porcao: "",
       quantidade: "",
     }));
-  
+
     // Limpa os alimentos selecionados
     Alert.alert("Sucesso", "Alimentos adicionados com sucesso!");
     setSelectedAlimentos([]);
   };
-  
-
 
   const cadastrarDieta = async () => {
+    // Verifica se todos os campos obrigatórios estão preenchidos
     if (formState.diaSemana.length === 0 || formState.grupos.length === 0) {
       setErrorMessage("Todos os campos são obrigatórios.");
       return;
     }
+  
     try {
+      // Obtém os grupos cadastrados do AsyncStorage
+      const gruposCadastrados = await getItem('grupos');
+      
       const dieta: IDietaFixa = {
         diaSemana: formState.diaSemana,
-        grupos: formState.grupos,
+        grupos: gruposCadastrados, // Usa os grupos do AsyncStorage
       };
+  
+      // Faz a requisição para cadastrar ou atualizar a dieta
       await requestWithRefresh({
         method: isEditing ? "PUT" : "POST",
         url: isEditing ? `/dieta/${dietaId}` : "/dieta",
         data: dieta,
       });
+  
       Alert.alert(
         "Sucesso",
         `Dieta ${isEditing ? "atualizada" : "cadastrada"} com sucesso!`
       );
+  
+      // Limpa o AsyncStorage relacionado a grupos de comida
+      await clearStorage(); // Limpa apenas os grupos
+  
+      // Limpa o estado do formulário
       limparFormState();
       navigation.goBack();
     } catch (error) {
@@ -237,11 +268,11 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     );
     setSelectedDiasSemana(validDiasSemana);
     handleChange("diaSemana", validDiasSemana);
-
   };
 
   const handleSelectAlimentos = (selectedItems: string[]) => {
-    console.log(selectedItems)
+    console.log(selectedItems);
+
     const alimentosSelecionados = allAlimentos.filter(
       (alimento) => selectedItems.includes(alimento._id) // Filtra os alimentos com base nos IDs selecionados
     );
@@ -371,4 +402,4 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
   );
 };
 
-export default CadastroDietaScreen;
+export default CadastroDietaScreen

@@ -5,13 +5,19 @@
     }
 
     export interface IAlimentoDieta {
-        _id?: string;
-        nome: string;
-        preparo: string;
+        alimentoId: string;
+        nome?: string;
+        preparo?: string;
         porcao: number;
         quantidade: number;
         categoriaCodigo: Number;
         detalhes: Detalhes;
+    }
+
+    export interface IAlimentoGrupo{
+        alimentoId: string;
+        porcao: number;
+        quantidade: number
     }
 
     export interface IGrupo {

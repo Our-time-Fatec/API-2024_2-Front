@@ -71,8 +71,8 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     []
   );
   const [selectedAlimentos, setSelectedAlimentos] = useState<IAlimento[]>([]);
-  const [groupAlimentos, setGroupAlimentos] = useState<IAlimentoDieta[]>([]);
-  const [groups, setGroup] = useState<IGrupo[]>([]);
+  const [groupAlimentos, setGroupAlimentos] = useState<IAlimentoDieta[]>([])
+  const [groups, setGroup] = useState<IGrupo[]>([])
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -123,40 +123,40 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       Alert.alert("Erro", "Todos os campos da refeição são obrigatórios");
       return;
     }
-
+  
     // Cria um novo grupo com os dados do formulário
     const newGroup: IGrupo = {
       nome: formState.grupoNome,
       alimentos: groupAlimentos,
     };
-
+  
     // Salva o novo grupo no AsyncStorage
     try {
       setGroup((prevState) => {
-        const existingGroupIndex = prevState.findIndex(
-          (group) => group.nome === newGroup.nome
-        );
+        const existingGroupIndex = prevState.findIndex(group => group.nome === newGroup.nome);
 
         if (existingGroupIndex !== -1) {
-          const updatedGroups = [...prevState];
-          updatedGroups[existingGroupIndex] = newGroup;
-          return updatedGroups;
+            const updatedGroups = [...prevState];
+            updatedGroups[existingGroupIndex] = newGroup;
+            return updatedGroups;
         } else {
-          return [...prevState, newGroup];
+            return [...prevState, newGroup];
         }
-      });
+    });
       setFormState((prev) => ({
         ...prev,
         grupos: [...prev.grupos, newGroup], // Atualiza o estado com o novo grupo
         grupoNome: null, // Limpa o campo de nome do grupo para null
         alimentos: [], // Limpa a lista de alimentos
       }));
-      setGroupAlimentos([]);
+      setGroupAlimentos([])  
       Alert.alert("Sucesso", "Refeição cadastrada com sucesso!");
+      
     } catch (error) {
       Alert.alert("Erro", "Ocorreu um erro ao salvar o grupo.");
     }
   };
+  
 
   const handleAddAlimento = () => {
     const { porcao, quantidade } = formState;
@@ -183,7 +183,9 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
         setGroupAlimentos((prevState) => {
           // Retorna um novo array com o novo alimento adicionado
           return [...prevState, novoAlimento]; // Aqui, novoAlimento deve ser do tipo IAlimentoDieta
-        });
+      });
+      
+      
       }
     });
 
@@ -204,52 +206,53 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     // Verifica se todos os campos obrigatórios estão preenchidos
     if (groups.length === 0) {
       setErrorMessage("Todos os campos são obrigatórios.");
-      Alert.alert("Erro", "Todos os campos são obrigatórios");
+      Alert.alert("Erro", "Todos os campos são obrigatórios")
       return;
     }
-
+    
     if (formState.diaSemana.length === 0) {
       Alert.alert(
-        "Definir Dias da Semana",
-        "Você realmente deseja definir o dia da semana como todos os dias da semana?",
-        [
-          {
-            text: "Cancelar",
-            onPress: () => {
-              return; // Apenas retorna se o usuário cancelar
-            },
-            style: "cancel",
-          },
-          {
-            text: "OK",
-            onPress: () => {
-              formState.diaSemana = Object.values(DiasSemana);
-            },
-          },
-        ]
+          "Definir Dias da Semana",
+          "Você realmente deseja definir o dia da semana como todos os dias da semana?",
+          [
+              {
+                  text: "Cancelar",
+                  onPress: () => {
+                      return; // Apenas retorna se o usuário cancelar
+                  },
+                  style: "cancel"
+              },
+              {
+                  text: "OK",
+                  onPress: () => {
+                      formState.diaSemana = Object.values(DiasSemana);
+                  }
+              }
+          ]
       );
-    }
-
+  }
+    
     try {
+      
       const dieta: IDietaFixa = {
         diaSemana: formState.diaSemana,
-        grupos: groups,
+        grupos: groups, 
       };
-
+  
       // Faz a requisição para cadastrar ou atualizar a dieta
       await requestWithRefresh({
         method: isEditing ? "PUT" : "POST",
         url: isEditing ? `/dieta/${dietaId}` : "/dieta",
         data: dieta,
       });
-
+  
       Alert.alert(
         "Sucesso",
         `Dieta ${isEditing ? "atualizada" : "cadastrada"} com sucesso!`
       );
 
-      setGroup([]);
-
+      setGroup([])
+  
       // Limpa o estado do formulário
       limparFormState();
       navigation.goBack();
@@ -290,153 +293,148 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <FlatList
-        data={[]}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={null}
-        ListHeaderComponent={() => (
-          <View>
-            <Text style={styles.title}>Cadastro de Dieta</Text>
+<KeyboardAvoidingView style={styles.container} behavior="padding">
+  <FlatList
+    data={[]} 
+    keyExtractor={(item, index) => index.toString()} 
+    renderItem={null}
+    ListHeaderComponent={() => (
+      <View>
+        <Text style={styles.title}>Cadastro de Dieta</Text>
 
-            <Text style={styles.pickerLabel}>Dias da Semana</Text>
-            <View style={styles.pickerContainer}>
-              <MultiSelect
-                items={Object.keys(DiasSemana).map((dia) => ({
-                  id: dia,
-                  name: DiasSemana[dia as keyof typeof DiasSemana],
-                }))}
-                uniqueKey="id"
-                onSelectedItemsChange={handleSelectDiaSemana}
-                selectedItems={selectedDiasSemana.map((dia) =>
-                  Object.keys(DiasSemana).find(
-                    (key) => DiasSemana[key as keyof typeof DiasSemana] === dia
-                  )
-                )}
-                selectText="Selecione os dias da semana"
-                searchInputPlaceholderText="Buscar dias"
-                tagRemoveIconColor="#CCC"
-                tagBorderColor="#CCC"
-                tagTextColor="#000"
-                selectedItemTextColor="#007BFF"
-                selectedItemIconColor="#007BFF"
-                itemTextColor="#000"
-                displayKey="name"
-                searchInputStyle={{ color: "#CCC" }}
-                submitButtonColor="#007BFF"
-                submitButtonText="Adicionar"
-                styleDropdownMenuSubsection={styles.multiSelectDropdown}
-                styleMainWrapper={styles.multiSelectWrapper}
-                fontSize={15}
+        <Text style={styles.pickerLabel}>Dias da Semana</Text>
+        <View style={styles.pickerContainer}>
+          <MultiSelect
+            items={Object.keys(DiasSemana).map((dia) => ({
+              id: dia,
+              name: DiasSemana[dia as keyof typeof DiasSemana],
+            }))}
+            uniqueKey="id"
+            onSelectedItemsChange={handleSelectDiaSemana}
+            selectedItems={selectedDiasSemana.map((dia) =>
+              Object.keys(DiasSemana).find(
+                (key) => DiasSemana[key as keyof typeof DiasSemana] === dia
+              )
+            )}
+            selectText="Selecione os dias da semana"
+            searchInputPlaceholderText="Buscar dias"
+            tagRemoveIconColor="#CCC"
+            tagBorderColor="#CCC"
+            tagTextColor="#000"
+            selectedItemTextColor="#007BFF"
+            selectedItemIconColor="#007BFF"
+            itemTextColor="#000"
+            displayKey="name"
+            searchInputStyle={{ color: "#CCC" }}
+            submitButtonColor="#007BFF"
+            submitButtonText="Adicionar"
+            styleDropdownMenuSubsection={styles.multiSelectDropdown}
+            styleMainWrapper={styles.multiSelectWrapper}
+            fontSize={15}
+          />
+        </View>
+
+        <Text style={styles.pickerLabel}>Nome da Refeição</Text>
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={formState.grupoNome}
+            style={styles.picker}
+            onValueChange={(itemValue) =>
+              handleChange("grupoNome", itemValue)
+            }
+          >
+            <Picker.Item label="Selecione o grupo" value={null} />
+            {Object.keys(GruposEnum).map((grupo) => (
+              <Picker.Item
+                key={grupo}
+                label={GruposEnum[grupo as keyof typeof GruposEnum]}
+                value={grupo}
               />
-            </View>
+            ))}
+          </Picker>
+        </View>
 
-            <Text style={styles.pickerLabel}>Nome da Refeição</Text>
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={formState.grupoNome}
-                style={styles.picker}
-                onValueChange={(itemValue) =>
-                  handleChange("grupoNome", itemValue)
-                }
-              >
-                <Picker.Item label="Selecione o grupo" value={null} />
-                {Object.keys(GruposEnum).map((grupo) => (
-                  <Picker.Item
-                    key={grupo}
-                    label={GruposEnum[grupo as keyof typeof GruposEnum]}
-                    value={grupo}
-                  />
-                ))}
-              </Picker>
-            </View>
+        <Text style={styles.pickerLabel}>Buscar Alimentos</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Buscar alimentos"
+          value={searchTerm}
+          onChangeText={setSearchTerm}
+        />
 
-            <Text style={styles.pickerLabel}>Buscar Alimentos</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Buscar alimentos"
-              value={searchTerm}
-              onChangeText={setSearchTerm}
-            />
+        <Text style={styles.pickerLabel}>Selecione os alimentos</Text>
+        <View style={styles.pickerContainer}>
+         <MultiSelect
+  items={allAlimentos
+    .reduce((uniqueAlimentos, currentAlimento) => {
+      if (
+        !uniqueAlimentos.some(
+          (alimento) => alimento.name === currentAlimento.nome
+        )
+      ) {
+        uniqueAlimentos.push({
+          id: currentAlimento._id,
+          name: currentAlimento.nome,
+        });
+      }
+      return uniqueAlimentos;
+    }, [] as { id: string; name: string }[])
+  }
+  uniqueKey="id"
+  onSelectedItemsChange={handleSelectAlimentos}
+  selectedItems={selectedAlimentos.map((alimento) => alimento._id)}
+  selectText="Selecione os alimentos"
+  searchInputPlaceholderText="Buscar alimentos"
+  tagRemoveIconColor="#CCC"
+  tagBorderColor="#CCC"
+  tagTextColor="#000"
+  selectedItemTextColor="#007BFF"
+  selectedItemIconColor="#007BFF"
+  itemTextColor="#000"
+  displayKey="name"
+  searchInputStyle={{ color: "#CCC" }}
+  submitButtonColor="#007BFF"
+  submitButtonText="Adicionar"
+  styleDropdownMenuSubsection={styles.multiSelectDropdown}
+  styleMainWrapper={styles.multiSelectWrapper}
+/>
 
-            <Text style={styles.pickerLabel}>Selecione os alimentos</Text>
-            <View style={styles.pickerContainer}>
-              <MultiSelect
-                items={allAlimentos.reduce(
-                  (uniqueAlimentos, currentAlimento) => {
-                    if (
-                      !uniqueAlimentos.some(
-                        (alimento) => alimento.name === currentAlimento.nome
-                      )
-                    ) {
-                      uniqueAlimentos.push({
-                        id: currentAlimento._id,
-                        name: currentAlimento.nome,
-                      });
-                    }
-                    return uniqueAlimentos;
-                  },
-                  [] as { id: string; name: string }[]
-                )}
-                uniqueKey="id"
-                onSelectedItemsChange={handleSelectAlimentos}
-                selectedItems={selectedAlimentos.map(
-                  (alimento) => alimento._id
-                )}
-                selectText="Selecione os alimentos"
-                searchInputPlaceholderText="Buscar alimentos"
-                tagRemoveIconColor="#CCC"
-                tagBorderColor="#CCC"
-                tagTextColor="#000"
-                selectedItemTextColor="#007BFF"
-                selectedItemIconColor="#007BFF"
-                itemTextColor="#000"
-                displayKey="name"
-                searchInputStyle={{ color: "#CCC" }}
-                submitButtonColor="#007BFF"
-                submitButtonText="Adicionar"
-                styleDropdownMenuSubsection={styles.multiSelectDropdown}
-                styleMainWrapper={styles.multiSelectWrapper}
-              />
-            </View>
+        </View>
 
-            <Text style={styles.pickerLabel}>Porção (g)</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Porção"
-              value={formState.porcao}
-              onChangeText={(text) => handleChange("porcao", text)}
-              keyboardType="numeric"
-            />
+        <Text style={styles.pickerLabel}>Porção (g)</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Porção"
+          value={formState.porcao}
+          onChangeText={(text) => handleChange("porcao", text)}
+          keyboardType="numeric"
+        />
 
-            <Text style={styles.pickerLabel}>Quantidade</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Quantidade"
-              value={formState.quantidade}
-              onChangeText={(text) => handleChange("quantidade", text)}
-              keyboardType="numeric"
-            />
+        <Text style={styles.pickerLabel}>Quantidade</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Quantidade"
+          value={formState.quantidade}
+          onChangeText={(text) => handleChange("quantidade", text)}
+          keyboardType="numeric"
+        />
 
-            <TouchableOpacity style={styles.button} onPress={handleAddAlimento}>
-              <Text style={styles.buttonText}>Adicionar Alimento</Text>
-            </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handleAddAlimento}>
+          <Text style={styles.buttonText}>Adicionar Alimento</Text>
+        </TouchableOpacity>
 
-            <TouchableOpacity style={styles.button} onPress={handleAddGroup}>
-              <Text style={styles.buttonText}>Adicionar Refeição</Text>
-            </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handleAddGroup}>
+          <Text style={styles.buttonText}>Adicionar Refeição</Text>
+        </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.submitButton}
-              onPress={cadastrarDieta}
-            >
-              <Text style={styles.buttonText}>Cadastrar Dieta</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      />
-    </KeyboardAvoidingView>
+        <TouchableOpacity style={styles.submitButton} onPress={cadastrarDieta}>
+          <Text style={styles.buttonText}>Cadastrar Dieta</Text>
+        </TouchableOpacity>
+      </View>
+    )}
+  />
+</KeyboardAvoidingView>
   );
 };
 
-export default CadastroDietaScreen;
+export default CadastroDietaScreen

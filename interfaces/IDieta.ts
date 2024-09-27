@@ -14,12 +14,6 @@
         detalhes: Detalhes;
     }
 
-    export interface IAlimentoGrupo{
-        alimentoId: string;
-        porcao: number;
-        quantidade: number
-    }
-
     export interface IGrupo {
         _id?: string;
         nome: string;

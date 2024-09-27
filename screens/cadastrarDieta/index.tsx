@@ -13,7 +13,7 @@ import { RootStackParamList } from "../../types/rootStack";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import { requestWithRefresh } from "../../services/api";
-import { IAlimentoDieta, IAlimentoGrupo, IDietaFixa, IGrupo } from "../../interfaces/IDieta";
+import { IAlimentoDieta, IDietaFixa, IGrupo } from "../../interfaces/IDieta";
 import { DiasSemana } from "../../enums/diasSemana";
 import { IAlimento } from "../../interfaces/IAlimento";
 import MultiSelect from "react-native-multiple-select";
@@ -71,7 +71,8 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
   const [selectedAlimentos, setSelectedAlimentos] = useState<IAlimento[]>([]);
   const [groupAlimentos, setGroupAlimentos] = useState<IAlimentoDieta[]>([]);
   const [groups, setGroup] = useState<IGrupo[]>([]);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string>();
+  const [diasSemana, setDiasSemana] = useState<DiasSemana[]>([]);
 
   useEffect(() => {
     refreshAlimentos();
@@ -102,7 +103,8 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
           });
         } catch (error) {
           console.error("Erro ao buscar dieta:", error);
-          Alert.alert("Erro", "Ocorreu um erro ao buscar a dieta.");
+          setErrorMessage("Ocorreu um erro ao buscar a dieta.");
+          Alert.alert("Erro", errorMessage);
         }
       };
 
@@ -112,17 +114,18 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const handleChange = (field: string, value: any) => {
     setFormState((prevState) => ({ ...prevState, [field]: value }));
-    setErrorMessage(null);
+    setErrorMessage("");
   };
 
   const handleAddGroup = () => {
     if (!formState.grupoNome || groupAlimentos.length === 0) {
       setErrorMessage("Todos os campos do grupo são obrigatórios.");
-      Alert.alert("Erro", "Todos os campos da refeição são obrigatórios");
+      Alert.alert("Erro", errorMessage);
       return;
     }
 
-    const groupName = GruposEnum[formState.grupoNome as unknown as keyof typeof GruposEnum];
+    const groupName =
+      GruposEnum[formState.grupoNome as unknown as keyof typeof GruposEnum];
 
     // Cria um novo grupo com os dados do formulário
     const newGroup: IGrupo = {
@@ -152,7 +155,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
         alimentos: [], // Limpa a lista de alimentos
       }));
       setGroupAlimentos([]);
-      console.log(groups)
+      console.log(groups);
       Alert.alert("Sucesso", "Refeição cadastrada com sucesso!");
     } catch (error) {
       Alert.alert("Erro", "Ocorreu um erro ao salvar o grupo.");
@@ -163,31 +166,38 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     const { porcao, quantidade } = formState;
     const alimentoIds = selectedAlimentos;
 
-    if (!Array.isArray(alimentoIds) || alimentoIds.length === 0 || !porcao || !quantidade) {
+    if (
+      !Array.isArray(alimentoIds) ||
+      alimentoIds.length === 0 ||
+      !porcao ||
+      !quantidade
+    ) {
       setErrorMessage("Todos os campos do alimento são obrigatórios.");
+      Alert.alert("Erro", errorMessage);
       return;
     }
 
     alimentoIds.forEach((id) => {
       const alimento = allAlimentos.find((a) => a._id === id._id);
-      
+
       if (!alimento) {
         setErrorMessage("Alimento inválido.");
+        Alert.alert("Erro", errorMessage);
         return;
-      }    
+      }
 
-  const novoAlimento: IAlimentoDieta = {
-    alimentoId: alimento._id,
-    nome: alimento.nome,
-    preparo: alimento.preparo,
-    porcao: parseFloat(porcao),
-    quantidade: parseInt(quantidade, 10),
-    categoriaCodigo: alimento.categoriaCodigo,
-    detalhes: alimento.detalhes,
-  };
+      const novoAlimento: IAlimentoDieta = {
+        alimentoId: alimento._id,
+        nome: alimento.nome,
+        preparo: alimento.preparo,
+        porcao: parseFloat(porcao),
+        quantidade: parseInt(quantidade, 10),
+        categoriaCodigo: alimento.categoriaCodigo,
+        detalhes: alimento.detalhes,
+      };
 
-  setGroupAlimentos((prevState) => [...prevState, novoAlimento]);
-});
+      setGroupAlimentos((prevState) => [...prevState, novoAlimento]);
+    });
 
     // Limpa os campos de entrada
     setFormState((prevState) => ({
@@ -202,50 +212,54 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     setSelectedAlimentos([]);
   };
 
-    const cadastrarDieta = async () => {
-      // Verifica se todos os campos obrigatórios estão preenchidos
-      if (groups.length === 0) {
-        setErrorMessage("Todos os campos são obrigatórios.");
-        Alert.alert("Erro", "Todos os campos são obrigatórios");
-        return;
-      }
+  const cadastrarDieta = async () => {
+    // Verifica se todos os campos obrigatórios estão preenchidos
+    if (groups.length === 0) {
+      setErrorMessage("Todos os campos são obrigatórios.");
+      Alert.alert("Erro", errorMessage);
+      return;
+    }
 
-      {/* Fazer funcionar. */}
-      //   if (formState.diaSemana.length === 0) {
-      //     setFormState((prevState) => ({
-      //       ...prevState,
-      //       diaSemana: Object.values(DiasSemana),
-      //     }));
-      // }
+    setDiasSemana(formState.diaSemana);
 
-      try {
-        const dieta: IDietaFixa = {
-          diaSemana: formState.diaSemana,
-          grupos: groups,
-        };
-        console.log(JSON.stringify(dieta))
+    if (
+      !Array.isArray(formState.diaSemana) ||
+      formState.diaSemana.length === 0
+    ) {
+      setDiasSemana(Object.values(DiasSemana));
+    }
 
-        // Faz a requisição para cadastrar ou atualizar a dieta
-        await requestWithRefresh({
-          method: isEditing ? "PUT" : "POST",
-          url: isEditing ? `/dieta/${dietaId}` : "/dieta",
-          data: dieta,
-        });
+    try {
+      const dieta: IDietaFixa = {
+        diaSemana: diasSemana,
+        grupos: groups,
+      };
+      console.log(JSON.stringify(dieta));
 
-        Alert.alert(
-          "Sucesso",
-          `Dieta ${isEditing ? "atualizada" : "cadastrada"} com sucesso!`
-        );
+      // Faz a requisição para cadastrar ou atualizar a dieta
+      await requestWithRefresh({
+        method: isEditing ? "PUT" : "POST",
+        url: isEditing ? `/dieta/${dietaId}` : "/dieta",
+        data: dieta,
+      });
 
-        setGroup([]);
+      Alert.alert(
+        "Sucesso",
+        `Dieta ${isEditing ? "atualizada" : "cadastrada"} com sucesso!`
+      );
 
-        // Limpa o estado do formulário
-        limparFormState();
-        navigation.goBack();
-      } catch (error) {
-        Alert.alert("Erro", "Ocorreu um erro ao cadastrar/atualizar a dieta.");
-      }
-    };
+      setGroup([]);
+
+      // Limpa o estado do formulário
+      limparFormState();
+      navigation.goBack();
+    } catch (error) {
+      Alert.alert(
+        "Erro",
+        `Ocorreu um erro ao ${isEditing ? "atualizar" : "cadastrar"} a dieta.`
+      );
+    }
+  };
 
   const limparFormState = () => {
     setFormState({
@@ -257,14 +271,14 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       porcao: "",
       quantidade: "",
     });
-    setErrorMessage(null);
+    setErrorMessage("");
   };
 
   const handleSelectDiaSemana = (selectedItems: string[]) => {
     const validDiasSemana = selectedItems.map(
       (id) => DiasSemana[id as keyof typeof DiasSemana]
     );
-    
+
     // Atualiza o estado de dias da semana e do formState ao mesmo tempo
     setSelectedDiasSemana(validDiasSemana);
     setFormState((prevState) => ({
@@ -273,7 +287,6 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     }));
   };
   const handleSelectAlimentos = (selectedItems: string[]) => {
-
     const alimentosSelecionados = allAlimentos.filter(
       (alimento) => selectedItems.includes(alimento._id) // Filtra os alimentos com base nos IDs selecionados
     );
@@ -345,7 +358,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
 
       <Text style={styles.pickerLabel}>Selecione os alimentos</Text>
       <View style={styles.pickerContainer}>
-      <MultiSelect
+        <MultiSelect
           items={allAlimentos.map((alimento) => ({
             id: alimento._id, // Identificador único
             name: alimento.nome, // Nome do alimento

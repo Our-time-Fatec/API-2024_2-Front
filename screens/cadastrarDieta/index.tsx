@@ -119,8 +119,54 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
   };
 
   const handleAddGroup = async () => {
-    await handleAddAlimento()
-    if (!formState.grupoNome || groupAlimentos.length === 0) {
+    const { porcao, quantidade } = formState;
+    const alimentoIds = selectedAlimentos;
+
+    if (
+      !Array.isArray(alimentoIds) ||
+      alimentoIds.length === 0 ||
+      !porcao ||
+      !quantidade
+    ) {
+      setErrorMessage("Todos os campos do alimento são obrigatórios.");
+      Alert.alert("Erro", "Todos os campos do alimento são obrigatórios.");
+      return;
+    }
+
+    const alimentos:IAlimentoDieta[] = []
+
+    alimentoIds.forEach((id) => {
+      const alimento = allAlimentos.find((a) => a._id === id._id);
+
+      if (!alimento) {
+        setErrorMessage("Alimento inválido.");
+        Alert.alert("Erro", "Alimento inválido.");
+        return;
+      }
+
+      const novoAlimento: IAlimentoDieta = {
+        alimentoId: alimento._id,
+        nome: alimento.nome,
+        preparo: alimento.preparo,
+        porcao: parseFloat(porcao),
+        quantidade: parseInt(quantidade, 10),
+        categoriaCodigo: alimento.categoriaCodigo,
+        detalhes: alimento.detalhes,
+      };
+
+      alimentos.push(novoAlimento);
+    });
+
+    // Limpa os campos de entrada
+    setFormState((prevState) => ({
+      ...prevState,
+      alimentoId: null,
+      porcao: "",
+      quantidade: "",
+    }));
+    setSelectedAlimentos([]);
+
+    if (!formState.grupoNome || alimentos.length === 0) {
       setErrorMessage("Todos os campos do grupo são obrigatórios.");
       Alert.alert("Erro", "Todos os campos do grupo são obrigatórios.");
       return;
@@ -132,7 +178,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     // Cria um novo grupo com os dados do formulário
     const newGroup: IGrupo = {
       nome: groupName,
-      alimentos: groupAlimentos,
+      alimentos: alimentos,
     };
 
     // Salva o novo grupo no AsyncStorage
@@ -162,57 +208,9 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     } catch (error) {
       Alert.alert("Erro", "Ocorreu um erro ao salvar o grupo.");
     }
-  };
+  }
 
-  const handleAddAlimento = async () => {
-    const { porcao, quantidade } = formState;
-    const alimentoIds = selectedAlimentos;
 
-    if (
-      !Array.isArray(alimentoIds) ||
-      alimentoIds.length === 0 ||
-      !porcao ||
-      !quantidade
-    ) {
-      setErrorMessage("Todos os campos do alimento são obrigatórios.");
-      Alert.alert("Erro", "Todos os campos do alimento são obrigatórios.");
-      return;
-    }
-
-    alimentoIds.forEach((id) => {
-      const alimento = allAlimentos.find((a) => a._id === id._id);
-
-      if (!alimento) {
-        setErrorMessage("Alimento inválido.");
-        Alert.alert("Erro", "Alimento inválido.");
-        return;
-      }
-
-      const novoAlimento: IAlimentoDieta = {
-        alimentoId: alimento._id,
-        nome: alimento.nome,
-        preparo: alimento.preparo,
-        porcao: parseFloat(porcao),
-        quantidade: parseInt(quantidade, 10),
-        categoriaCodigo: alimento.categoriaCodigo,
-        detalhes: alimento.detalhes,
-      };
-
-      setGroupAlimentos((prevState) => [...prevState, novoAlimento]);
-    });
-
-    // Limpa os campos de entrada
-    setFormState((prevState) => ({
-      ...prevState,
-      alimentoId: null,
-      porcao: "",
-      quantidade: "",
-    }));
-
-    // Limpa os alimentos selecionados
-    Alert.alert("Sucesso", "Alimentos adicionados com sucesso!");
-    setSelectedAlimentos([]);
-  };
 
   const cadastrarDieta = async () => {
     // Verifica se todos os campos obrigatórios estão preenchidos
@@ -224,12 +222,13 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
 
     setDiasSemana(formState.diaSemana);
 
-    if (
-      !Array.isArray(formState.diaSemana) ||
-      formState.diaSemana.length === 0
-    ) {
-      setDiasSemana(Object.values(DiasSemana));
+    if (!Array.isArray(formState.diaSemana) || formState.diaSemana.length === 0) {
+      setFormState((prevState) => ({
+        ...prevState,
+        diaSemana: Object.values(DiasSemana), // Preenche com todos os dias da semana
+      }));
     }
+
 
     const groupsOrdenados = groupSorter.sorter(groups)
 
@@ -404,10 +403,6 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
         onChangeText={(text) => handleChange("quantidade", text)}
         keyboardType="numeric"
       />
-
-      <TouchableOpacity style={styles.button} onPress={handleAddAlimento}>
-        <Text style={styles.buttonText}>Adicionar Alimento</Text>
-      </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={handleAddGroup}>
         <Text style={styles.buttonText}>Adicionar Refeição</Text>

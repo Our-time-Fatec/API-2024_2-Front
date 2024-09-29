@@ -19,6 +19,7 @@ import { IAlimento } from "../../interfaces/IAlimento";
 import MultiSelect from "react-native-multiple-select";
 import { Picker } from "@react-native-picker/picker";
 import useAlimentos from "../../hooks/useAlimentos";
+import groupSorter from "../../utils/groupSorter";
 
 enum GruposEnum {
   cafedamanha = "Café da Manhã",
@@ -104,7 +105,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
         } catch (error) {
           console.error("Erro ao buscar dieta:", error);
           setErrorMessage("Ocorreu um erro ao buscar a dieta.");
-          Alert.alert("Erro", errorMessage);
+          Alert.alert("Erro", "Ocorreu um erro ao buscar a dieta.");
         }
       };
 
@@ -117,10 +118,11 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     setErrorMessage("");
   };
 
-  const handleAddGroup = () => {
+  const handleAddGroup = async () => {
+    await handleAddAlimento()
     if (!formState.grupoNome || groupAlimentos.length === 0) {
       setErrorMessage("Todos os campos do grupo são obrigatórios.");
-      Alert.alert("Erro", errorMessage);
+      Alert.alert("Erro", "Todos os campos do grupo são obrigatórios.");
       return;
     }
 
@@ -162,7 +164,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     }
   };
 
-  const handleAddAlimento = () => {
+  const handleAddAlimento = async () => {
     const { porcao, quantidade } = formState;
     const alimentoIds = selectedAlimentos;
 
@@ -173,7 +175,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       !quantidade
     ) {
       setErrorMessage("Todos os campos do alimento são obrigatórios.");
-      Alert.alert("Erro", errorMessage);
+      Alert.alert("Erro", "Todos os campos do alimento são obrigatórios.");
       return;
     }
 
@@ -182,7 +184,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
 
       if (!alimento) {
         setErrorMessage("Alimento inválido.");
-        Alert.alert("Erro", errorMessage);
+        Alert.alert("Erro", "Alimento inválido.");
         return;
       }
 
@@ -216,7 +218,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     // Verifica se todos os campos obrigatórios estão preenchidos
     if (groups.length === 0) {
       setErrorMessage("Todos os campos são obrigatórios.");
-      Alert.alert("Erro", errorMessage);
+      Alert.alert("Erro", "Todos os campos são obrigatórios.");
       return;
     }
 
@@ -229,10 +231,12 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       setDiasSemana(Object.values(DiasSemana));
     }
 
+    const groupsOrdenados = groupSorter.sorter(groups)
+
     try {
       const dieta: IDietaFixa = {
-        diaSemana: diasSemana,
-        grupos: groups,
+        diaSemana: formState.diaSemana,
+        grupos: groupsOrdenados,
       };
       console.log(JSON.stringify(dieta));
 

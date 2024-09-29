@@ -10,8 +10,8 @@
         preparo?: string;
         porcao: number;
         quantidade: number;
-        categoriaCodigo: Number;
-        detalhes: Detalhes;
+        categoriaCodigo?: Number;
+        detalhes?: Detalhes;
     }
 
     export interface IGrupo {

@@ -3,9 +3,9 @@ import {
   View,
   Text,
   TextInput,
-  TouchableOpacity,
   ScrollView,
-  Alert,
+  TouchableOpacity,
+  Alert
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { styles } from "./styles";
@@ -20,6 +20,7 @@ import MultiSelect from "react-native-multiple-select";
 import { Picker } from "@react-native-picker/picker";
 import useAlimentos from "../../hooks/useAlimentos";
 import groupSorter from "../../utils/groupSorter";
+
 
 enum GruposEnum {
   cafedamanha = "Café da Manhã",
@@ -70,10 +71,9 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     []
   );
   const [selectedAlimentos, setSelectedAlimentos] = useState<IAlimento[]>([]);
-  const [groupAlimentos, setGroupAlimentos] = useState<IAlimentoDieta[]>([]);
   const [groups, setGroup] = useState<IGrupo[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>();
-  const [diasSemana, setDiasSemana] = useState<DiasSemana[]>([]);
+  
 
   useEffect(() => {
     refreshAlimentos();
@@ -194,7 +194,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
           return updatedGroups;
         } else {
           return [...prevState, newGroup];
-        }
+        }   
       });
       setFormState((prev) => ({
         ...prev,
@@ -202,7 +202,6 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
         grupoNome: null, // Limpa o campo de nome do grupo para null
         alimentos: [], // Limpa a lista de alimentos
       }));
-      setGroupAlimentos([]);
       console.log(groups);
       Alert.alert("Sucesso", "Refeição cadastrada com sucesso!");
     } catch (error) {
@@ -219,8 +218,6 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       Alert.alert("Erro", "Todos os campos são obrigatórios.");
       return;
     }
-
-    setDiasSemana(formState.diaSemana);
 
     if (!Array.isArray(formState.diaSemana) || formState.diaSemana.length === 0) {
       setFormState((prevState) => ({
@@ -298,7 +295,9 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
   };
 
   return (
-    <ScrollView style={styles.container} nestedScrollEnabled={true}>
+
+    <ScrollView style={styles.container}  >
+     
       <Text style={styles.title}>Cadastro de Dieta</Text>
 
       <Text style={styles.pickerLabel}>Dias da Semana</Text>
@@ -332,6 +331,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
           fontSize={15}
         />
       </View>
+      
 
       <Text style={styles.pickerLabel}> Nome da Refeição</Text>
       <View style={styles.pickerContainer}>
@@ -350,6 +350,13 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
           ))}
         </Picker>
       </View>
+      {groups.length > 0 ? (
+         <Text style={styles.registeredMealText}>
+         {groups.map((grupo) => grupo.nome).join(', ')}
+       </Text>
+      ) : (
+        <Text></Text>
+      )}
 
       <Text style={styles.pickerLabel}>Buscar Alimentos</Text>
       <TextInput

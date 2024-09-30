@@ -11,20 +11,28 @@ const api = axios.create({
 console.log(APIHOST)
 
 async function getToken() {
-    return await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem('token');
+    if (!token) throw new Error('Token não encontrado');
+    return token;
 }
 
 async function refreshAuthToken() {
     const refreshToken = await AsyncStorage.getItem('refreshToken');
-    if (!refreshToken) throw new Error('Refresh token não encontrado');
+    if (!refreshToken) {
+        throw new Error('Refresh token não encontrado');
+    }
 
-    const response = await axios.post(`${APIHOST}/auth/refresh-token`, { refreshToken });
-    const { token, refreshToken: newRefreshToken } = response.data;
+    try {
+        const response = await axios.post(`${APIHOST}/auth/refresh-token`, { refreshToken });
+        const { token, refreshToken: newRefreshToken } = response.data;
 
-    await AsyncStorage.setItem('token', token);
-    await AsyncStorage.setItem('refreshToken', newRefreshToken);
+        await AsyncStorage.setItem('token', token);
+        await AsyncStorage.setItem('refreshToken', newRefreshToken);
 
-    return token;
+        return token;
+    } catch (error) {
+        throw new Error('Falha ao renovar o token');
+    }
 }
 
 async function requestWithRefresh(config: any) {
@@ -71,5 +79,6 @@ async function register(registerRequest: IUsuario) {
 
     return response.data;
 }
+
 
 export { requestWithRefresh, login, register, api };

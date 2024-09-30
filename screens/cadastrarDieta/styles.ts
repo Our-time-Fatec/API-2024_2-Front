@@ -96,11 +96,17 @@ export const styles = StyleSheet.create({
     padding: 5,
   },
   multiSelectWrapper: {
-    height: 'auto',  // Deixa o MultiSelect ocupar o espaço necessário
-    marginBottom: 10,  // Espaço abaixo do componente
+    height: 'auto', // Deixa o MultiSelect ocupar o espaço necessário
+    marginBottom: 10, // Espaço abaixo do componente
     borderWidth: 1,
     borderColor: 'transparent',
     borderRadius: 5,
   },
-  
+  registeredMealText: {
+    fontSize: 18,
+    color: '#333', // Cor do texto
+    marginBottom: 20,
+    alignSelf: "center"
+  }
 });
+

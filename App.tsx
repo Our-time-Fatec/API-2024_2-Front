@@ -22,12 +22,13 @@ import UserAlimentosConsumidosScreen from './screens/userAlimentosConsumidos';
 import DietasPredefinidas from './screens/dietasPredefinidas';
 import DietasPersonalizadas from './screens/dietasPersonalizadas';
 import CadastroDietaScreen from './screens/cadastrarDieta';
-
+import SuppressWarnings from './errors/SupressedWarnings';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
 const AuthenticatedStack = () => {
   const { isAuthenticated } = useAuth();
+  
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -65,6 +66,7 @@ export default function App() {
         <NavigationContainer>
           <StatusBar style="dark" backgroundColor="#fff" />
           <SafeAreaView style={styles.container}>
+          <SuppressWarnings />
             <AuthenticatedStack />
           </SafeAreaView>
         </NavigationContainer>

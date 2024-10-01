@@ -65,6 +65,7 @@ const UserDietasScreen: React.FC<Props> = ({ navigation }) => {
                     onValueChange={handleDiaChange}
                 >
                     <Picker.Item label="Selecione o dia" value="Todos" />
+                    <Picker.Item label='Hoje' value="Hoje"/>
                     {Object.keys(DiasSemana).map((key) => (
                         <Picker.Item key={key} label={DiasSemana[key as keyof typeof DiasSemana]} value={key} />
                     ))}

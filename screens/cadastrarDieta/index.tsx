@@ -74,17 +74,19 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
   const [groups, setGroup] = useState<IGrupo[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>();
   
-
-  useEffect(() => {
-    refreshAlimentos();
-  }, [searchTerm]);
-
+  const handleAlimentoSelect = (alimentoNome: string) => {
+    // Define searchTerm como a primeira letra do nome do alimento
+    const firstLetter = alimentoNome.charAt(0).toLowerCase();
+    setSearchTerm(firstLetter);
+};
+  
   useEffect(() => {
     const { dietaId } = route.params;
-
+  
     if (dietaId) {
       setDietaId(dietaId);
       setIsEditing(true);
+  
       const fetchDieta = async () => {
         try {
           const response = await requestWithRefresh({
@@ -92,26 +94,95 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
             url: `/dieta/${dietaId}`,
           });
           const dieta = response.data;
-
+  
+          // Verificação para garantir que as propriedades existem antes de acessá-las
           setFormState({
-            diaSemana: dieta.diaSemana || [],
-            grupos: dieta.grupos || [],
-            grupoNome: null,
-            alimentos: [],
+            diaSemana: Array.isArray(dieta.diaSemana) ? dieta.diaSemana : [], // Garante que seja um array
+            grupos: Array.isArray(dieta.grupos) ? dieta.grupos : [], // Garante que seja um array
+            grupoNome: dieta.grupoNome || null,
+            alimentos: Array.isArray(dieta.alimentos) ? dieta.alimentos : [], // Garante que seja um array
             alimentoId: null,
-            porcao: "",
-            quantidade: "",
+            porcao: dieta.porcao || "",
+            quantidade: dieta.quantidade || "",
           });
+  
+          // Configura dias da semana selecionados
+          setSelectedDiasSemana(Array.isArray(dieta.diaSemana) ? dieta.diaSemana : []); // Garante que seja um array
+  
+          const processedGroups:IGrupo[] = Array.isArray(dieta.grupos)
+          ? transformGroups(dieta.grupos, allAlimentos, searchTerm)
+          : [];
+        
+        setGroup(processedGroups);
+  
+          // Preenche os alimentos selecionados
+          const alimentosSelecionados = Array.isArray(dieta.alimentos)
+            ? dieta.alimentos.map((alimento: { _id: string; }) => {
+                return allAlimentos.find((item) => item._id === alimento._id) || null;
+              }).filter(Boolean) // Remove itens nulos
+            : [];
+  
+          setSelectedAlimentos(alimentosSelecionados as IAlimento[]);
+  
         } catch (error) {
           console.error("Erro ao buscar dieta:", error);
           setErrorMessage("Ocorreu um erro ao buscar a dieta.");
           Alert.alert("Erro", "Ocorreu um erro ao buscar a dieta.");
         }
       };
-
+  
       fetchDieta();
     }
-  }, [route.params]);
+  }, [route.params, allAlimentos]);
+
+  function transformGroups(grupos: IGrupo[], allAlimentos: IAlimento[], searchTerm: string) {
+    // Normalize the search term
+    const normalizedSearchTerm = searchTerm.trim().toLowerCase();
+
+    return grupos.map((group: IGrupo) => {
+        const transformedAlimentos = group.alimentos.map((alimento: IAlimentoDieta) => {
+            // Normalize the food name from the group
+            if (!alimento || !alimento.nome) {
+              throw new Error(`Alimento indefinido ou sem nome.`);
+          }
+            const normalizedAlimentoNome = alimento.nome.trim().toLowerCase();
+            handleAlimentoSelect(normalizedAlimentoNome)
+
+            // Check if the normalized food name matches the search term
+            if (normalizedAlimentoNome.includes(normalizedSearchTerm)) {
+                // Find the food by name in allAlimentos
+                const alimentoEncontrado = allAlimentos.find((a) => a.nome.trim().toLowerCase() === normalizedAlimentoNome);
+
+                // If food is not found by name, throw an error
+                if (!alimentoEncontrado) {
+                    throw new Error(`Alimento inválido: ${alimento.nome}. Disponíveis: ${JSON.stringify(allAlimentos.map(a => a.nome))}`);
+                }
+
+                // Transform the found food
+                return {
+                    alimentoId: alimentoEncontrado._id,
+                    nome: alimentoEncontrado.nome,
+                    preparo: alimentoEncontrado.preparo,
+                    porcao: alimento.porcao, // Using porcao from the group
+                    quantidade: alimento.quantidade, // Using quantidade from the group
+                    categoriaCodigo: alimentoEncontrado.categoriaCodigo,
+                    detalhes: alimentoEncontrado.detalhes,
+                };
+            }
+
+            // If the name does not match the search term, return null or an empty object
+            return null; // or you could filter these out later
+        }).filter((item) => item !== null); // Filter out null items
+
+        return {
+            nome: group.nome,
+            alimentos: transformedAlimentos,
+        };
+    });
+}
+
+  
+  
 
   const handleChange = (field: string, value: any) => {
     setFormState((prevState) => ({ ...prevState, [field]: value }));
@@ -144,15 +215,15 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
         return;
       }
 
-      const novoAlimento: IAlimentoDieta = {
-        alimentoId: alimento._id,
-        nome: alimento.nome,
-        preparo: alimento.preparo,
-        porcao: parseFloat(porcao),
-        quantidade: parseInt(quantidade, 10),
-        categoriaCodigo: alimento.categoriaCodigo,
-        detalhes: alimento.detalhes,
-      };
+        const novoAlimento: IAlimentoDieta = {
+          alimentoId: alimento._id,
+          nome: alimento.nome,
+          preparo: alimento.preparo,
+          porcao: parseFloat(porcao),
+          quantidade: parseInt(quantidade, 10),
+          categoriaCodigo: alimento.categoriaCodigo,
+          detalhes: alimento.detalhes,
+        };
 
       alimentos.push(novoAlimento);
     });

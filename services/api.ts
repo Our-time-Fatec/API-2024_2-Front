@@ -81,4 +81,4 @@ async function register(registerRequest: IUsuario) {
 }
 
 
-export { requestWithRefresh, login, register, api };
+export { requestWithRefresh, refreshAuthToken, login, register, api };

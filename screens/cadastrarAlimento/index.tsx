@@ -163,6 +163,7 @@ const CadastroAlimentoScreen: React.FC<Props> = ({ navigation, route }) => {
       porcao: parseFloat(porcao),
       categoriaCodigo,
       detalhes,
+      _id: ""
     };
 
     try {

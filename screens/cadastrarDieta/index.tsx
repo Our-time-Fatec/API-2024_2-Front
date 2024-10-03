@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  RefreshControl
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { styles } from "./styles";
@@ -77,6 +78,21 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
   const [diaEdit, setDiaEdit] = useState<DiasSemana>();
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedGrupo, setSelectedGrupo] = useState<IGrupo | null>(null);
+  const [refreshing, setRefreshing] = useState(false); 
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+  
+    try {
+      // Chame qualquer função que você use para recarregar dados, como buscar alimentos ou dieta
+      await refreshAlimentos(); // ou qualquer outra função que recarregue dados
+      Alert.alert("Recarregamento", "Página recarregada com sucesso!");
+    } catch (error) {
+      Alert.alert("Erro", "Ocorreu um erro ao recarregar a página.");
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   useEffect(() => {
     const { dietaId } = route.params;
@@ -137,6 +153,10 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     }
   }, [route.params, allAlimentos]);
 
+  const handleRemoveGroup = (groupId:string) => {
+    setGroup((prevState) => prevState.filter((grupo) => grupo._id !== groupId));
+  };
+
   function transformGroups(grupos: IGrupo[]) {
     return grupos.map((group: IGrupo) => {
       const transformedAlimentos = group.alimentos
@@ -176,42 +196,37 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
   const handleAddGroup = async () => {
     const { porcao, quantidade } = formState;
     const alimentoIds = selectedAlimentos;
-
-    if (
-      !Array.isArray(alimentoIds) ||
-      alimentoIds.length === 0 ||
-      !porcao ||
-      !quantidade
-    ) {
+  
+    if (!Array.isArray(alimentoIds) || alimentoIds.length === 0 || !porcao || !quantidade) {
       setErrorMessage("Todos os campos do alimento são obrigatórios.");
       Alert.alert("Erro", "Todos os campos do alimento são obrigatórios.");
       return;
     }
-
+  
     const alimentos: IAlimentoDieta[] = [];
-
-    alimentoIds.forEach((id) => {
-      const alimento = allAlimentos.find((a) => a._id === id._id);
-
-      if (!alimento) {
+  
+    alimentoIds.forEach((alimento) => {
+      const alimentoEncontrado = allAlimentos.find((a) => a._id === alimento._id);
+  
+      if (!alimentoEncontrado) {
         setErrorMessage("Alimento inválido.");
         Alert.alert("Erro", "Alimento inválido.");
         return;
       }
-
+  
       const novoAlimento: IAlimentoDieta = {
-        alimentoId: alimento._id,
-        nome: alimento.nome,
-        preparo: alimento.preparo,
-        porcao: parseFloat(porcao),
-        quantidade: parseInt(quantidade, 10),
-        categoriaCodigo: alimento.categoriaCodigo,
-        detalhes: alimento.detalhes,
+        alimentoId: alimentoEncontrado._id,
+        nome: alimentoEncontrado.nome,
+        preparo: alimentoEncontrado.preparo,
+        porcao: parseFloat(porcao), // Converta para float se necessário
+        quantidade: parseInt(quantidade, 10), // Converta para inteiro
+        categoriaCodigo: alimentoEncontrado.categoriaCodigo,
+        detalhes: alimentoEncontrado.detalhes,
       };
-
+  
       alimentos.push(novoAlimento);
     });
-
+  
     // Limpa os campos de entrada
     setFormState((prevState) => ({
       ...prevState,
@@ -220,49 +235,52 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       quantidade: "",
     }));
     setSelectedAlimentos([]);
-
+  
     if (!formState.grupoNome || alimentos.length === 0) {
       setErrorMessage("Todos os campos do grupo são obrigatórios.");
       Alert.alert("Erro", "Todos os campos do grupo são obrigatórios.");
       return;
     }
-
-    const groupName =
-      GruposEnum[formState.grupoNome as unknown as keyof typeof GruposEnum];
-
-    // Cria um novo grupo com os dados do formulário
-    const newGroup: IGrupo = {
-      nome: groupName,
-      alimentos: alimentos,
-    };
-
-    // Salva o novo grupo no AsyncStorage
-    try {
-      setGroup((prevState) => {
-        const existingGroupIndex = prevState.findIndex(
-          (group) => group.nome === newGroup.nome
+  
+    const groupName = GruposEnum[formState.grupoNome as unknown as keyof typeof GruposEnum];
+  
+    // Atualiza o estado do grupo
+    setGroup((prevState) => {
+      const existingGroupIndex = prevState.findIndex((group) => group.nome === groupName);
+  
+      if (existingGroupIndex !== -1) {
+        // Se o grupo existe, adiciona novos alimentos ao grupo existente
+        const existingGroup = prevState[existingGroupIndex];
+        const updatedAlimentos = [...existingGroup.alimentos, ...alimentos];
+  
+        // Atualiza o grupo existente na lista
+        const updatedGroups = prevState.map((group, index) =>
+          index === existingGroupIndex ? { ...existingGroup, alimentos: updatedAlimentos } : group
         );
-
-        if (existingGroupIndex !== -1) {
-          const updatedGroups = [...prevState];
-          updatedGroups[existingGroupIndex] = newGroup;
-          return updatedGroups;
-        } else {
-          return [...prevState, newGroup];
-        }
-      });
-      setFormState((prev) => ({
-        ...prev,
-        grupos: [...prev.grupos, newGroup], // Atualiza o estado com o novo grupo
-        grupoNome: null, // Limpa o campo de nome do grupo para null
-        alimentos: [], // Limpa a lista de alimentos
-      }));
-      console.log(groups);
-      Alert.alert("Sucesso", "Refeição cadastrada com sucesso!");
-    } catch (error) {
-      Alert.alert("Erro", "Ocorreu um erro ao salvar o grupo.");
-    }
+  
+        return updatedGroups;
+      } else {
+        // Cria um novo grupo se não existir
+        const newGroup: IGrupo = {
+          nome: groupName,
+          alimentos: alimentos,
+        };
+        return [...prevState, newGroup];
+      }
+    });
+  
+    // Limpa o estado do formulário
+    setFormState((prev) => ({
+      ...prev,
+      grupoNome: null, // Limpa o campo de nome do grupo para null
+      alimentos: [], // Limpa a lista de alimentos
+    }));
+  
+    Alert.alert("Sucesso", "Refeição cadastrada com sucesso!");
   };
+  
+  
+  
 
   const openModal = (grupo: IGrupo) => {
     console.log("Grupo selecionado:", grupo); // Adicione esta linha
@@ -309,9 +327,6 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
           grupo._id === updatedGroup._id ? updatedGroup : grupo
         )
       );
-
-      // Fecha o modal após a edição
-      closeModal();
     }
   };
 
@@ -341,6 +356,14 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
 
       return prevGroups; // Retorna o estado anterior se o grupo não for encontrado
     });
+  };
+
+  const handleUpdateGrupo = (updatedGrupo: IGrupo) => {
+    setGroup((prevGrupos) =>
+      prevGrupos.map((grupo) =>
+        grupo._id === updatedGrupo._id ? updatedGrupo : grupo
+      )
+    );
   };
 
   async function createDieta(dieta: IDietaFixa) {
@@ -453,7 +476,15 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container}
+    refreshControl={
+      <RefreshControl
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+        colors={['#6200ee']} // Cor do círculo de carregamento
+        progressBackgroundColor={'#ffffff'} // Cor do fundo do círculo
+      />
+    }>
       <Text style={styles.title}>Cadastro de Dieta</Text>
 
       {typeof diaEdit === "undefined" && (
@@ -513,7 +544,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
         {groups.length > 0 ? (
           groups.map((grupo, index) => (
             <View key={grupo._id || index} style={styles.refeicaoRegistrada}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => grupo._id && handleRemoveGroup(grupo._id)}>
                 <Ionicons name={"close"} size={20} color={"#000"} />
               </TouchableOpacity>
               <TouchableOpacity onPress={() => openModal(grupo)}>
@@ -526,13 +557,14 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
         )}
       </View>
       <GroupModal
-        visible={modalVisible}
-        grupo={selectedGrupo}
-        onClose={closeModal}
-        onEditPortion={handleEditPortion} // Sua função de edição de porção
-        onEditQuantity={handleEditQuantity} // Passando a nova função de edição de quantidade
-        onRemoveAlimento={handleRemoveAlimento} // Passando a função de remoção
-      />
+  visible={modalVisible}
+  grupo={selectedGrupo}
+  onClose={closeModal}
+  onEditPortion={handleEditPortion}
+  onEditQuantity={handleEditQuantity}
+  onRemoveAlimento={handleRemoveAlimento}
+  onUpdateGrupo={handleUpdateGrupo} // Passa a função de atualização
+/>
 
       <Text style={styles.pickerLabel}>Buscar Alimentos</Text>
       <TextInput

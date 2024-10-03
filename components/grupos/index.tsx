@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -14,11 +14,12 @@ import { IAlimentoDieta } from "../../interfaces/IDieta";
 
 interface GroupModalProps {
   visible: boolean;
-  grupo: IGrupo | null; // Tipo da interface de grupo ou null se não houver grupo
-  onClose: () => void; // Tipo de função que não retorna nada
-  onEditPortion: (alimentoId: string, newPortion: number) => void; // Função para editar a porção
-  onEditQuantity: (alimentoId: string, newQuantity: number) => void; // Nova função para editar quantidade
-  onRemoveAlimento: (alimentoId: string, _id: string) => void; // Função para remover alimento
+  grupo: IGrupo | null;
+  onClose: () => void;
+  onEditPortion: (alimentoId: string, newPortion: number) => void;
+  onEditQuantity: (alimentoId: string, newQuantity: number) => void;
+  onRemoveAlimento: (alimentoId: string, _id: string) => void;
+  onUpdateGrupo: (updatedGrupo: IGrupo) => void;
 }
 
 const GroupModal: React.FC<GroupModalProps> = ({
@@ -28,12 +29,60 @@ const GroupModal: React.FC<GroupModalProps> = ({
   onEditPortion,
   onEditQuantity,
   onRemoveAlimento,
+  onUpdateGrupo,
 }) => {
-  if (!grupo) return null; // Caso o grupo não exista, retorna null
-
+  const [localGrupo, setLocalGrupo] = useState<IGrupo | null>(grupo); // Estado local do grupo
   const [editingAlimentoId, setEditingAlimentoId] = useState<string | null>(null);
   const [newPortion, setNewPortion] = useState<number | string>("");
   const [newQuantity, setNewQuantity] = useState<number | string>("");
+
+  // Sincroniza o grupo recebido via props com o estado local
+  useEffect(() => {
+    setLocalGrupo(grupo);
+  }, [grupo]);
+
+  // Função que atualiza o grupo local e envia para o pai
+  const updateAndSendGrupo = (updatedAlimentos: IAlimentoDieta[]) => {
+    if (localGrupo) {
+      const updatedGrupo = { ...localGrupo, alimentos: updatedAlimentos };
+      setLocalGrupo(updatedGrupo);
+      onUpdateGrupo(updatedGrupo); // Envia o grupo atualizado de volta para o pai
+    }
+  };
+
+  const handleEditQuantity = (alimentoId: string) => {
+    const quantity = Number(newQuantity);
+    if (!isNaN(quantity) && quantity > 0) {
+      onEditQuantity(alimentoId, quantity);
+      setNewQuantity("");
+      // Atualiza a quantidade no estado local e no pai
+      const updatedAlimentos = localGrupo?.alimentos.map((alimento) =>
+        alimento.alimentoId === alimentoId
+          ? { ...alimento, quantidade: quantity }
+          : alimento
+      );
+      if (updatedAlimentos) updateAndSendGrupo(updatedAlimentos);
+    } else {
+      Alert.alert("Erro", "Por favor, insira uma quantidade válida.");
+    }
+  };
+
+  const handleEditPortion = (alimentoId: string) => {
+    const portion = Number(newPortion);
+    if (!isNaN(portion) && portion > 0) {
+      onEditPortion(alimentoId, portion);
+      setNewPortion("");
+      // Atualiza a porção no estado local e no pai
+      const updatedAlimentos = localGrupo?.alimentos.map((alimento) =>
+        alimento.alimentoId === alimentoId
+          ? { ...alimento, porcao: portion }
+          : alimento
+      );
+      if (updatedAlimentos) updateAndSendGrupo(updatedAlimentos);
+    } else {
+      Alert.alert("Erro", "Por favor, insira uma porção válida.");
+    }
+  };
 
   const handleLongPress = (alimentoId: string) => {
     Alert.alert("Remover Alimento", "Deseja remover este alimento?", [
@@ -44,8 +93,13 @@ const GroupModal: React.FC<GroupModalProps> = ({
       {
         text: "Remover",
         onPress: () => {
-          if (grupo?._id) {
-            onRemoveAlimento(alimentoId, grupo._id); // Passa o grupoId se existir
+          if (localGrupo?._id) {
+            onRemoveAlimento(alimentoId, localGrupo._id);
+            // Remove o alimento no estado local e no pai
+            const updatedAlimentos = localGrupo.alimentos.filter(
+              (alimento) => alimento.alimentoId !== alimentoId
+            );
+            updateAndSendGrupo(updatedAlimentos);
           } else {
             Alert.alert("Erro", "Grupo não encontrado.");
           }
@@ -54,38 +108,30 @@ const GroupModal: React.FC<GroupModalProps> = ({
     ]);
   };
 
-  const handleEdit = (alimentoId: string) => {
+  const startEditing = (alimentoId: string) => {
     if (editingAlimentoId === alimentoId) {
-      const quantity = Number(newQuantity);
-      if (!isNaN(quantity) && quantity > 0) {
-        onEditQuantity(alimentoId, quantity); // Chama a função para editar a quantidade
-        setEditingAlimentoId(null);
-        setNewQuantity(""); // Limpa o campo de entrada
-      } else {
-        Alert.alert("Erro", "Por favor, insira uma quantidade válida.");
-      }
+      setEditingAlimentoId(null); // Se já está editando, fecha a edição
     } else {
-      setEditingAlimentoId(alimentoId);
-      setNewQuantity(""); // Limpa o campo de entrada ao editar
+      setEditingAlimentoId(alimentoId); // Caso contrário, inicia a edição
+      setNewPortion("");
+      setNewQuantity("");
     }
   };
 
+
+  if (!localGrupo) return null; // Se o grupo não estiver definido
+
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={visible}
-      onRequestClose={onClose}
-    >
+    <Modal animationType="fade" transparent={true} visible={visible}>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <ScrollView contentContainerStyle={styles.scrollViewContent}>
-            <Text style={styles.modalNome}>{grupo.nome}</Text>
+            <Text style={styles.modalNome}>{localGrupo.nome}</Text>
             <Text style={styles.modalNome}>Alimentos</Text>
-            {grupo.alimentos.map((alimento: IAlimentoDieta, alimentoIndex: number) => (
+            {localGrupo.alimentos.map((alimento, alimentoIndex) => (
               <View key={alimento.alimentoId || `alimento-${alimentoIndex}`}>
                 <TouchableOpacity
-                  onPress={() => handleEdit(alimento.alimentoId)}
+                  onPress={() => startEditing(alimento.alimentoId)}
                   onLongPress={() => handleLongPress(alimento.alimentoId)}
                   style={styles.alimentoContainer}
                 >
@@ -94,37 +140,37 @@ const GroupModal: React.FC<GroupModalProps> = ({
                   </Text>
                 </TouchableOpacity>
                 {editingAlimentoId === alimento.alimentoId && (
-                    <>
-                  <View style={styles.editContainer}>
-                    <TextInput
-                      style={styles.input}
-                      keyboardType="numeric"
-                      placeholder="Nova porcao"
-                      value={newPortion.toString()}
-                      onChangeText={(text) => setNewPortion(text)}
-                    />
-                    <TouchableOpacity
-                      style={styles.saveButton}
-                      onPress={() => handleEdit(alimento.alimentoId)}
-                    >
-                      <Text style={styles.saveButtonText}>Salvar</Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View style={styles.editContainer}>
-                    <TextInput
-                      style={styles.input}
-                      keyboardType="numeric"
-                      placeholder="Nova quantidade"
-                      value={newQuantity.toString()}
-                      onChangeText={(text) => setNewQuantity(text)}
-                    />
-                    <TouchableOpacity
-                      style={styles.saveButton}
-                      onPress={() => handleEdit(alimento.alimentoId)}
-                    >
-                      <Text style={styles.saveButtonText}>Salvar</Text>
-                    </TouchableOpacity>
-                  </View>
+                  <>
+                    <View style={styles.editContainer}>
+                      <TextInput
+                        style={styles.input}
+                        keyboardType="numeric"
+                        placeholder="Nova porção"
+                        value={newPortion.toString()}
+                        onChangeText={(text) => setNewPortion(text)}
+                      />
+                      <TouchableOpacity
+                        style={styles.saveButton}
+                        onPress={() => handleEditPortion(alimento.alimentoId)}
+                      >
+                        <Text style={styles.saveButtonText}>Salvar</Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={styles.editContainer}>
+                      <TextInput
+                        style={styles.input}
+                        keyboardType="numeric"
+                        placeholder="Nova quantidade"
+                        value={newQuantity.toString()}
+                        onChangeText={(text) => setNewQuantity(text)}
+                      />
+                      <TouchableOpacity
+                        style={styles.saveButton}
+                        onPress={() => handleEditQuantity(alimento.alimentoId)}
+                      >
+                        <Text style={styles.saveButtonText}>Salvar</Text>
+                      </TouchableOpacity>
+                    </View>
                   </>
                 )}
               </View>

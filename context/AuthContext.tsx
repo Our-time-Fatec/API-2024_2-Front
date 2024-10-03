@@ -19,10 +19,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const checkToken = async () => {
             try {
                 const token = await AsyncStorage.getItem('token');
-                if (token) {
+                if (token) {    
                     console.log("Token encontrado:", token);
                     // Tente renovar o token automaticamente
-                    await refreshAuthToken(); // Chama a renovação ao reabrir o app
+                   await refreshAuthToken(); // Solução totalmente provisória eu não sei como fazer isso funcionar devidamente eu culpo o expo
                     setIsAuthenticated(true);
                 } else {
                     console.log("Token não encontrado.");

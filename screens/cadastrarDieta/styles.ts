@@ -102,11 +102,26 @@ export const styles = StyleSheet.create({
     borderColor: 'transparent',
     borderRadius: 5,
   },
-  registeredMealText: {
-    fontSize: 18,
+  refeicaoRegistradaText: {
+    fontSize: 15,
     color: '#333', // Cor do texto
+  },
+  refeicaoContainer:{
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 20,
-    alignSelf: "center"
+    flexDirection: "row",
+    gap: 5
+  },
+  refeicaoRegistrada:{
+    borderColor: "#808080",
+    borderRadius: 8,
+    borderWidth: 2,
+    display: "flex",
+    justifyContent: "space-around",
+    flexDirection: "row",
+    padding: 8
   }
 });
 

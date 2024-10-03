@@ -5,7 +5,7 @@ import {
   TextInput,
   ScrollView,
   TouchableOpacity,
-  Alert
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { styles } from "./styles";
@@ -20,7 +20,7 @@ import MultiSelect from "react-native-multiple-select";
 import { Picker } from "@react-native-picker/picker";
 import useAlimentos from "../../hooks/useAlimentos";
 import groupSorter from "../../utils/groupSorter";
-
+import GroupModal from "../../components/grupos";
 
 enum GruposEnum {
   cafedamanha = "Café da Manhã",
@@ -41,6 +41,7 @@ type CadastroDietaScreenRouteProp = RouteProp<
 type Props = {
   navigation: CadastroDietaScreenNavigationProp;
   route: CadastroDietaScreenRouteProp;
+  groups: IGrupo[];
 };
 
 const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
@@ -73,20 +74,17 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
   const [selectedAlimentos, setSelectedAlimentos] = useState<IAlimento[]>([]);
   const [groups, setGroup] = useState<IGrupo[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>();
-  
-  const handleAlimentoSelect = (alimentoNome: string) => {
-    // Define searchTerm como a primeira letra do nome do alimento
-    const firstLetter = alimentoNome.charAt(0).toLowerCase();
-    setSearchTerm(firstLetter);
-};
-  
+  const [diaEdit, setDiaEdit] = useState<DiasSemana>();
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [selectedGrupo, setSelectedGrupo] = useState<IGrupo | null>(null);
+
   useEffect(() => {
     const { dietaId } = route.params;
-  
+
     if (dietaId) {
       setDietaId(dietaId);
       setIsEditing(true);
-  
+
       const fetchDieta = async () => {
         try {
           const response = await requestWithRefresh({
@@ -94,7 +92,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
             url: `/dieta/${dietaId}`,
           });
           const dieta = response.data;
-  
+
           // Verificação para garantir que as propriedades existem antes de acessá-las
           setFormState({
             diaSemana: Array.isArray(dieta.diaSemana) ? dieta.diaSemana : [], // Garante que seja um array
@@ -105,84 +103,70 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
             porcao: dieta.porcao || "",
             quantidade: dieta.quantidade || "",
           });
-  
+
           // Configura dias da semana selecionados
-          setSelectedDiasSemana(Array.isArray(dieta.diaSemana) ? dieta.diaSemana : []); // Garante que seja um array
-  
-          const processedGroups:IGrupo[] = Array.isArray(dieta.grupos)
-          ? transformGroups(dieta.grupos, allAlimentos, searchTerm)
-          : [];
-        
-        setGroup(processedGroups);
-  
+          setDiaEdit(dieta.diaSemana ?? "Segunda-feira"); // Garante que seja um array
+
+          const processedGroups: IGrupo[] = Array.isArray(dieta.grupos)
+            ? transformGroups(dieta.grupos)
+            : [];
+
+          setGroup(processedGroups);
+
           // Preenche os alimentos selecionados
           const alimentosSelecionados = Array.isArray(dieta.alimentos)
-            ? dieta.alimentos.map((alimento: { _id: string; }) => {
-                return allAlimentos.find((item) => item._id === alimento._id) || null;
-              }).filter(Boolean) // Remove itens nulos
+            ? dieta.alimentos
+                .map((alimento: { _id: string }) => {
+                  return (
+                    allAlimentos.find((item) => item._id === alimento._id) ||
+                    null
+                  );
+                })
+                .filter(Boolean) // Remove itens nulos
             : [];
-  
+
           setSelectedAlimentos(alimentosSelecionados as IAlimento[]);
-  
         } catch (error) {
           console.error("Erro ao buscar dieta:", error);
           setErrorMessage("Ocorreu um erro ao buscar a dieta.");
           Alert.alert("Erro", "Ocorreu um erro ao buscar a dieta.");
         }
       };
-  
+
       fetchDieta();
     }
   }, [route.params, allAlimentos]);
 
-  function transformGroups(grupos: IGrupo[], allAlimentos: IAlimento[], searchTerm: string) {
-    // Normalize the search term
-    const normalizedSearchTerm = searchTerm.trim().toLowerCase();
-
+  function transformGroups(grupos: IGrupo[]) {
     return grupos.map((group: IGrupo) => {
-        const transformedAlimentos = group.alimentos.map((alimento: IAlimentoDieta) => {
-            // Normalize the food name from the group
-            if (!alimento || !alimento.nome) {
-              throw new Error(`Alimento indefinido ou sem nome.`);
+      const transformedAlimentos = group.alimentos
+        .map((alimento: IAlimentoDieta) => {
+          if (!alimento || !alimento.alimentoId) {
+            console.error(
+              `Alimento indefinido ou sem ID no grupo: ${group.nome}`
+            );
+            return null;
           }
-            const normalizedAlimentoNome = alimento.nome.trim().toLowerCase();
-            handleAlimentoSelect(normalizedAlimentoNome)
 
-            // Check if the normalized food name matches the search term
-            if (normalizedAlimentoNome.includes(normalizedSearchTerm)) {
-                // Find the food by name in allAlimentos
-                const alimentoEncontrado = allAlimentos.find((a) => a.nome.trim().toLowerCase() === normalizedAlimentoNome);
+          return {
+            alimentoId: alimento.alimentoId,
+            nome: alimento.nome,
+            preparo: alimento.preparo,
+            porcao: alimento.porcao, // Usando porção do grupo
+            quantidade: alimento.quantidade, // Usando quantidade do grupo
+            categoriaCodigo: alimento.categoriaCodigo,
+            detalhes: alimento.detalhes,
+          };
+        })
+        .filter((item) => item !== null); // Filtra alimentos nulos
 
-                // If food is not found by name, throw an error
-                if (!alimentoEncontrado) {
-                    throw new Error(`Alimento inválido: ${alimento.nome}. Disponíveis: ${JSON.stringify(allAlimentos.map(a => a.nome))}`);
-                }
-
-                // Transform the found food
-                return {
-                    alimentoId: alimentoEncontrado._id,
-                    nome: alimentoEncontrado.nome,
-                    preparo: alimentoEncontrado.preparo,
-                    porcao: alimento.porcao, // Using porcao from the group
-                    quantidade: alimento.quantidade, // Using quantidade from the group
-                    categoriaCodigo: alimentoEncontrado.categoriaCodigo,
-                    detalhes: alimentoEncontrado.detalhes,
-                };
-            }
-
-            // If the name does not match the search term, return null or an empty object
-            return null; // or you could filter these out later
-        }).filter((item) => item !== null); // Filter out null items
-
-        return {
-            nome: group.nome,
-            alimentos: transformedAlimentos,
-        };
+      return {
+        _id: group._id,
+        nome: group.nome,
+        alimentos: transformedAlimentos,
+      };
     });
-}
-
-  
-  
+  }
 
   const handleChange = (field: string, value: any) => {
     setFormState((prevState) => ({ ...prevState, [field]: value }));
@@ -204,7 +188,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       return;
     }
 
-    const alimentos:IAlimentoDieta[] = []
+    const alimentos: IAlimentoDieta[] = [];
 
     alimentoIds.forEach((id) => {
       const alimento = allAlimentos.find((a) => a._id === id._id);
@@ -215,15 +199,15 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
         return;
       }
 
-        const novoAlimento: IAlimentoDieta = {
-          alimentoId: alimento._id,
-          nome: alimento.nome,
-          preparo: alimento.preparo,
-          porcao: parseFloat(porcao),
-          quantidade: parseInt(quantidade, 10),
-          categoriaCodigo: alimento.categoriaCodigo,
-          detalhes: alimento.detalhes,
-        };
+      const novoAlimento: IAlimentoDieta = {
+        alimentoId: alimento._id,
+        nome: alimento.nome,
+        preparo: alimento.preparo,
+        porcao: parseFloat(porcao),
+        quantidade: parseInt(quantidade, 10),
+        categoriaCodigo: alimento.categoriaCodigo,
+        detalhes: alimento.detalhes,
+      };
 
       alimentos.push(novoAlimento);
     });
@@ -265,7 +249,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
           return updatedGroups;
         } else {
           return [...prevState, newGroup];
-        }   
+        }
       });
       setFormState((prev) => ({
         ...prev,
@@ -278,9 +262,112 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     } catch (error) {
       Alert.alert("Erro", "Ocorreu um erro ao salvar o grupo.");
     }
+  };
+
+  const openModal = (grupo: IGrupo) => {
+    console.log("Grupo selecionado:", grupo); // Adicione esta linha
+    setSelectedGrupo(grupo);
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+    setSelectedGrupo(null);
+  };
+
+  const handleEditQuantity = (alimentoId: string, newQuantity: number) => {
+    setGroup((prevGroups) =>
+      prevGroups.map((grupo) => {
+        // Atualiza apenas o grupo que contém o alimento
+        const updatedAlimentos = grupo.alimentos.map((alimento) => {
+          if (alimento.alimentoId === alimentoId) {
+            return { ...alimento, quantidade: newQuantity }; // Atualiza a quantidade
+          }
+          return alimento;
+        });
+
+        return { ...grupo, alimentos: updatedAlimentos }; // Retorna o grupo atualizado
+      })
+    );
+  };
+
+  const handleEditPortion = (alimentoId: string, newPortion: number) => {
+    // Atualiza a porção do alimento no grupo
+    if (selectedGrupo) {
+      const updatedAlimentos = selectedGrupo.alimentos.map((alimento) => {
+        if (alimento.alimentoId === alimentoId) {
+          return { ...alimento, porcao: newPortion }; // Atualiza a quantidade
+        }
+        return alimento; // Retorna o alimento sem alterações
+      });
+
+      // Atualiza o grupo no estado
+      const updatedGroup = { ...selectedGrupo, alimentos: updatedAlimentos };
+
+      setGroup((prevGroups) =>
+        prevGroups.map((grupo) =>
+          grupo._id === updatedGroup._id ? updatedGroup : grupo
+        )
+      );
+
+      // Fecha o modal após a edição
+      closeModal();
+    }
+  };
+
+  const handleRemoveAlimento = (alimentoId: string, grupoId: string) => {
+    setGroup((prevGroups) => {
+      // Encontra o grupo correspondente
+      const grupo = prevGroups.find((g) => g._id === grupoId);
+
+      if (grupo) {
+        // Remove o alimento do grupo
+        const updatedAlimentos = grupo.alimentos.filter(
+          (alimento) => alimento.alimentoId !== alimentoId
+        );
+
+        // Se não houver mais alimentos, remove o grupo
+        if (updatedAlimentos.length === 0) {
+          // Fechar o modal se o grupo não tiver alimentos
+          closeModal();
+          return prevGroups.filter((g) => g._id !== grupoId); // Remove o grupo
+        }
+
+        // Se ainda houver alimentos, apenas atualiza o grupo
+        return prevGroups.map((g) =>
+          g._id === grupoId ? { ...g, alimentos: updatedAlimentos } : g
+        );
+      }
+
+      return prevGroups; // Retorna o estado anterior se o grupo não for encontrado
+    });
+  };
+
+  async function createDieta(dieta: IDietaFixa) {
+    try {
+      await requestWithRefresh({
+        method: "POST",
+        url: "/dieta",
+        data: dieta,
+      });
+      console.log("Dieta criada com sucesso!");
+    } catch (error) {
+      console.error("Erro ao criar a dieta:", error);
+    }
   }
 
-
+  async function updateDieta(dietaId: string, dieta: IDietaFixa) {
+    try {
+      await requestWithRefresh({
+        method: "PUT",
+        url: `/dieta/${dietaId}`,
+        data: dieta,
+      });
+      console.log("Dieta atualizada com sucesso!");
+    } catch (error) {
+      console.error("Erro ao atualizar a dieta:", error);
+    }
+  }
 
   const cadastrarDieta = async () => {
     // Verifica se todos os campos obrigatórios estão preenchidos
@@ -290,38 +377,38 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       return;
     }
 
-    if (!Array.isArray(formState.diaSemana) || formState.diaSemana.length === 0) {
-      setFormState((prevState) => ({
-        ...prevState,
-        diaSemana: Object.values(DiasSemana), // Preenche com todos os dias da semana
-      }));
-    }
+    const groupsOrdenados = groupSorter.sorter(groups);
 
+    // Cria o objeto dieta independentemente de ser edição ou criação
+    let dieta: IDietaFixa = {
+      diaSemana: formState.diaSemana,
+      grupos: groupsOrdenados,
+    };
 
-    const groupsOrdenados = groupSorter.sorter(groups)
+    console.log(JSON.stringify(dieta));
 
     try {
-      const dieta: IDietaFixa = {
-        diaSemana: formState.diaSemana,
-        grupos: groupsOrdenados,
-      };
-      console.log(JSON.stringify(dieta));
+      // Decide se vai atualizar ou criar a dieta
+      if (isEditing) {
+        dieta = {
+          diaSemana: diaEdit ?? [],
+          grupos: groupsOrdenados,
+        };
+        if (dietaId !== null) {
+          await updateDieta(dietaId, dieta);
+        }
+      } else {
+        await createDieta(dieta);
+      }
 
-      // Faz a requisição para cadastrar ou atualizar a dieta
-      await requestWithRefresh({
-        method: isEditing ? "PUT" : "POST",
-        url: isEditing ? `/dieta/${dietaId}` : "/dieta",
-        data: dieta,
-      });
-
+      // Exibe o alerta de sucesso
       Alert.alert(
         "Sucesso",
         `Dieta ${isEditing ? "atualizada" : "cadastrada"} com sucesso!`
       );
 
+      // Limpa os grupos e o estado do formulário
       setGroup([]);
-
-      // Limpa o estado do formulário
       limparFormState();
       navigation.goBack();
     } catch (error) {
@@ -366,43 +453,44 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
   };
 
   return (
-
-    <ScrollView style={styles.container}  >
-     
+    <ScrollView style={styles.container}>
       <Text style={styles.title}>Cadastro de Dieta</Text>
 
-      <Text style={styles.pickerLabel}>Dias da Semana</Text>
-      <View style={styles.pickerContainer}>
-        <MultiSelect
-          items={Object.keys(DiasSemana).map((dia) => ({
-            id: dia,
-            name: DiasSemana[dia as keyof typeof DiasSemana],
-          }))}
-          uniqueKey="id"
-          onSelectedItemsChange={handleSelectDiaSemana}
-          selectedItems={selectedDiasSemana.map((dia) =>
-            Object.keys(DiasSemana).find(
-              (key) => DiasSemana[key as keyof typeof DiasSemana] === dia
-            )
-          )}
-          selectText="Selecione os dias da semana"
-          searchInputPlaceholderText="Buscar dias"
-          tagRemoveIconColor="#CCC"
-          tagBorderColor="#CCC"
-          tagTextColor="#000"
-          selectedItemTextColor="#007BFF"
-          selectedItemIconColor="#007BFF"
-          itemTextColor="#000"
-          displayKey="name"
-          searchInputStyle={{ color: "#CCC" }}
-          submitButtonColor="#007BFF"
-          submitButtonText="Adicionar"
-          styleDropdownMenuSubsection={styles.multiSelectDropdown}
-          styleMainWrapper={styles.multiSelectWrapper}
-          fontSize={15}
-        />
-      </View>
-      
+      {typeof diaEdit === "undefined" && (
+        <>
+          <Text style={styles.pickerLabel}>Dias da Semana</Text>
+          <View style={styles.pickerContainer}>
+            <MultiSelect
+              items={Object.keys(DiasSemana).map((dia) => ({
+                id: dia,
+                name: DiasSemana[dia as keyof typeof DiasSemana],
+              }))}
+              uniqueKey="id"
+              onSelectedItemsChange={handleSelectDiaSemana}
+              selectedItems={selectedDiasSemana.map((dia) =>
+                Object.keys(DiasSemana).find(
+                  (key) => DiasSemana[key as keyof typeof DiasSemana] === dia
+                )
+              )}
+              selectText="Selecione os dias da semana"
+              searchInputPlaceholderText="Buscar dias"
+              tagRemoveIconColor="#CCC"
+              tagBorderColor="#CCC"
+              tagTextColor="#000"
+              selectedItemTextColor="#007BFF"
+              selectedItemIconColor="#007BFF"
+              itemTextColor="#000"
+              displayKey="name"
+              searchInputStyle={{ color: "#CCC" }}
+              submitButtonColor="#007BFF"
+              submitButtonText="Adicionar"
+              styleDropdownMenuSubsection={styles.multiSelectDropdown}
+              styleMainWrapper={styles.multiSelectWrapper}
+              fontSize={15}
+            />
+          </View>
+        </>
+      )}
 
       <Text style={styles.pickerLabel}> Nome da Refeição</Text>
       <View style={styles.pickerContainer}>
@@ -421,13 +509,30 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
           ))}
         </Picker>
       </View>
-      {groups.length > 0 ? (
-         <Text style={styles.registeredMealText}>
-         {groups.map((grupo) => grupo.nome).join(', ')}
-       </Text>
-      ) : (
-        <Text></Text>
-      )}
+      <View style={styles.refeicaoContainer}>
+        {groups.length > 0 ? (
+          groups.map((grupo, index) => (
+            <View key={grupo._id || index} style={styles.refeicaoRegistrada}>
+              <TouchableOpacity>
+                <Ionicons name={"close"} size={20} color={"#000"} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => openModal(grupo)}>
+                <Text style={styles.refeicaoRegistradaText}>{grupo.nome}</Text>
+              </TouchableOpacity>
+            </View>
+          ))
+        ) : (
+          <Text></Text>
+        )}
+      </View>
+      <GroupModal
+        visible={modalVisible}
+        grupo={selectedGrupo}
+        onClose={closeModal}
+        onEditPortion={handleEditPortion} // Sua função de edição de porção
+        onEditQuantity={handleEditQuantity} // Passando a nova função de edição de quantidade
+        onRemoveAlimento={handleRemoveAlimento} // Passando a função de remoção
+      />
 
       <Text style={styles.pickerLabel}>Buscar Alimentos</Text>
       <TextInput

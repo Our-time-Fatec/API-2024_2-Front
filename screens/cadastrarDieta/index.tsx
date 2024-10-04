@@ -25,6 +25,7 @@ import groupSorter from "../../utils/groupSorter";
 import GroupModal from "../../components/grupos";
 import colors from "../../components/colors/colors";
 import dietaProcessor from "../../utils/dietaProcessor";
+import resultChecker from "../../utils/resultChecker";
 
 export enum GruposEnum {
   cafedamanha = "Café da Manhã",
@@ -166,6 +167,14 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
   const handleAddGroup = async () => {
     const { porcao, quantidade } = formState;
     const alimentoIds = selectedAlimentos;
+
+    if (!resultChecker.checkPorcao(porcao)) {
+      return; 
+    }
+
+    if (!resultChecker.checkQuantidade(quantidade)) {
+      return; 
+    }
 
     const alimentos = dietaProcessor.gruposAlimentos(
       porcao,
@@ -315,7 +324,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       grupos: groupsOrdenados,
     };
 
-    console.log(JSON.stringify(dieta));
+    // console.log(JSON.stringify(dieta));
 
     try {
       if (isEditing) {

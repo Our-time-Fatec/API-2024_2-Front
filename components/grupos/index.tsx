@@ -12,6 +12,7 @@ import {
 import { IGrupo } from "../../interfaces/IDieta"; // Importe a interface correta
 import { IAlimentoDieta } from "../../interfaces/IDieta";
 import { Ionicons } from "@expo/vector-icons";
+import resultChecker from "../../utils/resultChecker";
 
 interface GroupModalProps {
   visible: boolean;
@@ -34,8 +35,8 @@ const GroupModal: React.FC<GroupModalProps> = ({
 }) => {
   const [localGrupo, setLocalGrupo] = useState<IGrupo | null>(grupo); // Estado local do grupo
   const [editingAlimentoId, setEditingAlimentoId] = useState<string | null>(null);
-  const [newPortion, setNewPortion] = useState<number | string>("");
-  const [newQuantity, setNewQuantity] = useState<number | string>("");
+  const [newPortion, setNewPortion] = useState<string>("");
+  const [newQuantity, setNewQuantity] = useState<string>("");
 
   // Sincroniza o grupo recebido via props com o estado local
   useEffect(() => {
@@ -59,6 +60,9 @@ const GroupModal: React.FC<GroupModalProps> = ({
   };
 
   const handleEditQuantity = (alimentoId: string) => {
+    if (!resultChecker.checkQuantidade(newQuantity)) {
+      return; // Retorna se a porção for inválida
+    }
     const quantity = Number(newQuantity);
     if (!isNaN(quantity) && quantity > 0) {
       onEditQuantity(alimentoId, quantity);
@@ -76,6 +80,9 @@ const GroupModal: React.FC<GroupModalProps> = ({
   };
 
   const handleEditPortion = (alimentoId: string) => {
+    if (!resultChecker.checkPorcao(newPortion)) {
+      return; // Retorna se a porção for inválida
+    }
     const portion = Number(newPortion);
     if (!isNaN(portion) && portion > 0) {
       onEditPortion(alimentoId, portion);

@@ -72,6 +72,25 @@ class ResultChecker {
       }
       return true
   }
+
+  public checkPorcao = (porcao: string) => {
+    const intPorcao = parseInt(porcao)
+    
+    if(intPorcao >= 500 || intPorcao <= 1){
+      Alert.alert("Porcao inválida", "Insira informações verídicas, por favor")
+      return false
+    }
+    return true
+  }
+  public checkQuantidade = (quantidade: string) => {
+    const intQuantidade = parseInt(quantidade)
+    
+    if(intQuantidade >= 10 || intQuantidade <= 0){
+      Alert.alert("Quantidade inválida", "Insira informações verídicas, por favor")
+      return false
+    }
+    return true
+  }
 }
 
 export default new ResultChecker();

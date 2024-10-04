@@ -135,7 +135,7 @@ const GroupModal: React.FC<GroupModalProps> = ({
         <View style={styles.modalContent}>
           <ScrollView contentContainerStyle={styles.scrollViewContent}>
             <Text style={styles.modalNome}>{localGrupo.nome}</Text>
-            <Text style={styles.modalNome}>Alimentos</Text>
+            <Text style={styles.modalSubNome}>Alimentos</Text>
             {localGrupo.alimentos.map((alimento, alimentoIndex) => (
               <View key={alimento.alimentoId || `alimento-${alimentoIndex}`}>
                 <TouchableOpacity
@@ -217,6 +217,12 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   modalNome: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+    alignSelf: "center"
+  },
+  modalSubNome: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 10,

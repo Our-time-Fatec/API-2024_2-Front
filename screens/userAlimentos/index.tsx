@@ -59,7 +59,7 @@ const UserAlimentosScreen: React.FC<Props> = ({ navigation }) => {
     };
 
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1 }} >
             <View style={styles.container}>
                 <Text style={styles.title}>Meus Alimentos</Text>
                 <Picker

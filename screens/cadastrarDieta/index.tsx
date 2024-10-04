@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Alert,
   RefreshControl,
+  Pressable,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { styles } from "./styles";
@@ -23,8 +24,9 @@ import useAlimentos from "../../hooks/useAlimentos";
 import groupSorter from "../../utils/groupSorter";
 import GroupModal from "../../components/grupos";
 import colors from "../../components/colors/colors";
+import dietaProcessor from "../../utils/dietaProcessor";
 
-enum GruposEnum {
+export enum GruposEnum {
   cafedamanha = "Café da Manhã",
   almoco = "Almoço",
   cafedatarde = "Café da Tarde",
@@ -75,11 +77,11 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
   );
   const [selectedAlimentos, setSelectedAlimentos] = useState<IAlimento[]>([]);
   const [groups, setGroup] = useState<IGrupo[]>([]);
-  const [errorMessage, setErrorMessage] = useState<string>();
   const [diaEdit, setDiaEdit] = useState<DiasSemana>();
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedGrupo, setSelectedGrupo] = useState<IGrupo | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [checked, setChecked] = useState(false);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -123,13 +125,15 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
           setDiaEdit(dieta.diaSemana ?? "Segunda-feira"); // Garante que seja um array
 
           const processedGroups: IGrupo[] = Array.isArray(dieta.grupos)
-            ? transformGroups(dieta.grupos)
+            ? dietaProcessor.transformGroups(dieta.grupos)
             : [];
 
           setGroup(processedGroups);
 
           // Preenche os alimentos selecionados
-          const alimentosSelecionados = Array.isArray(dieta.alimentos)
+          const alimentosSelecionados: IAlimento[] = Array.isArray(
+            dieta.alimentos
+          )
             ? dieta.alimentos
                 .map((alimento: { _id: string }) => {
                   return (
@@ -140,10 +144,9 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
                 .filter(Boolean) // Remove itens nulos
             : [];
 
-          setSelectedAlimentos(alimentosSelecionados as IAlimento[]);
+          setSelectedAlimentos(alimentosSelecionados);
         } catch (error) {
           console.error("Erro ao buscar dieta:", error);
-          setErrorMessage("Ocorreu um erro ao buscar a dieta.");
           Alert.alert("Erro", "Ocorreu um erro ao buscar a dieta.");
         }
       };
@@ -156,84 +159,21 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     setGroup((prevState) => prevState.filter((grupo) => grupo._id !== groupId));
   };
 
-  function transformGroups(grupos: IGrupo[]) {
-    return grupos.map((group: IGrupo) => {
-      const transformedAlimentos = group.alimentos
-        .map((alimento: IAlimentoDieta) => {
-          if (!alimento || !alimento.alimentoId) {
-            console.error(
-              `Alimento indefinido ou sem ID no grupo: ${group.nome}`
-            );
-            return null;
-          }
-
-          return {
-            alimentoId: alimento.alimentoId,
-            nome: alimento.nome,
-            preparo: alimento.preparo,
-            porcao: alimento.porcao, // Usando porção do grupo
-            quantidade: alimento.quantidade, // Usando quantidade do grupo
-            categoriaCodigo: alimento.categoriaCodigo,
-            detalhes: alimento.detalhes,
-          };
-        })
-        .filter((item) => item !== null); // Filtra alimentos nulos
-
-      return {
-        _id: group._id,
-        nome: group.nome,
-        alimentos: transformedAlimentos,
-      };
-    });
-  }
-
   const handleChange = (field: string, value: any) => {
     setFormState((prevState) => ({ ...prevState, [field]: value }));
-    setErrorMessage("");
   };
 
   const handleAddGroup = async () => {
     const { porcao, quantidade } = formState;
     const alimentoIds = selectedAlimentos;
 
-    if (
-      !Array.isArray(alimentoIds) ||
-      alimentoIds.length === 0 ||
-      !porcao ||
-      !quantidade
-    ) {
-      setErrorMessage("Todos os campos do alimento são obrigatórios.");
-      Alert.alert("Erro", "Todos os campos do alimento são obrigatórios.");
-      return;
-    }
+    const alimentos = dietaProcessor.gruposAlimentos(
+      porcao,
+      quantidade,
+      alimentoIds,
+      allAlimentos
+    );
 
-    const alimentos: IAlimentoDieta[] = [];
-
-    alimentoIds.forEach((alimento) => {
-      const alimentoEncontrado = allAlimentos.find(
-        (a) => a._id === alimento._id
-      );
-
-      if (!alimentoEncontrado) {
-        setErrorMessage("Alimento inválido.");
-        Alert.alert("Erro", "Alimento inválido.");
-        return;
-      }
-
-      const novoAlimento: IAlimentoDieta = {
-        alimentoId: alimentoEncontrado._id,
-        nome: alimentoEncontrado.nome,
-        preparo: alimentoEncontrado.preparo,
-        porcao: parseFloat(porcao), // Converta para float se necessário
-        quantidade: parseInt(quantidade, 10), // Converta para inteiro
-        categoriaCodigo: alimentoEncontrado.categoriaCodigo,
-        detalhes: alimentoEncontrado.detalhes,
-      };
-
-      alimentos.push(novoAlimento);
-    });
-
-    // Limpa os campos de entrada
     setFormState((prevState) => ({
       ...prevState,
       alimentoId: null,
@@ -243,7 +183,6 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     setSelectedAlimentos([]);
 
     if (!formState.grupoNome || alimentos.length === 0) {
-      setErrorMessage("Todos os campos do grupo são obrigatórios.");
       Alert.alert("Erro", "Todos os campos do grupo são obrigatórios.");
       return;
     }
@@ -301,34 +240,29 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
   };
 
   const handleEditQuantity = (alimentoId: string, newQuantity: number) => {
-    setGroup((prevGroups) =>
-      prevGroups.map((grupo) => {
-        // Atualiza apenas o grupo que contém o alimento
-        const updatedAlimentos = grupo.alimentos.map((alimento) => {
-          if (alimento.alimentoId === alimentoId) {
-            return { ...alimento, quantidade: newQuantity }; // Atualiza a quantidade
-          }
-          return alimento;
-        });
-
-        return { ...grupo, alimentos: updatedAlimentos }; // Retorna o grupo atualizado
-      })
+    const updatedGroup = dietaProcessor.editQuantity(
+      alimentoId,
+      newQuantity,
+      selectedGrupo
     );
+
+    if (updatedGroup) {
+      setGroup((prevGroups) =>
+        prevGroups.map((grupo) =>
+          grupo._id === updatedGroup._id ? updatedGroup : grupo
+        )
+      );
+    }
   };
 
   const handleEditPortion = (alimentoId: string, newPortion: number) => {
-    // Atualiza a porção do alimento no grupo
-    if (selectedGrupo) {
-      const updatedAlimentos = selectedGrupo.alimentos.map((alimento) => {
-        if (alimento.alimentoId === alimentoId) {
-          return { ...alimento, porcao: newPortion }; // Atualiza a quantidade
-        }
-        return alimento; // Retorna o alimento sem alterações
-      });
+    const updatedGroup = dietaProcessor.editPortion(
+      alimentoId,
+      newPortion,
+      selectedGrupo
+    );
 
-      // Atualiza o grupo no estado
-      const updatedGroup = { ...selectedGrupo, alimentos: updatedAlimentos };
-
+    if (updatedGroup) {
       setGroup((prevGroups) =>
         prevGroups.map((grupo) =>
           grupo._id === updatedGroup._id ? updatedGroup : grupo
@@ -339,29 +273,24 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const handleRemoveAlimento = (alimentoId: string, grupoId: string) => {
     setGroup((prevGroups) => {
-      // Encontra o grupo correspondente
       const grupo = prevGroups.find((g) => g._id === grupoId);
 
       if (grupo) {
-        // Remove o alimento do grupo
         const updatedAlimentos = grupo.alimentos.filter(
           (alimento) => alimento.alimentoId !== alimentoId
         );
 
-        // Se não houver mais alimentos, remove o grupo
         if (updatedAlimentos.length === 0) {
-          // Fechar o modal se o grupo não tiver alimentos
           closeModal();
-          return prevGroups.filter((g) => g._id !== grupoId); // Remove o grupo
+          return prevGroups.filter((g) => g._id !== grupoId);
         }
 
-        // Se ainda houver alimentos, apenas atualiza o grupo
         return prevGroups.map((g) =>
           g._id === grupoId ? { ...g, alimentos: updatedAlimentos } : g
         );
       }
 
-      return prevGroups; // Retorna o estado anterior se o grupo não for encontrado
+      return prevGroups;
     });
   };
 
@@ -373,77 +302,56 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     );
   };
 
-  async function createDieta(dieta: IDietaFixa) {
-    try {
-      await requestWithRefresh({
-        method: "POST",
-        url: "/dieta",
-        data: dieta,
-      });
-    } catch (error) {
-      console.error("Erro ao criar a dieta:", error);
-    }
-  }
-
-  async function updateDieta(dietaId: string, dieta: IDietaFixa) {
-    try {
-      await requestWithRefresh({
-        method: "PUT",
-        url: `/dieta/${dietaId}`,
-        data: dieta,
-      });
-    } catch (error) {
-      console.error("Erro ao atualizar a dieta:", error);
-    }
-  }
-
   const cadastrarDieta = async () => {
-    // Verifica se todos os campos obrigatórios estão preenchidos
     if (groups.length === 0) {
-      setErrorMessage("Todos os campos são obrigatórios.");
       Alert.alert("Erro", "Todos os campos são obrigatórios.");
       return;
     }
 
     const groupsOrdenados = groupSorter.sorter(groups);
 
-    // Cria o objeto dieta independentemente de ser edição ou criação
     let dieta: IDietaFixa = {
       diaSemana: formState.diaSemana,
       grupos: groupsOrdenados,
     };
 
-    // console.log(JSON.stringify(dieta));
+    console.log(JSON.stringify(dieta));
 
     try {
-      // Decide se vai atualizar ou criar a dieta
       if (isEditing) {
         dieta = {
           diaSemana: diaEdit ?? [],
           grupos: groupsOrdenados,
         };
         if (dietaId !== null) {
-          await updateDieta(dietaId, dieta);
+          await dietaProcessor.updateDieta(dietaId, dieta);
         }
       } else {
-        await createDieta(dieta);
+        if (dieta.diaSemana.length === 0) {
+          Alert.alert(
+            "Um momento!",
+            "É necessário selecionar pelo menos um dia da semana."
+          );
+          return;
+        }
+        const result = await dietaProcessor.createDieta(dieta);
+        if (result) {
+          return; 
+        }
+
       }
 
-      // Exibe o alerta de sucesso
       Alert.alert(
         "Sucesso",
         `Dieta ${isEditing ? "atualizada" : "cadastrada"} com sucesso!`
       );
 
-      // Limpa os grupos e o estado do formulário
       setGroup([]);
       limparFormState();
       navigation.goBack();
     } catch (error) {
-      Alert.alert(
-        "Erro",
-        `Ocorreu um erro ao ${isEditing ? "atualizar" : "cadastrar"} a dieta.`
-      );
+      console.error(error)
+      return
     }
   };
 
@@ -457,10 +365,10 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       porcao: "",
       quantidade: "",
     });
-    setErrorMessage("");
   };
 
   const handleSelectDiaSemana = (selectedItems: string[]) => {
+    handleCheckbox(selectedItems, false)
     const validDiasSemana = selectedItems.map(
       (id) => DiasSemana[id as keyof typeof DiasSemana]
     );
@@ -480,6 +388,29 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     setSelectedAlimentos(alimentosSelecionados); // Atualiza o estado com os alimentos selecionados
   };
 
+  const handleCheckbox = async (selectedItems: string[], forceUnchecked?: boolean) => {
+    const newCheckedState = forceUnchecked !== undefined ? forceUnchecked : !checked;
+    setChecked(newCheckedState); 
+  
+    if (newCheckedState) {
+      setFormState((prevState) => ({
+        ...prevState,
+        diaSemana: Object.values(DiasSemana), 
+      }));
+      setSelectedDiasSemana([]); 
+    } else {
+      setFormState((prevState) => ({
+        ...prevState,
+        diaSemana: selectedItems.map(
+          (item) => DiasSemana[item as keyof typeof DiasSemana]
+        ), 
+      }));
+      setSelectedDiasSemana(
+        selectedItems.map((item) => DiasSemana[item as keyof typeof DiasSemana])
+      );
+    }
+  };
+
   return (
     <ScrollView
       style={styles.container}
@@ -497,7 +428,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       {typeof diaEdit === "undefined" && (
         <>
           <Text style={styles.pickerLabel}>Dias da Semana</Text>
-          <View style={styles.pickerContainer}>
+          <View style={styles.selectContainerSemana}>
             <MultiSelect
               items={Object.keys(DiasSemana).map((dia) => ({
                 id: dia,
@@ -522,10 +453,32 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
               searchInputStyle={{ color: "#CCC" }}
               submitButtonColor="#007BFF"
               submitButtonText="Adicionar"
-              styleDropdownMenuSubsection={styles.multiSelectDropdown}
-              styleMainWrapper={styles.multiSelectWrapper}
+              styleDropdownMenuSubsection={styles.multiSelectDropdownSemana}
+              styleMainWrapper={styles.multiSelectWrapperSemana}
               fontSize={15}
             />
+            <View style={styles.checkArea}>
+              <Pressable
+                style={[styles.checkboxBase, checked && styles.checkboxChecked]}
+                onPress={() =>
+                  handleCheckbox(
+                    selectedDiasSemana
+                      .map((dia) =>
+                        Object.keys(DiasSemana).find(
+                          (key) =>
+                            DiasSemana[key as keyof typeof DiasSemana] === dia
+                        )
+                      )
+                      .filter((dia): dia is string => dia !== undefined) // Filtra undefined
+                  )
+                }
+              >
+                {checked && (
+                  <Ionicons name="checkmark" size={24} color="white" />
+                )}
+              </Pressable>
+              <Text style={styles.diaSemanaText}>Todos os dias da semana</Text>
+            </View>
           </View>
         </>
       )}
@@ -584,7 +537,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       />
 
       <Text style={styles.pickerLabel}>Selecione os alimentos</Text>
-      <View style={styles.pickerContainer}>
+      <View style={styles.selectContainer}>
         <MultiSelect
           items={allAlimentos.map((alimento) => ({
             id: alimento._id, // Identificador único
@@ -602,6 +555,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
           selectedItemIconColor="#007BFF"
           itemTextColor="#000"
           displayKey="name"
+          single
           searchInputStyle={{ color: "#CCC" }}
           submitButtonColor="#007BFF"
           submitButtonText="Adicionar"

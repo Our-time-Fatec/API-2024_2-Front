@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import colors from '../../components/colors/colors';
 
 export const styles = StyleSheet.create({
   container: {
@@ -34,6 +35,7 @@ export const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 5,
   },
+
   input: {
     height: 40,
     borderColor: '#ddd',
@@ -88,19 +90,30 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 30,
   },
-  multiSelectDropdown: {
-    paddingVertical: 10,
+  selectContainer: {
+    marginBottom: 20,
     borderWidth: 1,
     borderColor: 'transparent',
     borderRadius: 5,
     padding: 5,
+    //     flexDirection: "row",
+    // justifyContent: "space-around"
   },
-  multiSelectWrapper: {
-    height: 'auto', // Deixa o MultiSelect ocupar o espaço necessário
-    marginBottom: 10, // Espaço abaixo do componente
+  multiSelectDropdown: {
+    paddingVertical: 10,
+    // paddingHorizontal: 10,
     borderWidth: 1,
     borderColor: 'transparent',
     borderRadius: 5,
+
+  },
+  multiSelectWrapper: {
+    height: 'auto', // Deixa o MultiSelect ocupar o espaço necessário
+    marginBottom: 5, // Espaço abaixo do componente
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    padding: 10,
   },
   refeicaoRegistradaText: {
     fontSize: 15,
@@ -122,6 +135,56 @@ export const styles = StyleSheet.create({
     justifyContent: "space-around",
     flexDirection: "row",
     padding: 8
+  },
+  selectContainerSemana: {
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'transparent',
+    borderRadius: 5,
+    padding: 5,
+    flexDirection: "column", // Coloca o checkbox abaixo do MultiSelect
+    alignItems: "flex-start" // Alinha o checkbox e o texto à esquerda
+  },
+  multiSelectDropdownSemana: {
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: 'transparent',
+    borderRadius: 5,
+  },
+  multiSelectWrapperSemana: {
+    height: 'auto',
+    marginBottom: 5,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    padding: 10,
+    width: "100%"
+  },
+  checkboxBase: {
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: colors.blueButtonCollor,
+    backgroundColor: 'transparent',
+    marginBottom: 5, // Adiciona margem inferior para separar do texto
+  },
+  checkboxChecked: {
+    backgroundColor: colors.blueButtonCollor,
+  },
+  checkArea: {
+    flexDirection: "row", // Faz o checkbox e o texto ficarem lado a lado
+    alignItems: "center", // Alinha verticalmente
+    marginTop: 10,
+    width: '100%',
+    flexWrap: "wrap", // Permite quebra de linha
+  },
+  diaSemanaText: {
+    fontSize: 14, // Ajusta o tamanho do texto para ficar mais legível
+    marginLeft: 8, // Espaço entre o checkbox e o texto
+    flexShrink: 1, // Permite que o texto quebre em linhas
   }
 });
 

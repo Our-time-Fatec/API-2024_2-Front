@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert, RefreshControl } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp, useIsFocused } from '@react-navigation/native';
 import { RootStackParamList } from '../../types/rootStack';
@@ -11,6 +11,8 @@ import { DiasSemana } from '../../enums/diasSemana';
 import DietaItem from '../../components/dieta';
 import useDietas from '../../hooks/UseDietas';
 import styles from './styles';
+import { ScrollView } from 'react-native-gesture-handler';
+import colors from '../../components/colors/colors';
 
 type UserDietasScreenNavigationProp = StackNavigationProp<RootStackParamList, "UserDietas">;
 type UserDietasScreenRouteProp = RouteProp<RootStackParamList, "UserDietas">;
@@ -23,6 +25,20 @@ type Props = {
 const UserDietasScreen: React.FC<Props> = ({ navigation }) => {
     const isFocused = useIsFocused();
     const { dietas, selectedDiaSemana, setSelectedDiaSemana, refreshDietas } = useDietas(true);
+    const [refreshing, setRefreshing] = useState(false);
+
+    
+  const onRefresh = async () => {
+    setRefreshing(true);
+
+    try {
+      await refreshDietas(); // ou qualquer outra função que recarregue dados
+    } catch (error) {
+      Alert.alert("Erro", "Ocorreu um erro ao recarregar a página.");
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
     useEffect(() => {
         if (isFocused) {
@@ -56,8 +72,18 @@ const UserDietasScreen: React.FC<Props> = ({ navigation }) => {
     };
 
     return (
-        <View style={{ flex: 1 }}>
-            <View style={styles.container}>
+     
+        <View style={{ flex: 1 }}
+      >
+        
+            <ScrollView style={styles.container} refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          colors={[colors.blueButtonCollor]} // Cor do círculo de carregamento
+          progressBackgroundColor={"#ffffff"} // Cor do fundo do círculo
+        />
+      }>
                 <Text style={styles.title}>Minhas dietas</Text>
                 <Picker
                     selectedValue={selectedDiaSemana}
@@ -87,7 +113,7 @@ const UserDietasScreen: React.FC<Props> = ({ navigation }) => {
                     )}
                     numColumns={1}
                 />
-            </View>
+            </ScrollView>
             <FooterMenu navigation={navigation} />
         </View>
     );

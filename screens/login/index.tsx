@@ -87,6 +87,15 @@ const Login: React.FC<Props> = ({ navigation }) => {
                 </Text>
             </Text>
 
+            <Text style={styles.textocadastro}>
+                <Text
+                    style={styles.linkcadastro}
+                    onPress={() => navigation.navigate("Cadastro")}
+                >
+                    Esqueceu a senha
+                </Text>
+            </Text>
+
             {/* <View style={styles.containerline}> //Descomentar quando implementar funcionalidade 
                 <View style={styles.line} />
                 <Text style={styles.ortext}>OR</Text>

@@ -47,8 +47,8 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
     sexo: "Masculino",
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date)
-  const [dataFormatada, setDataFormatada] = useState<Date | null |undefined >()
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [dataFormatada, setDataFormatada] = useState<Date | null | undefined>();
 
   const handleInputChange = (name: keyof IUsuario, value: any) => {
     if (name === "altura" || name === "peso") {
@@ -69,26 +69,23 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
       ? formaterDate.dateFormater(formattedDateString)
       : new Date();
     setDataNascimento(formattedDateString);
-    setDataFormatada(formattedDate)
+    setDataFormatada(formattedDate);
     formattedDate && handleInputChange("dataDeNascimento", formattedDate);
     formattedDate && setSelectedDate(formattedDate);
-    
   };
 
   const handleDateConfirm = (date: Date) => {
-    handleInputChange("dataDeNascimento", date);  
+    handleInputChange("dataDeNascimento", date);
     setDataNascimento(date.toLocaleDateString("pt-BR"));
     setShowDatePicker(false);
     setSelectedDate(date);
-    setDataFormatada(date)
-  };  
+    setDataFormatada(date);
+  };
 
   const handleRegister = async () => {
-
-    
     // Verificação de todas as validações
-    if(!resultChecker.checkDateConscile(formState, dataFormatada)) return
-    
+    if (!resultChecker.checkDateConscile(formState, dataFormatada)) return;
+
     const validators = [
       resultChecker.checkSenha,
       resultChecker.checkNascimento,
@@ -97,7 +94,7 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
     ];
 
     // Se qualquer validação falhar, o fluxo é interrompido
-    if (validators.some(validator => !validator(formState))) return;
+    if (validators.some((validator) => !validator(formState))) return;
 
     // Executa o cadastro
     const result = await register(formState);
@@ -158,6 +155,8 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
             style={styles.input}
             placeholder="Entre com seu email"
             keyboardType="email-address"
+            spellCheck={false}
+            autoCapitalize="none"
             value={formState.email}
             onChangeText={(text) => handleInputChange("email", text)}
             placeholderTextColor="rgba(163,162,163,255)"
@@ -190,7 +189,7 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
 
         <View style={styles.inputContainer}>
           <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-          <Ionicons name="calendar-outline" size={24} color="black" />
+            <Ionicons name="calendar-outline" size={24} color="black" />
           </TouchableOpacity>
           <TextInput
             placeholder="Data de nascimento (DD/MM/YYYY)"

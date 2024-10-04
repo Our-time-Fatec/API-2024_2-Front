@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { IGrupo } from "../../interfaces/IDieta"; // Importe a interface correta
 import { IAlimentoDieta } from "../../interfaces/IDieta";
+import { Ionicons } from "@expo/vector-icons";
 
 interface GroupModalProps {
   visible: boolean;
@@ -40,6 +41,13 @@ const GroupModal: React.FC<GroupModalProps> = ({
   useEffect(() => {
     setLocalGrupo(grupo);
   }, [grupo]);
+
+  useEffect(() => {
+    if (!visible) {
+      setEditingAlimentoId(null);
+    }
+  }, [visible]);
+
 
   // Função que atualiza o grupo local e envia para o pai
   const updateAndSendGrupo = (updatedAlimentos: IAlimentoDieta[]) => {
@@ -135,9 +143,15 @@ const GroupModal: React.FC<GroupModalProps> = ({
                   onLongPress={() => handleLongPress(alimento.alimentoId)}
                   style={styles.alimentoContainer}
                 >
+                  
                   <Text style={styles.modalInfo}>
                     {alimento.quantidade}x - {alimento.nome} - {alimento.porcao}g
                   </Text>
+                  <Ionicons 
+                            name={editingAlimentoId === alimento.alimentoId ? "caret-up" : "caret-down"} 
+                            size={24} 
+                            color={"#000"} 
+                        />
                 </TouchableOpacity>
                 {editingAlimentoId === alimento.alimentoId && (
                   <>
@@ -226,6 +240,11 @@ const styles = StyleSheet.create({
   },
   alimentoContainer: {
     paddingVertical: 10,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 10
   },
   editContainer: {
     flexDirection: "row",

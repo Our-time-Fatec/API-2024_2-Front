@@ -1,11 +1,11 @@
 import { StyleSheet } from 'react-native';
-import colors from '../../components/colors/colors';
+import colors from '../../colors/colors';
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: colors.background,
   },
   scrollContainer: {
     paddingBottom: 30,
@@ -50,7 +50,7 @@ export const styles = StyleSheet.create({
     marginBottom: 5,
   },
   button: {
-    backgroundColor: '#007BFF',
+    backgroundColor: colors.blueButtonCollor,
     padding: 12,
     borderRadius: 5,
     alignItems: 'center',

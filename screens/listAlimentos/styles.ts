@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import colors from "../../colors/colors";
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     picker: {
         height: 50,
         width: '100%',
-        marginBottom: 10,
+        marginBottom: 1,
     },
     row: {
         justifyContent: 'space-between',
@@ -50,6 +50,21 @@ const styles = StyleSheet.create({
     icon: {
         marginRight: 10,
     },
+    searchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        padding: 5,
+        borderRadius: 25,
+        marginTop: 10,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 5 },
+        elevation: 5,
+    },
+    searchInput: {
+        marginLeft: 10,
+        flex: 1,
+        fontSize: 16
+    },
 });
-
-export default styles

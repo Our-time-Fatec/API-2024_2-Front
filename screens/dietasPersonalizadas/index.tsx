@@ -4,7 +4,6 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../../types/rootStack";
 import styles from './styles';
-import colors from '../../components/colors/colors';
 
 type DietasPersonalizadasNavigationProps = StackNavigationProp<RootStackParamList, "DietasPersonalizadas">;
 type DietasPersonalizadasRouteProps = RouteProp<RootStackParamList, "DietasPersonalizadas">;

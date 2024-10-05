@@ -27,7 +27,7 @@ const useDietas = (onlyUser: boolean = false) => {
             if (diaSemana === 'Hoje') {
                 diaSemana = chaveDiaSemana(diaAtualDaSemana())
             }
-            console.log(`/dieta/me${diaSemana ? `?diaSemana=${diaSemana}` : ''}`)
+            // console.log(`/dieta/me${diaSemana ? `?diaSemana=${diaSemana}` : ''}`)
             const response = await requestWithRefresh({
                 method: 'GET',
                 url: `/dieta/me${diaSemana ? `?diaSemana=${diaSemana}` : ''}`,

@@ -1,10 +1,11 @@
 import { StyleSheet } from "react-native";
+import colors from "../../colors/colors";
 
 const styles = StyleSheet.create({
     container: {
       flex: 1,
       paddingHorizontal: 16,
-      backgroundColor: '#fff',
+      backgroundColor: colors.background,
     },
     header: {
       fontSize: 24,

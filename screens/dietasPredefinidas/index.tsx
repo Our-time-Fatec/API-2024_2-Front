@@ -4,7 +4,6 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../../types/rootStack";
 import styles from './styles';
-import colors from '../../components/colors/colors';
 
 type DietasPredefinidasNavigationProps = StackNavigationProp<RootStackParamList, "DietasPredefinidas">;
 type DietasPredefinidasRouteProps = RouteProp<RootStackParamList, "DietasPredefinidas">;
@@ -16,7 +15,7 @@ type Props = {
 
 const DietasPredefinidas: React.FC<Props> = ({ navigation }) => {
   return (
-    <ScrollView style={[styles.container, {backgroundColor: colors.background}]}>
+    <ScrollView style={styles.container}>
 
       <Text style={styles.header}>Dietas Predefinidas.</Text>
       

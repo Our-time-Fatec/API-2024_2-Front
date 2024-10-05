@@ -7,6 +7,7 @@ import { RootStackParamList } from '../../types/rootStack';
 import FooterMenu from '../../components/menus';
 import { requestWithRefresh } from '../../services/api';
 import { IAlimento } from '../../interfaces/IAlimento';
+import { styles } from './styles';
 
 type UserAlimentosConsumidosScreenNavigationProp = StackNavigationProp<RootStackParamList, "UserAlimentosConsumidos">;
 type UserAlimentosConsumidosScreenRouteProp = RouteProp<RootStackParamList, "UserAlimentosConsumidos">;
@@ -111,32 +112,6 @@ const UserAlimentosConsumidosScreen: React.FC<Props> = ({ navigation }) => {
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 16,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    row: {
-        justifyContent: 'space-between',
-    },
-    loadMoreButton: {
-        padding: 10,
-        alignItems: 'center',
-    },
-    loadMoreText: {
-        fontSize: 16,
-        color: '#007bff',
-    },
-    loadingText: {
-        textAlign: 'center',
-        paddingVertical: 10,
-        fontSize: 16,
-    },
-});
+
 
 export default UserAlimentosConsumidosScreen;

@@ -10,7 +10,6 @@ import {
 import { Picker } from "@react-native-picker/picker";
 import { Ionicons } from "@expo/vector-icons";
 import { styles } from "./styles";
-import colors from "../../components/colors/colors";
 import { RootStackParamList } from "../../types/rootStack";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
@@ -206,7 +205,7 @@ const CadastroAlimentoScreen: React.FC<Props> = ({ navigation, route }) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={styles.container}>
         <ScrollView
           contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
           keyboardShouldPersistTaps="handled"

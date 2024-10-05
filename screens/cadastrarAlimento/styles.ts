@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import colors from "../../colors/colors";
 
 const styles = StyleSheet.create({
   container: {
@@ -7,6 +8,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: colors.background
   },
   profileImage: {
     width: 100,
@@ -65,7 +67,7 @@ const styles = StyleSheet.create({
     color: "#007bff",
   },
   button: {
-    backgroundColor: "#007bff",
+    backgroundColor: colors.blueButtonCollor,
     paddingVertical: 18,
     paddingHorizontal: "30%",
     borderRadius: 30,

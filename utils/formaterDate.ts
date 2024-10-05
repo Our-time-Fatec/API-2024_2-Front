@@ -78,8 +78,6 @@ class DateFormater {
       return { valid: false };
     }
 
-    let birthDate = new Date(year, month - 1, day);
-
     return { valid: true };
   };
 

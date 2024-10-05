@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import {styles} from './styles';
 
 type Props = {
   navigation: any; // Defina o tipo correto do seu stack ou navigation prop aqui
@@ -32,29 +33,5 @@ const FooterMenu: React.FC<Props> = ({ navigation }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  footer: {
-    backgroundColor: "#FFFFFF",
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 10,
-    borderTopWidth: 1,
-    borderColor: '#eee',
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 2, height: -5 },
-    shadowRadius: 5,
-    elevation: 5,
-  },
-  menuItem: {
-    alignItems: 'center',
-  },
-  menuText: {
-    fontSize: 12,
-    marginTop: 4,
-    color: 'black',
-  }
-});
 
 export default FooterMenu;

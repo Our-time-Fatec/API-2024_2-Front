@@ -23,7 +23,7 @@ import { Picker } from "@react-native-picker/picker";
 import useAlimentos from "../../hooks/useAlimentos";
 import groupSorter from "../../utils/groupSorter";
 import GroupModal from "../../components/grupos";
-import colors from "../../components/colors/colors";
+import colors from "../../colors/colors";
 import dietaProcessor from "../../utils/dietaProcessor";
 import resultChecker from "../../utils/resultChecker";
 
@@ -46,7 +46,6 @@ type CadastroDietaScreenRouteProp = RouteProp<
 type Props = {
   navigation: CadastroDietaScreenNavigationProp;
   route: CadastroDietaScreenRouteProp;
-  groups: IGrupo[];
 };
 
 const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
@@ -169,11 +168,11 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     const alimentoIds = selectedAlimentos;
 
     if (!resultChecker.checkPorcao(porcao)) {
-      return; 
+      return;
     }
 
     if (!resultChecker.checkQuantidade(quantidade)) {
-      return; 
+      return;
     }
 
     const alimentos = dietaProcessor.gruposAlimentos(
@@ -183,13 +182,13 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       allAlimentos
     );
 
-    setFormState((prevState) => ({
-      ...prevState,
-      alimentoId: null,
-      porcao: "",
-      quantidade: "",
-    }));
-    setSelectedAlimentos([]);
+    // setFormState((prevState) => ({
+    //   ...prevState,
+    //   alimentoId: null,
+    //   porcao: "",
+    //   quantidade: "",
+    // }));
+
 
     if (!formState.grupoNome || alimentos.length === 0) {
       Alert.alert("Erro", "Todos os campos do grupo são obrigatórios.");
@@ -231,9 +230,13 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     // Limpa o estado do formulário
     setFormState((prev) => ({
       ...prev,
-      grupoNome: null, // Limpa o campo de nome do grupo para null
+      // grupoNome: null, // Limpa o campo de nome do grupo para null
       alimentos: [], // Limpa a lista de alimentos
+      alimentoId: null,
+      porcao: "",
+      quantidade: "",
     }));
+    setSelectedAlimentos([]);
 
     Alert.alert("Sucesso", "Refeição cadastrada com sucesso!");
   };
@@ -345,9 +348,8 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
         }
         const result = await dietaProcessor.createDieta(dieta);
         if (result) {
-          return; 
+          return;
         }
-
       }
 
       Alert.alert(
@@ -359,8 +361,8 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       limparFormState();
       navigation.goBack();
     } catch (error) {
-      console.error(error)
-      return
+      console.error(error);
+      return;
     }
   };
 
@@ -377,7 +379,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
   };
 
   const handleSelectDiaSemana = (selectedItems: string[]) => {
-    handleCheckbox(selectedItems, false)
+    handleCheckbox(selectedItems, false);
     const validDiasSemana = selectedItems.map(
       (id) => DiasSemana[id as keyof typeof DiasSemana]
     );
@@ -389,6 +391,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       diaSemana: validDiasSemana,
     }));
   };
+
   const handleSelectAlimentos = (selectedItems: string[]) => {
     const alimentosSelecionados = allAlimentos.filter(
       (alimento) => selectedItems.includes(alimento._id) // Filtra os alimentos com base nos IDs selecionados
@@ -397,22 +400,26 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     setSelectedAlimentos(alimentosSelecionados); // Atualiza o estado com os alimentos selecionados
   };
 
-  const handleCheckbox = async (selectedItems: string[], forceUnchecked?: boolean) => {
-    const newCheckedState = forceUnchecked !== undefined ? forceUnchecked : !checked;
-    setChecked(newCheckedState); 
-  
+  const handleCheckbox = async (
+    selectedItems: string[],
+    forceUnchecked?: boolean
+  ) => {
+    const newCheckedState =
+      forceUnchecked !== undefined ? forceUnchecked : !checked;
+    setChecked(newCheckedState);
+
     if (newCheckedState) {
       setFormState((prevState) => ({
         ...prevState,
-        diaSemana: Object.values(DiasSemana), 
+        diaSemana: Object.values(DiasSemana),
       }));
-      setSelectedDiasSemana([]); 
+      setSelectedDiasSemana([]);
     } else {
       setFormState((prevState) => ({
         ...prevState,
         diaSemana: selectedItems.map(
           (item) => DiasSemana[item as keyof typeof DiasSemana]
-        ), 
+        ),
       }));
       setSelectedDiasSemana(
         selectedItems.map((item) => DiasSemana[item as keyof typeof DiasSemana])

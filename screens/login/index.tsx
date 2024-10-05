@@ -9,7 +9,6 @@ import useLogin from "../../hooks/useLogin";
 import { ILoginRequest } from "../../interfaces/ILogin";
 import styles from "./styles";
 import { BotaoAzul } from "../../components/buttons";
-import colors from "../../components/colors/colors";
 
 type LoginScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -41,7 +40,7 @@ const Login: React.FC<Props> = ({ navigation }) => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={styles.container}>
       <Text style={styles.titulo}>Entre</Text>
 
       <View style={styles.containerinput}>

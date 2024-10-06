@@ -207,6 +207,18 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       if (existingGroupIndex !== -1) {
         // Se o grupo existe, adiciona novos alimentos ao grupo existente
         const existingGroup = prevState[existingGroupIndex];
+
+        const hasDuplicate = alimentos.some((newAlimento) =>
+          existingGroup.alimentos.some(
+            (existingAlimento) => existingAlimento.alimentoId === newAlimento.alimentoId
+          )
+        );
+  
+        if (hasDuplicate) {
+          Alert.alert("Erro", "Este alimento já foi adicionado ao grupo.");
+          return prevState; // Retorna o estado sem alterar nada
+        }
+
         const updatedAlimentos = [...existingGroup.alimentos, ...alimentos];
 
         // Atualiza o grupo existente na lista

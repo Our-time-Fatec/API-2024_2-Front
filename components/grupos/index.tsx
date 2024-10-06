@@ -8,6 +8,7 @@ import {
   StyleSheet,
   TextInput,
   Alert,
+  Pressable,
 } from "react-native";
 import { IGrupo } from "../../interfaces/IDieta"; // Importe a interface correta
 import { IAlimentoDieta } from "../../interfaces/IDieta";
@@ -146,11 +147,11 @@ const GroupModal: React.FC<GroupModalProps> = ({
           <ScrollView contentContainerStyle={styles.scrollViewContent}>
             <Text style={styles.modalNome}>{localGrupo.nome}</Text>
             <Text style={styles.modalSubNome}>Alimentos</Text>
+            <View style={styles.contentWrapper}>
             {localGrupo.alimentos.map((alimento, alimentoIndex) => (
-              <View key={alimento.alimentoId || `alimento-${alimentoIndex}`}>
+              <View key={alimento.alimentoId || `alimento-${alimentoIndex}`} style={styles.contentModal}>
                 <TouchableOpacity
                   onPress={() => startEditing(alimento.alimentoId)}
-                  onLongPress={() => handleLongPress(alimento.alimentoId)}
                   style={styles.alimentoContainer}
                 >
                   <Text style={styles.modalInfo}>
@@ -199,10 +200,14 @@ const GroupModal: React.FC<GroupModalProps> = ({
                         <Text style={styles.saveButtonText}>Salvar</Text>
                       </TouchableOpacity>
                     </View>
+                    <Pressable style={styles.deleteButton} onPress={() => handleLongPress(alimento.alimentoId)}>
+                      <Text style={styles.deleteButtonText}>Remover alimento</Text>
+                    </Pressable>
                   </>
                 )}
               </View>
             ))}
+            </View>
           </ScrollView>
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
             <Text style={styles.closeButtonText}>Fechar</Text>
@@ -212,6 +217,5 @@ const GroupModal: React.FC<GroupModalProps> = ({
     </Modal>
   );
 };
-
 
 export default GroupModal;

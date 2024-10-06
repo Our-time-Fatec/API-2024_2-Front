@@ -68,6 +68,7 @@ const AlimentoItem: React.FC<AlimentoProps> = ({ alimento, isUserAlimento, isAli
                     </View>
                 )}
             </TouchableOpacity>
+            <View style={styles.contentWrapper}>
             <View style={styles.detailsContainer}>
                 <Text style={styles.nome}>{alimento.nome}</Text>
                 <Text style={styles.info}>{alimento.porcao}g</Text>
@@ -82,6 +83,7 @@ const AlimentoItem: React.FC<AlimentoProps> = ({ alimento, isUserAlimento, isAli
                     )
                 }
             </View>
+            <View>
             {isUserAlimento && (
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity style={styles.editButton} onPress={() => onEdit(alimento._id ? alimento._id : '')}>
@@ -108,6 +110,8 @@ const AlimentoItem: React.FC<AlimentoProps> = ({ alimento, isUserAlimento, isAli
                     </View>
                 )
             }
+            </View>
+            </View>
             <Modal
                 animationType="slide"
                 transparent={true}

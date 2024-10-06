@@ -14,7 +14,8 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
-        elevation: 2,
+        elevation: 2,   
+        justifyContent: 'space-between',
     },
     imageContainer: {
         width: '100%',
@@ -138,5 +139,9 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         alignItems: 'center',
         width: '100%',
+    },
+    contentWrapper: {
+        flex: 1,  // Garante que o conteúdo ocupe o espaço restante no container
+        justifyContent: "flex-start",  // Mantém o conteúdo no topo
     },
 });

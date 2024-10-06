@@ -31,10 +31,12 @@ export const styles = StyleSheet.create({
     modalInfo: {
       fontSize: 16,
       color: "#555",
-      marginBottom: 8,
+      width: '85%',          
+      maxWidth: '85%',       
+      flexWrap: 'wrap',     
     },
     closeButton: {
-      marginTop: 15,
+      marginTop: 8,
       backgroundColor: "#2d74da",
       paddingVertical: 8,
       borderRadius: 5,
@@ -76,4 +78,28 @@ export const styles = StyleSheet.create({
       color: "#fff",
       fontSize: 16,
     },
+    deleteButton:{
+      marginTop: 15,
+      backgroundColor: "#ff4f4f",
+      paddingVertical: 8,
+      borderRadius: 5,
+      alignItems: "center",
+      width: "100%",
+      borderColor: "#ff4242",
+      borderWidth: 1
+    },
+    deleteButtonText:{
+    color: "#fff",
+      fontSize: 16
+    },
+    contentModal:{
+      backgroundColor: "#fafafc",
+      padding: 6,
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: "#f1f1f1",
+    },
+    contentWrapper:{
+      gap: 5
+    }
   });

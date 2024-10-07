@@ -115,7 +115,6 @@ const GroupModal: React.FC<GroupModalProps> = ({
         onPress: () => {
           if (localGrupo?._id) {
             onRemoveAlimento(alimentoId, localGrupo._id);
-            // Remove o alimento no estado local e no pai
             const updatedAlimentos = localGrupo.alimentos.filter(
               (alimento) => alimento.alimentoId !== alimentoId
             );
@@ -130,15 +129,15 @@ const GroupModal: React.FC<GroupModalProps> = ({
 
   const startEditing = (alimentoId: string) => {
     if (editingAlimentoId === alimentoId) {
-      setEditingAlimentoId(null); // Se já está editando, fecha a edição
+      setEditingAlimentoId(null); 
     } else {
-      setEditingAlimentoId(alimentoId); // Caso contrário, inicia a edição
+      setEditingAlimentoId(alimentoId); 
       setNewPortion("");
       setNewQuantity("");
     }
   };
 
-  if (!localGrupo) return null; // Se o grupo não estiver definido
+  if (!localGrupo) return null;
 
   return (
     <Modal animationType="fade" transparent={true} visible={visible}>

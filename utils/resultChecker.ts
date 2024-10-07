@@ -82,6 +82,7 @@ class ResultChecker {
     }
     return true
   }
+  
   public checkQuantidade = (quantidade: string) => {
     const intQuantidade = parseInt(quantidade)
     

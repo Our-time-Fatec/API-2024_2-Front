@@ -125,6 +125,9 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 20,
     flexDirection: "row",
+    maxWidth: "100%", // Limita a largura a 60% do container
+    flexGrow: 1, // Faz o item crescer para preencher até 60%
+    flexWrap: "wrap", // Permite que os itens quebrem linha
     gap: 5
   },
   refeicaoRegistrada:{
@@ -134,6 +137,7 @@ export const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-around",
     flexDirection: "row",
+    // gap: 4,
     padding: 8
   },
   selectContainerSemana: {
@@ -185,6 +189,12 @@ export const styles = StyleSheet.create({
     fontSize: 14, // Ajusta o tamanho do texto para ficar mais legível
     marginLeft: 8, // Espaço entre o checkbox e o texto
     flexShrink: 1, // Permite que o texto quebre em linhas
+  },
+  loading:{
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    height: "100%"
   }
 });
 

@@ -21,6 +21,11 @@ const useDietas = (onlyUser: boolean = false) => {
         return entry ? `${entry[0]}` : ""; // return key or undefined if not found
     };
 
+    const diaSemanaIndice = (dia: DiasSemana): number => {
+        const daysArray = Object.values(DiasSemana);
+        return daysArray.indexOf(dia);
+    };
+
     const fetchDietas = useCallback(async (diaSemana: string) => {
         try {
             if (diaSemana === 'Todos') { diaSemana = '' }
@@ -33,7 +38,11 @@ const useDietas = (onlyUser: boolean = false) => {
                 url: `/dieta/me${diaSemana ? `?diaSemana=${diaSemana}` : ''}`,
             });
           
-            setDietas(response.data);
+            const sortedDietas = response.data.sort((a: IDietaFixa, b: IDietaFixa) => {
+                return diaSemanaIndice(a.diaSemana as DiasSemana) - diaSemanaIndice(b.diaSemana as DiasSemana);
+            });
+
+            setDietas(sortedDietas);
         } catch (error) {
             console.error('Erro ao buscar dietas:', error);
         }

@@ -2,8 +2,31 @@ import { Alert } from "react-native";
 import { IAlimento } from "../interfaces/IAlimento";
 import { IAlimentoDieta, IDietaFixa, IGrupo } from "../interfaces/IDieta";
 import { requestWithRefresh } from "../services/api";
+import { DiasSemana } from "../enums/diasSemana";
 
 class DietaProcessor {
+
+  public sorter(grupos: IGrupo[]): IGrupo[] {
+    const ORDEM_GRUPOS = ["Café da Manhã", "Almoço", "Café da Tarde", "Janta"];
+
+    return grupos.sort((a, b) => {
+        const indiceA = ORDEM_GRUPOS.indexOf(a.nome);
+        const indiceB = ORDEM_GRUPOS.indexOf(b.nome);
+        return indiceA - indiceB;
+    });
+}
+
+public sortDietasByDay = (dietas: IDietaFixa[]) => {
+  const diasSemanaOrder = Object.values(DiasSemana);
+  
+  return dietas.sort((a, b) => {
+    const diaA = Array.isArray(a.diaSemana) ? a.diaSemana[0] : a.diaSemana;
+    const diaB = Array.isArray(b.diaSemana) ? b.diaSemana[0] : b.diaSemana;
+
+    return diasSemanaOrder.indexOf(diaA) - diasSemanaOrder.indexOf(diaB);
+  });
+};
+
   public transformGroups(grupos: IGrupo[]) {
     return grupos.map((group: IGrupo) => {
       const transformedAlimentos = group.alimentos

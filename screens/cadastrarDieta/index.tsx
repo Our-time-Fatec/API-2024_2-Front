@@ -8,6 +8,7 @@ import {
   Alert,
   RefreshControl,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { styles } from "./styles";
@@ -21,7 +22,6 @@ import { IAlimento } from "../../interfaces/IAlimento";
 import MultiSelect from "react-native-multiple-select";
 import { Picker } from "@react-native-picker/picker";
 import useAlimentos from "../../hooks/useAlimentos";
-import groupSorter from "../../utils/groupSorter";
 import GroupModal from "../../components/grupos";
 import colors from "../../colors/colors";
 import dietaProcessor from "../../utils/dietaProcessor";
@@ -67,6 +67,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     quantidade: "",
   });
 
+  const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [dietaId, setDietaId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -101,6 +102,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     if (dietaId) {
       setDietaId(dietaId);
       setIsEditing(true);
+      setIsLoading(true); 
 
       const fetchDieta = async () => {
         try {
@@ -148,15 +150,29 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
         } catch (error) {
           console.error("Erro ao buscar dieta:", error);
           Alert.alert("Erro", "Ocorreu um erro ao buscar a dieta.");
+        }finally{
+          setIsLoading(false)
         }
       };
 
       fetchDieta();
     }
-  }, [route.params, allAlimentos]);
+  }, [route.params]);
 
   const handleRemoveGroup = (groupId: string) => {
-    setGroup((prevState) => prevState.filter((grupo) => grupo._id !== groupId));
+    Alert.alert("Remover Refeição", "Deseja remover esta refeição?", [
+      {
+        text: "Cancelar",
+        style: "cancel",
+      },
+      {
+        text: "Remover",
+        onPress: () => {
+          setGroup((prevState) => prevState.filter((grupo) => grupo._id !== groupId));
+        },
+      },
+    ]);
+    
   };
 
   const handleChange = (field: string, value: any) => {
@@ -228,14 +244,14 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
             : group
         );
 
-        return updatedGroups;
+        return dietaProcessor.sorter(updatedGroups);
       } else {
         // Cria um novo grupo se não existir
         const newGroup: IGrupo = {
           nome: groupName,
           alimentos: alimentos,
         };
-        return [...prevState, newGroup];
+        return dietaProcessor.sorter([...prevState, newGroup]);
       }
     });
 
@@ -332,7 +348,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       return;
     }
 
-    const groupsOrdenados = groupSorter.sorter(groups);
+    const groupsOrdenados = dietaProcessor.sorter(groups);
 
     let dieta: IDietaFixa = {
       diaSemana: formState.diaSemana,
@@ -442,6 +458,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
   return (
     <ScrollView
       style={styles.container}
+      contentContainerStyle={{ flexGrow: 1 }}
       refreshControl={
         <RefreshControl
           refreshing={refreshing}
@@ -451,6 +468,12 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
         />
       }
     >
+       {isLoading ? (
+        <View style={styles.loading}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      ) : (
+        <>
       <Text style={styles.title}>Cadastro de Dieta</Text>
 
       {typeof diaEdit === "undefined" && (
@@ -535,7 +558,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
               <TouchableOpacity
                 onPress={() => grupo._id && handleRemoveGroup(grupo._id)}
               >
-                <Ionicons name={"close"} size={20} color={"#000"} />
+                <Ionicons name={"close"} size={20} color={"#333"} />
               </TouchableOpacity>
               <TouchableOpacity onPress={() => openModal(grupo)}>
                 <Text style={styles.refeicaoRegistradaText}>{grupo.nome}</Text>
@@ -615,8 +638,12 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.submitButton} onPress={cadastrarDieta}>
-        <Text style={styles.buttonText}>Cadastrar Dieta</Text>
+      <Text style={styles.buttonText}>
+  {isEditing ? "Atualizar Dieta" : "Cadastrar Dieta"}
+</Text>
       </TouchableOpacity>
+      </>
+      )}
     </ScrollView>
   );
 };

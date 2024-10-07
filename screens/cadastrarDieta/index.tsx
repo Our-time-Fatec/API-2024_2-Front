@@ -166,12 +166,12 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       },
       {
         text: "Remover",
+        style: "destructive",
         onPress: () => {
           setGroup((prevState) => prevState.filter((grupo) => grupo._id !== groupId));
         },
       },
     ]);
-    // setGroup((prevState) => prevState.filter((grupo) => grupo._id !== groupId));
   };
 
   const handleChange = (field: string, value: any) => {

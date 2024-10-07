@@ -104,7 +104,7 @@ const GroupModal: React.FC<GroupModalProps> = ({
     }
   };
 
-  const handleLongPress = (alimentoId: string) => {
+  const handleRemoveAlimento = (alimentoId: string) => {
     Alert.alert("Remover Alimento", "Deseja remover este alimento?", [
       {
         text: "Cancelar",
@@ -113,12 +113,18 @@ const GroupModal: React.FC<GroupModalProps> = ({
       {
         text: "Remover",
         onPress: () => {
-          if (localGrupo?._id) {
-            onRemoveAlimento(alimentoId, localGrupo._id);
+          console.log(localGrupo); // Verifique o valor de localGrupo
+          if (localGrupo?.nome) {
+            onRemoveAlimento(alimentoId, localGrupo.nome);
             const updatedAlimentos = localGrupo.alimentos.filter(
               (alimento) => alimento.alimentoId !== alimentoId
             );
-            updateAndSendGrupo(updatedAlimentos);
+  
+            if (updatedAlimentos.length === localGrupo.alimentos.length) {
+              Alert.alert("Erro", "Alimento não encontrado no grupo.");
+            } else {
+              updateAndSendGrupo(updatedAlimentos);
+            }
           } else {
             Alert.alert("Erro", "Grupo não encontrado.");
           }
@@ -126,6 +132,7 @@ const GroupModal: React.FC<GroupModalProps> = ({
       },
     ]);
   };
+  
 
   const startEditing = (alimentoId: string) => {
     if (editingAlimentoId === alimentoId) {
@@ -199,7 +206,7 @@ const GroupModal: React.FC<GroupModalProps> = ({
                         <Text style={styles.saveButtonText}>Salvar</Text>
                       </TouchableOpacity>
                     </View>
-                    <Pressable style={styles.deleteButton} onPress={() => handleLongPress(alimento.alimentoId)}>
+                    <Pressable style={styles.deleteButton} onPress={() => handleRemoveAlimento(alimento.alimentoId)}>
                       <Text style={styles.deleteButtonText}>Remover alimento</Text>
                     </Pressable>
                   </>

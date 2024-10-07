@@ -14,11 +14,10 @@ const useDietas = (onlyUser: boolean = false) => {
         return daysOfWeek[dayIndex]; 
     };
 
-    // Reverse mapping from value to key
     const chaveDiaSemana = (value: string): string => {
         const entries = Object.entries(DiasSemana);
         const entry = entries.find(([key, val]) => val === value);
-        return entry ? `${entry[0]}` : ""; // return key or undefined if not found
+        return entry ? `${entry[0]}` : ""; 
     };
 
     const diaSemanaIndice = (dia: DiasSemana): number => {

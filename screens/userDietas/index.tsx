@@ -17,10 +17,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { requestWithRefresh } from "../../services/api";
 import { DiasSemana } from "../../enums/diasSemana";
 import DietaItem from "../../components/dieta";
-import useDietas from "../../hooks/UseDietas";
+import useDietas from "../../hooks/useDietas";
 import styles from "./styles";
 import { ScrollView } from "react-native-gesture-handler";
-import colors from "../../colors/colors";
 
 type UserDietasScreenNavigationProp = StackNavigationProp<
   RootStackParamList,

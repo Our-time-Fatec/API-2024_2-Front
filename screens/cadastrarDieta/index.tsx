@@ -112,19 +112,18 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
           });
           const dieta = response.data;
 
-          // Verificação para garantir que as propriedades existem antes de acessá-las
           setFormState({
-            diaSemana: Array.isArray(dieta.diaSemana) ? dieta.diaSemana : [], // Garante que seja um array
-            grupos: Array.isArray(dieta.grupos) ? dieta.grupos : [], // Garante que seja um array
+            diaSemana: Array.isArray(dieta.diaSemana) ? dieta.diaSemana : [], 
+            grupos: Array.isArray(dieta.grupos) ? dieta.grupos : [], 
             grupoNome: dieta.grupoNome || null,
-            alimentos: Array.isArray(dieta.alimentos) ? dieta.alimentos : [], // Garante que seja um array
+            alimentos: Array.isArray(dieta.alimentos) ? dieta.alimentos : [], 
             alimentoId: null,
             porcao: dieta.porcao || "",
             quantidade: dieta.quantidade || "",
           });
 
           // Configura dias da semana selecionados
-          setDiaEdit(dieta.diaSemana ?? "Segunda-feira"); // Garante que seja um array
+          setDiaEdit(dieta.diaSemana ?? "Segunda-feira"); 
 
           const processedGroups: IGrupo[] = Array.isArray(dieta.grupos)
             ? dietaProcessor.transformGroups(dieta.grupos)
@@ -214,14 +213,12 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
     const groupName =
       GruposEnum[formState.grupoNome as unknown as keyof typeof GruposEnum];
 
-    // Atualiza o estado do grupo
     setGroup((prevState) => {
       const existingGroupIndex = prevState.findIndex(
         (group) => group.nome === groupName
       );
 
       if (existingGroupIndex !== -1) {
-        // Se o grupo existe, adiciona novos alimentos ao grupo existente
         const existingGroup = prevState[existingGroupIndex];
 
         const hasDuplicate = alimentos.some((newAlimento) =>
@@ -232,12 +229,11 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
   
         if (hasDuplicate) {
           Alert.alert("Erro", "Este alimento já foi adicionado ao grupo.");
-          return prevState; // Retorna o estado sem alterar nada
+          return prevState;
         }
 
         const updatedAlimentos = [...existingGroup.alimentos, ...alimentos];
 
-        // Atualiza o grupo existente na lista
         const updatedGroups = prevState.map((group, index) =>
           index === existingGroupIndex
             ? { ...existingGroup, alimentos: updatedAlimentos }
@@ -246,8 +242,8 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
 
         return dietaProcessor.sorter(updatedGroups);
       } else {
-        // Cria um novo grupo se não existir
         const newGroup: IGrupo = {
+
           nome: groupName,
           alimentos: alimentos,
         };
@@ -255,11 +251,10 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       }
     });
 
-    // Limpa o estado do formulário
     setFormState((prev) => ({
       ...prev,
-      // grupoNome: null, // Limpa o campo de nome do grupo para null
-      alimentos: [], // Limpa a lista de alimentos
+      // grupoNome: null, 
+      alimentos: [], 
       alimentoId: null,
       porcao: "",
       quantidade: "",
@@ -312,6 +307,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
   };
 
   const handleRemoveAlimento = (alimentoId: string, grupoId: string) => {
+    console.log(groups)
     setGroup((prevGroups) => {
       const grupo = prevGroups.find((g) => g._id === grupoId);
 
@@ -412,7 +408,6 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       (id) => DiasSemana[id as keyof typeof DiasSemana]
     );
 
-    // Atualiza o estado de dias da semana e do formState ao mesmo tempo
     setSelectedDiasSemana(validDiasSemana);
     setFormState((prevState) => ({
       ...prevState,
@@ -422,10 +417,10 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const handleSelectAlimentos = (selectedItems: string[]) => {
     const alimentosSelecionados = allAlimentos.filter(
-      (alimento) => selectedItems.includes(alimento._id) // Filtra os alimentos com base nos IDs selecionados
+      (alimento) => selectedItems.includes(alimento._id) 
     );
 
-    setSelectedAlimentos(alimentosSelecionados); // Atualiza o estado com os alimentos selecionados
+    setSelectedAlimentos(alimentosSelecionados); 
   };
 
   const handleCheckbox = async (
@@ -463,8 +458,8 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
         <RefreshControl
           refreshing={refreshing}
           onRefresh={onRefresh}
-          colors={[colors.blueButtonCollor]} // Cor do círculo de carregamento
-          progressBackgroundColor={"#ffffff"} // Cor do fundo do círculo
+          colors={[colors.blueButtonCollor]} 
+          progressBackgroundColor={"#ffffff"} 
         />
       }
     >
@@ -479,6 +474,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       {typeof diaEdit === "undefined" && (
         <>
           <Text style={styles.pickerLabel}>Dias da Semana</Text>
+          
           <View style={styles.selectContainerSemana}>
             <MultiSelect
               items={Object.keys(DiasSemana).map((dia) => ({
@@ -504,6 +500,9 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
               searchInputStyle={{ color: "#CCC" }}
               submitButtonColor="#007BFF"
               submitButtonText="Adicionar"
+              textInputProps={{
+                editable: false, 
+              }}
               styleDropdownMenuSubsection={styles.multiSelectDropdownSemana}
               styleMainWrapper={styles.multiSelectWrapperSemana}
               fontSize={15}
@@ -576,7 +575,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
         onEditPortion={handleEditPortion}
         onEditQuantity={handleEditQuantity}
         onRemoveAlimento={handleRemoveAlimento}
-        onUpdateGrupo={handleUpdateGrupo} // Passa a função de atualização
+        onUpdateGrupo={handleUpdateGrupo} 
       />
 
       <Text style={styles.pickerLabel}>Buscar Alimentos</Text>
@@ -591,12 +590,12 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
       <View style={styles.selectContainer}>
         <MultiSelect
           items={allAlimentos.map((alimento) => ({
-            id: alimento._id, // Identificador único
-            name: alimento.nome, // Nome do alimento
+            id: alimento._id,
+            name: alimento.nome, 
           }))}
           uniqueKey="id"
-          onSelectedItemsChange={handleSelectAlimentos} // Função chamada quando a seleção muda
-          selectedItems={selectedAlimentos.map((alimento) => alimento._id)} // IDs dos alimentos selecionados
+          onSelectedItemsChange={handleSelectAlimentos} 
+          selectedItems={selectedAlimentos.map((alimento) => alimento._id)} 
           selectText="Selecione os alimentos"
           searchInputPlaceholderText="Buscar alimentos"
           tagRemoveIconColor="#CCC"
@@ -610,11 +609,13 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
           searchInputStyle={{ color: "#CCC" }}
           submitButtonColor="#007BFF"
           submitButtonText="Adicionar"
+          textInputProps={{
+            editable: false, 
+          }}
           styleDropdownMenuSubsection={styles.multiSelectDropdown}
           styleMainWrapper={styles.multiSelectWrapper}
         />
       </View>
-
       <Text style={styles.pickerLabel}>Porção (g)</Text>
       <TextInput
         style={styles.input}

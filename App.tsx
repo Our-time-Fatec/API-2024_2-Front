@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import Home from './screens/home';
+import EsqueceuSenha from './screens/esqueceuSenha';
 import Login from './screens/login';
 import Cadastro from './screens/cadastro';
 import Questionario from './screens/questionario';
@@ -43,6 +44,7 @@ const AuthenticatedStack = () => {
       ) : (
         <>
           <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="EsqueceuSenha" component={EsqueceuSenha} />
           <Stack.Screen name="Cadastro" component={Cadastro} />
           <Stack.Screen name="Login" component={Login} />
         </>

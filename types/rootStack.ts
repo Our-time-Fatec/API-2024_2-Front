@@ -12,4 +12,5 @@ export type RootStackParamList = {
   UserAlimentosConsumidos: undefined;
   FAQs: undefined;
   UserDietas: undefined;
+  EsqueceuSenha: undefined;
 };

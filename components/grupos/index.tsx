@@ -112,8 +112,8 @@ const GroupModal: React.FC<GroupModalProps> = ({
       },
       {
         text: "Remover",
+        style: "destructive",
         onPress: () => {
-          console.log(localGrupo); // Verifique o valor de localGrupo
           if (localGrupo?.nome) {
             onRemoveAlimento(alimentoId, localGrupo.nome);
             const updatedAlimentos = localGrupo.alimentos.filter(

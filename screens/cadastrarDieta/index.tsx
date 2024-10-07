@@ -171,7 +171,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
         },
       },
     ]);
-    
+    // setGroup((prevState) => prevState.filter((grupo) => grupo._id !== groupId));
   };
 
   const handleChange = (field: string, value: any) => {
@@ -550,9 +550,11 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
           ))}
         </Picker>
       </View>
-      <View style={styles.refeicaoContainer}>
+<>
         {groups.length > 0 ? (
+
           groups.map((grupo, index) => (
+            <View style={styles.refeicaoContainer}>
             <View key={grupo._id || index} style={styles.refeicaoRegistrada}>
               <TouchableOpacity
                 onPress={() => grupo._id && handleRemoveGroup(grupo._id)}
@@ -563,11 +565,12 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
                 <Text style={styles.refeicaoRegistradaText}>{grupo.nome}</Text>
               </TouchableOpacity>
             </View>
+            </View>
           ))
         ) : (
           <></>
         )}
-      </View>
+      </>
       <GroupModal
         visible={modalVisible}
         grupo={selectedGrupo}

@@ -67,11 +67,12 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#007bff",
     paddingVertical: 18,
-    paddingHorizontal: "30%",
-    borderRadius: 30,
+    paddingHorizontal: "10%",
+    borderRadius: 10,
     marginBottom: 10,
     width: "100%",
     maxWidth: 400,
+    minWidth: 200,
     alignSelf: "center",
   },
   buttonText: {

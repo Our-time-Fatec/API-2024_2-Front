@@ -26,6 +26,7 @@
     "expo-font": "~12.0.10",
     "expo-splash-screen": "~0.27.5",
     "expo-status-bar": "~1.12.1",
+    "nodemailer": "^6.9.15",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.74.5",
@@ -38,6 +39,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@types/nodemailer": "^6.4.16",
     "@types/react": "~18.2.45",
     "@types/react-native-datepicker": "^1.7.6",
     "typescript": "^5.1.3"

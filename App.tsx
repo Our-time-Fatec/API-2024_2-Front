@@ -44,9 +44,9 @@ const AuthenticatedStack = () => {
       ) : (
         <>
           <Stack.Screen name="Home" component={Home} />
-          <Stack.Screen name="EsqueceuSenha" component={EsqueceuSenha} />
           <Stack.Screen name="Cadastro" component={Cadastro} />
           <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="EsqueceuSenha" component={EsqueceuSenha} />
         </>
       )}
     </Stack.Navigator>

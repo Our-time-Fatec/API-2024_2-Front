@@ -5,10 +5,7 @@ import { styles } from "./styles";
 import { RootStackParamList } from "../../types/rootStack";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
-import { Picker } from "@react-native-picker/picker";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { IUsuario } from "../../interfaces/IUsuario";
-import useRegister from "../../hooks/useRegister";
+import sendPasswordResetEmail from "../../hooks/email";
 
 type EsqueceuSenhaScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -22,51 +19,37 @@ type Props = {
 };
 
 const EsqueceuSenha: React.FC<Props> = ({ navigation }) => {
-  const { register, loading } = useRegister();
-  const [formState, setFormState] = useState<IUsuario>({
-    nome: "",
-    sobrenome: "",
-    email: "",
-    senha: "",
-    confirmarSenha: "",
-    dataDeNascimento: new Date(),
-    altura: 0,
-    peso: 0,
-    objetivo: "Dieta de emagrecimento",
-    nivelDeSedentarismo: "Sedentário",
-    sexo: "Masculino",
-  });
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const [showDatePicker, setShowDatePicker] = useState(false);
-
-  const handleInputChange = (name: keyof IUsuario, value: any) => {
-    if (name === "altura" || name === "peso") {
-      const numericValue = value.trim() === "" ? 0 : parseFloat(value);
-      setFormState((prevState) => ({ ...prevState, [name]: isNaN(numericValue) ? 0 : numericValue }));
-    } else {
-      setFormState((prevState) => ({ ...prevState, [name]: value }));
-    }
+  const isValidEmail = (email: string) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
   };
 
-  const handleDateConfirm = (date: Date) => {
-    handleInputChange("dataDeNascimento", date);
-    setShowDatePicker(false);
-  };
-
-  const handleRegister = async () => {
-
-    if (formState.senha !== formState.confirmarSenha) {
-      Alert.alert("Erro", "As senhas não coincidem. Verifique e tente novamente.");
+  const handleSendEmail = async () => {
+    if (!email) {
+      Alert.alert("Erro", "Por favor, insira um email.");
       return;
     }
 
-    const result = await register(formState);
-    if (result.success) {
-      Alert.alert("Sucesso", "Cadastro realizado com sucesso!");
-      navigation.navigate('Selecao');
+    if (!isValidEmail(email)) {
+      Alert.alert("Erro", "Por favor, insira um email válido.");
+      return;
     }
-    else {
-      Alert.alert("Erro", result.error);
+
+    setLoading(true);
+    
+    const verificationLink = "http://example.com/reset-password"; // Replace with actual reset link logic
+    const success = await sendPasswordResetEmail(email, verificationLink);
+
+    setLoading(false);
+    
+    if (success) {
+      Alert.alert("Sucesso", "Email de redefinição de senha enviado com sucesso!");
+      navigation.navigate("Login"); // Ensure "Login" is a valid route in your navigation stack
+    } else {
+      Alert.alert("Erro", "Ocorreu um erro ao enviar o email. Tente novamente.");
     }
   };
 
@@ -80,15 +63,6 @@ const EsqueceuSenha: React.FC<Props> = ({ navigation }) => {
       >
         <View style={styles.containerUp}>
           <Text style={styles.title}>Esqueceu a senha</Text>
-
-          {/* <Image
-            source={{ uri: "https://via.placeholder.com/150" }}
-            style={styles.profileImage}
-          />
-
-          <TouchableOpacity>
-            <Text style={styles.editPhoto}>Editar foto</Text>
-          </TouchableOpacity> */}
         </View>
 
         <View style={styles.inputContainer}>
@@ -97,16 +71,16 @@ const EsqueceuSenha: React.FC<Props> = ({ navigation }) => {
             style={styles.input}
             placeholder="Entre com seu email cadastrado"
             keyboardType="email-address"
-            value={formState.email}
-            onChangeText={(text) => handleInputChange("email", text)}
+            value={email}
+            onChangeText={setEmail}
             placeholderTextColor="rgba(163,162,163,255)"
           />
         </View>
-
       </ScrollView>
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
+      
+      <TouchableOpacity style={styles.button} onPress={handleSendEmail}>
         <Text style={styles.buttonText}>
-          {loading ? "Carregando..." : "Cadastrar"}
+          {loading ? "Carregando..." : "Enviar Email"}
         </Text>
       </TouchableOpacity>
     </View>

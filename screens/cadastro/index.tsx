@@ -12,10 +12,12 @@ import { styles } from "./styles";
 import { RootStackParamList } from "../../types/rootStack";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
-import { Picker } from "@react-native-picker/picker";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { Picker } from "@react-native-picker/picker";
 import { IUsuario } from "../../interfaces/IUsuario";
 import useRegister from "../../hooks/useRegister";
+import formaterDate from "../../utils/formaterDate";
+import resultChecker from "../../utils/resultChecker";
 
 type CadastroScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -30,6 +32,7 @@ type Props = {
 
 const Cadastro: React.FC<Props> = ({ navigation }) => {
   const { register, loading } = useRegister();
+  const [dataNascimento, setDataNascimento] = useState("");
   const [formState, setFormState] = useState<IUsuario>({
     nome: "",
     sobrenome: "",
@@ -43,36 +46,62 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
     nivelDeSedentarismo: "Sedentário",
     sexo: "Masculino",
   });
-
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [dataFormatada, setDataFormatada] = useState<Date | null | undefined>();
 
   const handleInputChange = (name: keyof IUsuario, value: any) => {
     if (name === "altura" || name === "peso") {
       const numericValue = value.trim() === "" ? 0 : parseFloat(value);
-      setFormState((prevState) => ({ ...prevState, [name]: isNaN(numericValue) ? 0 : numericValue }));
+      setFormState((prevState) => ({
+        ...prevState,
+        [name]: isNaN(numericValue) ? 0 : numericValue,
+      }));
     } else {
       setFormState((prevState) => ({ ...prevState, [name]: value }));
     }
   };
 
+  const handleDateChange = (text: string) => {
+    const formattedDateString = formaterDate.formatDateString(text);
+    const isValidDate = formaterDate.isValidBirthDate(formattedDateString);
+    let formattedDate: Date | null | undefined = isValidDate
+      ? formaterDate.dateFormater(formattedDateString)
+      : new Date();
+    setDataNascimento(formattedDateString);
+    setDataFormatada(formattedDate);
+    formattedDate && handleInputChange("dataDeNascimento", formattedDate);
+    formattedDate && setSelectedDate(formattedDate);
+  };
+
   const handleDateConfirm = (date: Date) => {
     handleInputChange("dataDeNascimento", date);
+    setDataNascimento(date.toLocaleDateString("pt-BR"));
     setShowDatePicker(false);
+    setSelectedDate(date);
+    setDataFormatada(date);
   };
 
   const handleRegister = async () => {
+    // Verificação de todas as validações
+    if (!resultChecker.checkDateConscile(formState, dataFormatada)) return;
 
-    if (formState.senha !== formState.confirmarSenha) {
-      Alert.alert("Erro", "As senhas não coincidem. Verifique e tente novamente.");
-      return;
-    }
+    const validators = [
+      resultChecker.checkSenha,
+      resultChecker.checkNascimento,
+      resultChecker.checkAltura,
+      resultChecker.checkPeso,
+    ];
 
+    // Se qualquer validação falhar, o fluxo é interrompido
+    if (validators.some((validator) => !validator(formState))) return;
+
+    // Executa o cadastro
     const result = await register(formState);
     if (result.success) {
       Alert.alert("Sucesso", "Cadastro realizado com sucesso!");
-      navigation.navigate('Selecao');
-    }
-    else {
+      navigation.navigate("Selecao");
+    } else {
       Alert.alert("Erro", result.error);
     }
   };
@@ -126,6 +155,8 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
             style={styles.input}
             placeholder="Entre com seu email"
             keyboardType="email-address"
+            spellCheck={false}
+            autoCapitalize="none"
             value={formState.email}
             onChangeText={(text) => handleInputChange("email", text)}
             placeholderTextColor="rgba(163,162,163,255)"
@@ -157,22 +188,24 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
         </View>
 
         <View style={styles.inputContainer}>
-          <Ionicons name="calendar-outline" size={24} color="black" />
-          <TouchableOpacity
-            onPress={() => setShowDatePicker(true)}
-            style={styles.input}
-          >
-            <Text>
-              {formState.dataDeNascimento
-                ? formState.dataDeNascimento.toLocaleDateString("pt-BR")
-                : "Selecionar data"}
-            </Text>
+          <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+            <Ionicons name="calendar-outline" size={24} color="black" />
           </TouchableOpacity>
+          <TextInput
+            placeholder="Data de nascimento (DD/MM/YYYY)"
+            style={[styles.input, { fontSize: 14 }]}
+            value={dataNascimento}
+            keyboardType="numeric"
+            onChangeText={handleDateChange}
+            maxLength={10} // Limita a entrada para o formato DD/MM/YYYY
+            placeholderTextColor="rgba(163,162,163,255)"
+          />
         </View>
 
         <DateTimePickerModal
           isVisible={showDatePicker}
           mode="date"
+          date={selectedDate}
           onConfirm={handleDateConfirm}
           onCancel={() => setShowDatePicker(false)}
         />
@@ -212,9 +245,15 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
           >
             <Picker.Item label="Sedentário" value="Sedentário" />
             <Picker.Item label="Levemente ativo" value="Levemente ativo" />
-            <Picker.Item label="Moderadamente ativo" value="Moderadamente ativo" />
+            <Picker.Item
+              label="Moderadamente ativo"
+              value="Moderadamente ativo"
+            />
             <Picker.Item label="Altamente ativo" value="Altamente ativo" />
-            <Picker.Item label="Extremamente ativo" value="Extremamente ativo" />
+            <Picker.Item
+              label="Extremamente ativo"
+              value="Extremamente ativo"
+            />
           </Picker>
         </View>
 
@@ -235,10 +274,18 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
           <Picker
             selectedValue={formState.objetivo}
             style={styles.picker}
-            onValueChange={(itemValue) => handleInputChange("objetivo", itemValue)}
+            onValueChange={(itemValue) =>
+              handleInputChange("objetivo", itemValue)
+            }
           >
-            <Picker.Item label="Dieta de emagrecimento" value="Dieta de emagrecimento" />
-            <Picker.Item label="Dieta de Ganho de Massa Muscular" value="Dieta de Ganho de Massa Muscular" />
+            <Picker.Item
+              label="Dieta de emagrecimento"
+              value="Dieta de emagrecimento"
+            />
+            <Picker.Item
+              label="Dieta de Ganho de Massa Muscular"
+              value="Dieta de Ganho de Massa Muscular"
+            />
             <Picker.Item label="Dieta Low Carb" value="Dieta Low Carb" />
           </Picker>
         </View>

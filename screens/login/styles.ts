@@ -1,14 +1,15 @@
 
 import { StyleSheet } from 'react-native';
+import colors from '../../colors/colors';
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: "column",
-        backgroundColor: '#fff',
         justifyContent: 'flex-start', // Alinha os itens no topo
         width: '100%',
-        paddingTop: 50 // Adiciona um pouco de espaçamento no topo
+        paddingTop: 50, // Adiciona um pouco de espaçamento no topo
+        backgroundColor: colors.background
     },
     titulo: {
         fontSize: 24,

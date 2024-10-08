@@ -19,17 +19,22 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { RootStackParamList } from './types/rootStack';
 import UserDietasScreen from './screens/userDietas';
 import UserAlimentosConsumidosScreen from './screens/userAlimentosConsumidos';
+import DietasPredefinidas from './screens/dietasPredefinidas';
+import DietasPersonalizadas from './screens/dietasPersonalizadas';
+import CadastroDietaScreen from './screens/cadastrarDieta';
+import SuppressWarnings from './errors/SupressedWarnings';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
 const AuthenticatedStack = () => {
   const { isAuthenticated } = useAuth();
+  
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {isAuthenticated ? (
         <>
-          <Stack.Screen name="Selecao" component={Selecao} />
+          <Stack.Screen name="Selecao" component={Selecao}  />
           <Stack.Screen name="Questionario" component={Questionario} />
           <Stack.Screen name="ListAlimentos" component={AlimentosScreen} />
           <Stack.Screen name="Profile" component={PerfilScreen} />
@@ -39,6 +44,9 @@ const AuthenticatedStack = () => {
           <Stack.Screen name="UserAlimentosConsumidos" component={UserAlimentosConsumidosScreen} />
           <Stack.Screen name="UserDietas" component={UserDietasScreen} />
           <Stack.Screen name="FAQs" component={FAQs} />
+          <Stack.Screen name="DietasPredefinidas" component={DietasPredefinidas} />
+          <Stack.Screen name="DietasPersonalizadas" component={DietasPersonalizadas} />
+          <Stack.Screen name="CadastroDieta" component={CadastroDietaScreen} />
         </>
       ) : (
         <>
@@ -58,6 +66,7 @@ export default function App() {
         <NavigationContainer>
           <StatusBar style="dark" backgroundColor="#fff" />
           <SafeAreaView style={styles.container}>
+          <SuppressWarnings />
             <AuthenticatedStack />
           </SafeAreaView>
         </NavigationContainer>

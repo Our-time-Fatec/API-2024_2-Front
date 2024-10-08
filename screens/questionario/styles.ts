@@ -1,9 +1,10 @@
 import { StyleSheet } from "react-native";
+import colors from "../../colors/colors";
 
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: "#fff",
+      backgroundColor: colors.background,
       padding: 20,
       marginTop: 12,
       justifyContent: "flex-start",
@@ -24,7 +25,7 @@ const styles = StyleSheet.create({
     editPhoto: {
       textAlign: "center",
       color: "#00f",
-      marginBottom: 10,
+      marginBottom: 20,
     },
     inputContainer: {
       flexDirection: "row",
@@ -51,7 +52,7 @@ const styles = StyleSheet.create({
       alignItems: "center",
     },
     button: {
-      backgroundColor: "#007bff",
+      backgroundColor: colors.blueButtonCollor,
       paddingVertical: 18,
       paddingHorizontal: "23%",
       borderRadius: 20,

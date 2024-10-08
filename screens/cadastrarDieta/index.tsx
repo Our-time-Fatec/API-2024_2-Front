@@ -168,7 +168,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
         text: "Remover",
         style: "destructive",
         onPress: () => {
-          setGroup((prevState) => prevState.filter((grupo) => grupo._id !== groupId));
+          setGroup((prevState) => prevState.filter((grupo) => grupo.nome !== groupId));
         },
       },
     ]);
@@ -265,6 +265,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
   };
 
   const openModal = (grupo: IGrupo) => {
+
     setSelectedGrupo(grupo);
     setModalVisible(true);
   };
@@ -299,6 +300,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
 
     if (updatedGroup) {
       setGroup((prevGroups) =>
+        
         prevGroups.map((grupo) =>
           grupo._id === updatedGroup._id ? updatedGroup : grupo
         )
@@ -307,9 +309,8 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
   };
 
   const handleRemoveAlimento = (alimentoId: string, grupoId: string) => {
-    console.log(groups)
     setGroup((prevGroups) => {
-      const grupo = prevGroups.find((g) => g._id === grupoId);
+      const grupo = prevGroups.find((g) => g.nome === grupoId);
 
       if (grupo) {
         const updatedAlimentos = grupo.alimentos.filter(
@@ -318,11 +319,11 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
 
         if (updatedAlimentos.length === 0) {
           closeModal();
-          return prevGroups.filter((g) => g._id !== grupoId);
+          return prevGroups.filter((g) => g.nome !== grupoId);
         }
 
         return prevGroups.map((g) =>
-          g._id === grupoId ? { ...g, alimentos: updatedAlimentos } : g
+          g.nome === grupoId ? { ...g, alimentos: updatedAlimentos } : g
         );
       }
 
@@ -551,13 +552,17 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
         </Picker>
       </View>
 <>
+<View style={[
+    styles.refeicaoContainer,
+    groups.length === 0 && { display: 'none' }, // Condicional para ocultar o container
+  ]}>
         {groups.length > 0 ? (
-
+          
           groups.map((grupo, index) => (
-            <View style={styles.refeicaoContainer}>
+      
             <View key={grupo._id || index} style={styles.refeicaoRegistrada}>
               <TouchableOpacity
-                onPress={() => grupo._id && handleRemoveGroup(grupo._id)}
+                onPress={() => handleRemoveGroup(grupo.nome)}
               >
                 <Ionicons name={"close"} size={20} color={"#333"} />
               </TouchableOpacity>
@@ -565,11 +570,12 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
                 <Text style={styles.refeicaoRegistradaText}>{grupo.nome}</Text>
               </TouchableOpacity>
             </View>
-            </View>
+       
           ))
         ) : (
           <></>
         )}
+             </View>
       </>
       <GroupModal
         visible={modalVisible}

@@ -26,9 +26,16 @@ type Props = {
 const AguaConsumida: React.FC<Props> = ({ navigation }) => {
     const { usuario, loading, error, refreshUser } = useUsuario();
 
-    // Inicializa com os valores de água ingerida e meta do usuário
     const [meta, setMeta] = useState<number>(0);
-    const [porcentagem, setPorcentagem] = useState<number>(0);
+    const [porcentagem, setPorcentagem] = useState<number>(() => {
+      if (usuario && usuario.metaAgua) {
+        if (usuario.agua?.aguaIngerida === 0) {
+          return 0; 
+        }
+        return usuario.agua?.aguaIngerida ? usuario.agua.aguaIngerida / usuario.metaAgua : 0;
+      }
+      return 0; 
+    });
     const [aguaIngerida, setAguaIngerida] = useState<number>(0);
     const [atualizacao, setAtualizacao] = useState<Date>(new Date());
     
@@ -39,53 +46,63 @@ const AguaConsumida: React.FC<Props> = ({ navigation }) => {
       }, [refreshUser])
     );
     
-    // Atualiza os estados quando as informações do `usuario` mudam
     useEffect(() => {
       if (usuario) {
-        // Atualiza a água ingerida e a meta se disponíveis
-        if (usuario.agua?.aguaIngerida) {
-          setAguaIngerida(usuario.agua.aguaIngerida);
-        }
-        if (usuario.metaAgua) {
-          setMeta(usuario.metaAgua);
-          setPorcentagem(usuario.agua?.aguaIngerida ? usuario.agua.aguaIngerida / usuario.metaAgua : 0);
-        }
+        const novaAguaIngerida = usuario.agua?.aguaIngerida ?? 0;
+        const novaMeta = usuario.metaAgua ?? 0;
+    
+        setAguaIngerida(novaAguaIngerida);
+        setMeta(novaMeta);
+    
+        const novaPorcentagem = novaMeta ? (novaAguaIngerida / novaMeta) * 100 : 0;
+        setPorcentagem(novaPorcentagem > 100 ? 100 : novaPorcentagem);
       }
     }, [usuario]);
-    
-    const adicionarAgua = async (quantidade: number) => {
+
+    const adicionarAgua = (quantidade: number) => {
       if (!usuario?.metaAgua) return;
     
-      const novaAguaIngerida = aguaIngerida + quantidade;
+      Alert.alert(
+        "Adicionar Água",
+        `Deseja adicionar ${quantidade}ml de água?`,
+        [
+          {
+            text: "Cancelar",
+            style: "cancel",
+          },
+          {
+            text: "Adicionar",
+            onPress: async () => {
+              const novaAguaIngerida = aguaIngerida + quantidade;
     
-      try {
-        // Atualiza o estado localmente
-        setAguaIngerida(novaAguaIngerida);
-        const atualizacao = new Date(); // Define a nova data de atualização
-        setAtualizacao(atualizacao);
+              try {
+                setAguaIngerida(novaAguaIngerida);
+                const atualizacao = new Date();
+                setAtualizacao(atualizacao);
     
-        // Prepara o objeto com os dados da água
-        const agua:IAgua = {
-          aguaIngerida: novaAguaIngerida, // Envia o valor de água ingerida no formato correto
-        };
+                const agua: IAgua = {
+                  aguaIngerida: novaAguaIngerida,
+                };
     
-        // Faz a requisição PUT para atualizar o backend
-        await requestWithRefresh({
-          method: "PUT",
-          url: "/usuario/agua",
-          data: agua, // Envia o valor atualizado de água ingerida
-        });
+                await requestWithRefresh({
+                  method: "PUT",
+                  url: "/usuario/agua",
+                  data: agua,
+                });
     
-        // Atualiza a porcentagem localmente
-        setPorcentagem(novaAguaIngerida / meta);
-        console.log(porcentagem)
+                const novaPorcentagem = meta ? (novaAguaIngerida / meta) * 100 : 0;
+                setPorcentagem(novaPorcentagem > 100 ? 100 : novaPorcentagem);
     
-        console.log('Atualização no backend realizada com sucesso:', agua);
-        Alert.alert(`Você acabou de ingerir ${quantidade}ml de água!`);
-      } catch (error) {
-        console.error('Erro ao atualizar o backend:', error);
-      }
+                Alert.alert(`Você acabou de ingerir ${quantidade}ml de água!`);
+              } catch (error) {
+                console.error('Erro ao inserir quantia de água:', error);
+              }
+            },
+          },
+        ]
+      );
     };
+    
     
     if (loading) {
       return <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator} />;
@@ -102,15 +119,15 @@ const AguaConsumida: React.FC<Props> = ({ navigation }) => {
           <AnimatedCircularProgress
             size={200}
             width={10}
-            fill={porcentagem*100} // O valor é passado em porcentagem (0 a 100)
-            tintColor="#3b82f6" // Cor do progresso
-            backgroundColor="#e0e0e0" // Cor de fundo
+            fill={porcentagem} 
+            tintColor="#3b82f6" 
+            backgroundColor="#e0e0e0" 
             lineCap="round"
           >
             {
               () => (
                 <View style={styles.percentageContainer}>
-                  <Text style={styles.percentageText}>{Math.round(porcentagem*100)}%</Text>
+                  <Text style={styles.percentageText}>{Math.round(porcentagem)}%</Text>
                   <Text style={styles.subtitle}>de água ingerida</Text>
                 </View>
               )
@@ -120,19 +137,19 @@ const AguaConsumida: React.FC<Props> = ({ navigation }) => {
 
         {/* Botões para adicionar água */}
         <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={styles.button} onPress={() => adicionarAgua(0.25)}>
+          <TouchableOpacity style={styles.button} onPress={() => adicionarAgua(250)}>
             <Image source={{ uri: 'https://example.com/250ml.png' }} style={styles.image} />
             <Text style={styles.buttonText}>Adicionar 250ml</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => adicionarAgua(0.5)}>
+          <TouchableOpacity style={styles.button} onPress={() => adicionarAgua(500)}>
             <Image source={{ uri: 'https://example.com/500ml.png' }} style={styles.image} />
             <Text style={styles.buttonText}>Adicionar 500ml</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => adicionarAgua(0.75)}>
+          <TouchableOpacity style={styles.button} onPress={() => adicionarAgua(750)}>
             <Image source={{ uri: 'https://example.com/750ml.png' }} style={styles.image} />
             <Text style={styles.buttonText}>Adicionar 750ml</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => adicionarAgua(1)}>
+          <TouchableOpacity style={styles.button} onPress={() => adicionarAgua(1000)}>
             <Image source={{ uri: 'https://example.com/1L.png' }} style={styles.image} />
             <Text style={styles.buttonText}>Adicionar 1L</Text>
           </TouchableOpacity>

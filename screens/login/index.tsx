@@ -90,7 +90,7 @@ const Login: React.FC<Props> = ({ navigation }) => {
             <Text style={styles.textocadastro}>
                 <Text
                     style={styles.linkcadastro}
-                    onPress={() => navigation.navigate("EsqueceuSenha")}
+                    onPress={() => navigation.navigate("RecuperarSenha")}
                 >
                     Esqueceu a senha
                 </Text>

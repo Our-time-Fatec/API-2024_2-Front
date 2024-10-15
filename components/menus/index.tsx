@@ -18,7 +18,7 @@ const FooterMenu: React.FC<Props> = ({ navigation }) => {
         <Ionicons name="restaurant-outline" size={24} color="black" />
         <Text style={styles.menuText}>Dietas</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('UserAlimentosConsumidos')}>
+      <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('UserDietaDiaria')}>
         <Ionicons name="checkmark-circle-outline" size={24} color="black" />
         <Text style={styles.menuText}>Check-list</Text>
       </TouchableOpacity>

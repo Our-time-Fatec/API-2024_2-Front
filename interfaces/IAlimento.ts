@@ -17,6 +17,7 @@ interface IAlimento {
     categoriaCodigo: number;
     detalhes: Detalhes;
     criadoEm?: Date;
+    nomeGrupo?: string,
 }
 
 export { IAlimento, Detalhes };

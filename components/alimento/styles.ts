@@ -144,4 +144,20 @@ const styles = StyleSheet.create({
         flex: 1,  // Garante que o conteúdo ocupe o espaço restante no container
         justifyContent: "flex-start",  // Mantém o conteúdo no topo
     },
+    picker: {
+        height: 50,
+        marginBottom: 5,
+        borderColor: '#ddd',
+        borderWidth: 1,
+        borderRadius: 5,
+        width: "100%"
+      },
+      pickerContainer: {
+        marginBottom: 10,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 5,
+        padding: 5,
+          width: "100%"
+      },
 });

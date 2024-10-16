@@ -31,7 +31,7 @@
         grupos: IGrupo[];
     }
 
-    export interface IDietaDiaria extends Document {
+    export interface IDietaDiaria {
         usuarioId: string;
         diaSemana: DiasSemana;
         dia: Date;
@@ -45,4 +45,24 @@
         _id: string;
         nome: string,
         alimentosConsumidos: IAlimento[];
+    }
+
+    export interface IDietaDiariaHook{
+        usuarioId: string,
+        diaSemana:DiasSemana,
+        dia: Date,
+        gruposConsumo: IGrupoConsumoHook[]
+    }
+
+    export interface IGrupoConsumoHook {
+        _id: string;
+        nome: string;
+        alimentos?: IContagem[]; // Esta propriedade é do tipo IContagem[]
+        alimentosConsumidos: IContagem[]; // Consumo de alimentos
+    }
+
+   export interface IContagem{
+        consumido: number,
+        paraConsumir: number,
+        alimento: IAlimento
     }

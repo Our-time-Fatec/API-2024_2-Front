@@ -1,78 +1,138 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // Importar useNavigation
 import useDietas from '../../hooks/useDietaDiaria'; // O hook que você está utilizando para buscar os dados
 import { IAlimento } from '../../interfaces/IAlimento';
 import { Ionicons } from '@expo/vector-icons';
-import { IAlimentoDieta, IGrupo } from '../../interfaces/IDieta';
+import { IAlimentoDieta, IContagem, IGrupo, IGrupoConsumo, IGrupoConsumoHook } from '../../interfaces/IDieta';
 import FooterMenu from '../../components/menus'; // Certifique-se de que o caminho está correto
+import { styles } from './styles';
+import { requestWithRefresh } from '../../services/api';
 
 const UserDietaDiaria: React.FC = () => {
   const navigation = useNavigation(); // Obter a navegação
-  const { dietasDiarias } = useDietas();
+  const { dietasDiarias, dietasDiariasHook, refreshDietasDiarias } = useDietas();
   const [alimentosConsumidos, setAlimentosConsumidos] = useState<IAlimentoDieta[]>([]);
+  const [alimentos, setAlimentos] = useState<IContagem[]>([]);
 
   useEffect(() => {
-    if (dietasDiarias.length > 0) {
-      const grupos = dietasDiarias[0]?.grupos;
+    if (dietasDiariasHook.length > 0) {
+      const grupos = dietasDiariasHook[0]?.gruposConsumo;
       if (grupos) {
         const alimentos = grupos.flatMap((grupo) => grupo.alimentos ?? []);
-        setAlimentosConsumidos(alimentos);
+        setAlimentos(alimentos);
       }
     }
   }, [dietasDiarias]);
 
-  const aumentarQuantidade = (alimentoId: string) => {
-    setAlimentosConsumidos((prevAlimentos) =>
-      prevAlimentos.map((alimento) =>
-        alimento.alimentoId === alimentoId
-          ? { ...alimento, quantidade: alimento.quantidade ? alimento.quantidade + 1 : 1 }
-          : alimento
-      )
-    );
+  interface AlimentoProps {
+    _id: string,
+    porcao: number,
+    quantidade?: number,
+    nomeGrupo: string
+  }
+
+  const aumentarQuantidade = async (alimentoId: string, porcao: number, nomeGrupo: string, quantidade?: number) => {
+    console.log(alimentoId)
+
+    let alimento: AlimentoProps = {
+      _id: alimentoId,
+      porcao,
+      quantidade: quantidade ? quantidade : 1,
+      nomeGrupo: nomeGrupo
+    }
+
+    try {
+      await requestWithRefresh({
+        method: "POST",
+        url: "/alimentoConsumido",
+        data: alimento,
+      });
+    } catch (error: any) {
+      // Verifica se a resposta contém uma mensagem de erro
+      if (error.response && error.response.data && error.response.data.message) {
+        const errorMessage = error.response.data.message;
+        // Exibe qualquer mensagem de erro recebida do backend
+        Alert.alert("Erro", errorMessage);
+        return error
+      } else {
+        // Exibe uma mensagem genérica caso o erro não tenha uma mensagem específica
+        Alert.alert("Erro", "Ocorreu um erro ao criar a dieta.");
+      }
+      // Log do erro para debug
+      console.error("Erro ao criar a dieta:", error);
+      return error
+    }
+    finally{
+      refreshDietasDiarias()
+    }
   };
 
-  const diminuirQuantidade = (alimentoId: string) => {
-    setAlimentosConsumidos((prevAlimentos) =>
-      prevAlimentos.map((alimento) =>
-        alimento.alimentoId === alimentoId && (alimento.quantidade || 0) > 0
-          ? { ...alimento, quantidade: (alimento.quantidade || 0) - 1 } // Garante que quantidade nunca será undefined
-          : alimento
-      )
-    );
+  const diminuirQuantidade = async (alimentoId: string, porcao: number, nomeGrupo?: string) => {
+    console.log(alimentoId)
+
+    let alimento: AlimentoProps = {
+      _id: alimentoId,
+      porcao,
+      nomeGrupo: nomeGrupo ? nomeGrupo : "Almoço"
+    }
+
+    try {
+      await requestWithRefresh({
+        method: "PUT",
+        url: "/alimentoConsumido/delete",
+        data: alimento,
+      });
+    } catch (error: any) {
+      // Verifica se a resposta contém uma mensagem de erro
+      if (error.response && error.response.data && error.response.data.message) {
+        const errorMessage = error.response.data.message;
+        // Exibe qualquer mensagem de erro recebida do backend
+        Alert.alert("Erro", errorMessage);
+        return error
+      } else {
+        // Exibe uma mensagem genérica caso o erro não tenha uma mensagem específica
+        Alert.alert("Erro", "Ocorreu um erro ao criar a dieta.");
+      }
+      // Log do erro para debug
+      console.error("Erro ao criar a dieta:", error);
+      return error
+    }
+    finally{
+      refreshDietasDiarias()
+    }
   };
 
-  const renderAlimento = ({ item }: { item: IAlimentoDieta }) => (
+  const renderAlimento = ({ item, grupoNome }: { item: IContagem, grupoNome: string }) => (
     <View style={styles.itemContainer}>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={() => diminuirQuantidade(item.alimentoId)} style={styles.circleButton}>
+        <TouchableOpacity onPress={() => diminuirQuantidade(item.alimento._id, item.alimento.porcao, grupoNome)} style={styles.circleButton}>
           <Ionicons name="remove-circle-outline" size={24} color="black" />
         </TouchableOpacity>
-        <Text style={styles.counterText}>{`${item.quantidade || 0}/${item.porcao || 1}`}</Text>
-        <TouchableOpacity onPress={() => aumentarQuantidade(item.alimentoId)} style={styles.circleButton}>
+        <Text style={styles.counterText}>{`${item.consumido || 0}/${item.paraConsumir || 1}`}</Text>
+        <TouchableOpacity onPress={() => aumentarQuantidade(item.alimento._id, item.alimento.porcao, grupoNome, item.alimento.quantidade)} style={styles.circleButton}>
           <Ionicons name="add-circle-outline" size={24} color="black" />
         </TouchableOpacity>
       </View>
-      <Text style={styles.itemText}>{`${item.nome} ${item.porcao || 0}g`}</Text>
+      <Text style={styles.itemText}>{`${item.alimento.nome} ${item.alimento.porcao || 0}g`}</Text>
     </View>
-  );
+);
 
-  const renderGrupo = ({ item }: { item: IGrupo }) => (
+  const renderGrupo = ({ item }: { item: IGrupoConsumoHook }) => (
     <View style={styles.grupoContainer}>
       <Text style={styles.grupoTitle}>{item.nome}</Text>
       <FlatList
         data={item.alimentos}
-        renderItem={renderAlimento}
-        keyExtractor={(alimento) => alimento.alimentoId}
+        renderItem={({ item: alimentoItem }) => renderAlimento({ item: alimentoItem, grupoNome: item.nome })}
+        keyExtractor={(alimento) => alimento.alimento._id}
       />
     </View>
-  );
-
+);
   return (
     <View style={{flex: 1}}>
     <View style={styles.container}>
       <FlatList
-        data={dietasDiarias[0]?.grupos || []}
+        data={dietasDiariasHook[0]?.gruposConsumo || []}
         renderItem={renderGrupo}
         keyExtractor={(grupo) => grupo._id || 'default-key'}
       />
@@ -82,51 +142,5 @@ const UserDietaDiaria: React.FC = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-  },
-  grupoContainer: {
-    marginBottom: 16,
-  },
-  grupoTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  itemContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 12,
-    padding: 10,
-    backgroundColor: '#f9f9f9',
-    borderRadius: 8,
-  },
-  itemText: {
-    fontSize: 15,
-    flex: 1,
-    marginLeft: 10,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  circleButton: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginHorizontal: 5,
-  },
-  counterText: {
-    fontSize: 16,
-    color: '#333',
-  },
-});
 
 export default UserDietaDiaria;

@@ -13,5 +13,5 @@ export type RootStackParamList = {
   FAQs: undefined;
   UserDietas: undefined;
   EsqueceuSenha: undefined;
-  RecuperarSenha: undefined;
+  RecuperarSenha: {email: string};
 };

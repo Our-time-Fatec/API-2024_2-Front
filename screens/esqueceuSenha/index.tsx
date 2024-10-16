@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View,Text,TextInput, TouchableOpacity, ScrollView,Alert,} from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { styles } from "./styles";
 import { RootStackParamList } from "../../types/rootStack";
@@ -7,10 +7,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import sendPasswordResetEmail from "../../hooks/email";
 
-type EsqueceuSenhaScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  "EsqueceuSenha"
->;
+type EsqueceuSenhaScreenNavigationProp = StackNavigationProp<RootStackParamList, "EsqueceuSenha">;
 type EsqueceuSenhaScreenRouteProp = RouteProp<RootStackParamList, "EsqueceuSenha">;
 
 type Props = {
@@ -39,12 +36,11 @@ const EsqueceuSenha: React.FC<Props> = ({ navigation }) => {
     }
 
     setLoading(true);
-    
-    const verificationLink = "http://example.com/reset-password"; // Replace with actual reset link logic
-    const success = await sendPasswordResetEmail(email, verificationLink);
+
+    const success = await sendPasswordResetEmail(email);
 
     setLoading(false);
-    
+
     if (success) {
       Alert.alert("Sucesso", "Email de redefinição de senha enviado com sucesso!");
       navigation.navigate("Login"); // Ensure "Login" is a valid route in your navigation stack
@@ -77,7 +73,7 @@ const EsqueceuSenha: React.FC<Props> = ({ navigation }) => {
           />
         </View>
       </ScrollView>
-      
+
       <TouchableOpacity style={styles.button} onPress={handleSendEmail}>
         <Text style={styles.buttonText}>
           {loading ? "Carregando..." : "Enviar Email"}

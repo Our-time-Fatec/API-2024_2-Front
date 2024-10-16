@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { requestWithRefresh } from '../services/api'; // Certifique-se de ajustar o caminho conforme necessário
-import { IUsuario } from '../interfaces/IUsuario';
+import { IUpdatePassRequest } from '../interfaces/IPassChange';
 
 const useUpdatePass = () => {
     const [loading, setLoading] = useState<boolean>(false);
 
-    const updatePass = async (updateRequest: IUsuario) => {
+    const updatePass = async (updateRequest: IUpdatePassRequest) => {
         setLoading(true);
 
         try {

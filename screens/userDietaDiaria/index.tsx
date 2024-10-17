@@ -198,19 +198,19 @@ const UserDietaDiaria: React.FC<Props> = ({ navigation }) => {
       Porção consumida: {alimentoSelecionado.porcao * (consumo ?? 1)}g
     </Text>
     <Text style={style.modalInfo}>
-      Valor Energético total: {Number(alimentoSelecionado.detalhes.valorEnergetico.toFixed(2)) * (consumo ?? 1)} kcal
+      Valor Energético total: {Number((alimentoSelecionado.detalhes.valorEnergetico * (consumo ?? 1)).toFixed(2))} kcal
     </Text>
     <Text style={style.modalInfo}>
-      Proteínas totais: {Number(alimentoSelecionado.detalhes.proteinas.toFixed(2)) * (consumo ?? 1)}g
+      Proteínas totais: {Number(alimentoSelecionado.detalhes.proteinas * (consumo ?? 1)).toFixed(2)}g
     </Text>
     <Text style={style.modalInfo}>
-      Carboidratos totais: {Number(alimentoSelecionado.detalhes.carboidratos.toFixed(2)) * (consumo ?? 1)}g
+      Carboidratos totais: {Number(alimentoSelecionado.detalhes.carboidratos * (consumo ?? 1)).toFixed(2)}g
     </Text>
     <Text style={style.modalInfo}>
-      Fibras totais: {Number(alimentoSelecionado.detalhes.fibras.toFixed(2)) * (consumo ?? 1)}g
+      Fibras totais: {Number(alimentoSelecionado.detalhes.fibras * (consumo ?? 1)).toFixed(2)}g
     </Text>
     <Text style={style.modalInfo}>
-      Lipídios totais: {Number(alimentoSelecionado.detalhes.lipidios.toFixed(2)) * (consumo ?? 1)}g
+      Lipídios totais: {Number(alimentoSelecionado.detalhes.lipidios * (consumo ?? 1)).toFixed(2)}g
     </Text>
   </>
 )}

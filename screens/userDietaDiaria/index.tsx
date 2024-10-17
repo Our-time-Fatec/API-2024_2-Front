@@ -1,81 +1,95 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Importar useNavigation
-import useDietas from '../../hooks/useDietaDiaria'; // O hook que você está utilizando para buscar os dados
+import { View, Text,  TouchableOpacity, FlatList, Alert, ScrollView, Modal, Image } from 'react-native';
+import { RouteProp, useNavigation } from '@react-navigation/native';
+import useDietas from '../../hooks/useDietaDiaria';
 import { IAlimento } from '../../interfaces/IAlimento';
 import { Ionicons } from '@expo/vector-icons';
-import { IAlimentoDieta, IContagem, IGrupo, IGrupoConsumo, IGrupoConsumoHook } from '../../interfaces/IDieta';
-import FooterMenu from '../../components/menus'; // Certifique-se de que o caminho está correto
+import { IAlimentoDieta, IContagem, IDietaDiaria, IGrupo, IGrupoConsumo } from '../../interfaces/IDieta';
+import FooterMenu from '../../components/menus';
 import { styles } from './styles';
 import { requestWithRefresh } from '../../services/api';
+import formatDate  from '../../utils/formaterDate'; // Função de formatação de data
+import { RootStackParamList } from '../../types/rootStack';
+import { StackNavigationProp } from '@react-navigation/stack';
+import {styles as style} from "../../components/alimento/styles"
 
-const UserDietaDiaria: React.FC = () => {
-  const navigation = useNavigation(); // Obter a navegação
-  const { dietasDiarias, dietasDiariasHook, refreshDietasDiarias } = useDietas();
-  const [alimentosConsumidos, setAlimentosConsumidos] = useState<IAlimentoDieta[]>([]);
-  const [alimentos, setAlimentos] = useState<IContagem[]>([]);
+type UserDietaDiariaScreenNavigationProp = StackNavigationProp<RootStackParamList, "UserDietaDiaria">;
+type UserDietaDiariaScreenRouteProp = RouteProp<RootStackParamList, "UserDietaDiaria">;
 
+type Props = {
+    navigation: UserDietaDiariaScreenNavigationProp;
+    route: UserDietaDiariaScreenRouteProp;
+};
+
+const UserDietaDiaria: React.FC<Props> = ({ navigation }) => {
+  const { dietasDiarias, refreshDietasDiarias, isEmpty } = useDietas();
+  const [dietas, setDietas] = useState<IGrupoConsumo[]>([]);
+  const [modalVisible, setModalVisible] = useState(false); // Estado do modal
+  const [alimentoSelecionado, setAlimentoSelecionado] = useState<IAlimento | null>(null); // Alimento selecionado
+  const [consumo, setConsumo] = useState<number | null>(null)
+  
   useEffect(() => {
-    if (dietasDiariasHook.length > 0) {
-      const grupos = dietasDiariasHook[0]?.gruposConsumo;
-      if (grupos) {
-        const alimentos = grupos.flatMap((grupo) => grupo.alimentos ?? []);
-        setAlimentos(alimentos);
+    const handleDietasDiarias = async () => {
+      // Aguarda a requisição ser concluíd
+      // console.log(dietasDiarias)
+
+      if (Array.isArray(dietasDiarias) && dietasDiarias.length > 0) {
+        const todosGrupos = dietasDiarias.flatMap((dieta) => dieta.gruposConsumo ?? []);
+        setDietas(todosGrupos);
+      } else if (isEmpty) {
+        navigation.navigate('UserAlimentosConsumidos'); // Redirecionar caso não tenha dietas
       }
-    }
-  }, [dietasDiarias]);
+    };
 
-  interface AlimentoProps {
-    _id: string,
-    porcao: number,
-    quantidade?: number,
-    nomeGrupo: string
-  }
+    handleDietasDiarias();
+  }, [dietasDiarias, navigation]);
 
-  const aumentarQuantidade = async (alimentoId: string, porcao: number, nomeGrupo: string, quantidade?: number) => {
-    console.log(alimentoId)
+  const toggleModal = () => {
+    setModalVisible(!modalVisible); // Alterna a visibilidade do modal
+  };
 
-    let alimento: AlimentoProps = {
+  const abrirModal = (alimento: IAlimento, consumido: number) => {
+    setAlimentoSelecionado(alimento);
+    setConsumo(consumido)
+    toggleModal();
+  };
+
+  const aumentarQuantidade = async (alimentoId: string, porcao: number, nomeGrupo: string) => {
+    console.log(alimentoId);
+  
+    let alimento = {
       _id: alimentoId,
       porcao,
-      quantidade: quantidade ? quantidade : 1,
-      nomeGrupo: nomeGrupo
-    }
-
+      quantidade: 1,
+      nomeGrupo
+    };
+  
     try {
       await requestWithRefresh({
         method: "POST",
-        url: "/alimentoConsumido",
+        url: "/alimentoConsumido/",
         data: alimento,
       });
     } catch (error: any) {
-      // Verifica se a resposta contém uma mensagem de erro
-      if (error.response && error.response.data && error.response.data.message) {
-        const errorMessage = error.response.data.message;
-        // Exibe qualquer mensagem de erro recebida do backend
-        Alert.alert("Erro", errorMessage);
-        return error
+      if (error.response?.data?.message) {
+        Alert.alert("Erro", error.response.data.message);
       } else {
-        // Exibe uma mensagem genérica caso o erro não tenha uma mensagem específica
-        Alert.alert("Erro", "Ocorreu um erro ao criar a dieta.");
+        Alert.alert("Erro", "Ocorreu um erro ao registrar o consumo de alimentos.");
       }
-      // Log do erro para debug
-      console.error("Erro ao criar a dieta:", error);
-      return error
-    }
-    finally{
-      refreshDietasDiarias()
+      console.error("Erro ao registrar o consumo de alimentos:", error);
+    } finally {
+      refreshDietasDiarias();
     }
   };
 
-  const diminuirQuantidade = async (alimentoId: string, porcao: number, nomeGrupo?: string) => {
-    console.log(alimentoId)
+  const diminuirQuantidade = async (alimentoId: string, porcao: number, nomeGrupo: string) => {
+    console.log(alimentoId);
 
-    let alimento: AlimentoProps = {
+    let alimento = {
       _id: alimentoId,
       porcao,
-      nomeGrupo: nomeGrupo ? nomeGrupo : "Almoço"
-    }
+      nomeGrupo
+    };
 
     try {
       await requestWithRefresh({
@@ -84,61 +98,132 @@ const UserDietaDiaria: React.FC = () => {
         data: alimento,
       });
     } catch (error: any) {
-      // Verifica se a resposta contém uma mensagem de erro
-      if (error.response && error.response.data && error.response.data.message) {
-        const errorMessage = error.response.data.message;
-        // Exibe qualquer mensagem de erro recebida do backend
-        Alert.alert("Erro", errorMessage);
-        return error
+      if (error.response?.data?.message) {
+        Alert.alert("Erro", error.response.data.message);
       } else {
-        // Exibe uma mensagem genérica caso o erro não tenha uma mensagem específica
         Alert.alert("Erro", "Ocorreu um erro ao criar a dieta.");
       }
-      // Log do erro para debug
       console.error("Erro ao criar a dieta:", error);
-      return error
-    }
-    finally{
-      refreshDietasDiarias()
+    } finally {
+      refreshDietasDiarias();
     }
   };
 
   const renderAlimento = ({ item, grupoNome }: { item: IContagem, grupoNome: string }) => (
-    <View style={styles.itemContainer}>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={() => diminuirQuantidade(item.alimento._id, item.alimento.porcao, grupoNome)} style={styles.circleButton}>
-          <Ionicons name="remove-circle-outline" size={24} color="black" />
-        </TouchableOpacity>
-        <Text style={styles.counterText}>{`${item.consumido || 0}/${item.paraConsumir || 1}`}</Text>
-        <TouchableOpacity onPress={() => aumentarQuantidade(item.alimento._id, item.alimento.porcao, grupoNome, item.alimento.quantidade)} style={styles.circleButton}>
-          <Ionicons name="add-circle-outline" size={24} color="black" />
-        </TouchableOpacity>
+    <TouchableOpacity onPress={() => abrirModal(item.alimento, item.consumido)}>
+      <View style={styles.itemContainer}>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity onPress={() => diminuirQuantidade(item.alimento.alimentoId, item.alimento.porcao, grupoNome)} style={styles.circleButton}>
+            <Ionicons name="remove-circle-outline" size={28} color="black" />
+          </TouchableOpacity>
+          <Text style={styles.counterText}>{`${item.consumido || 0}/${item.paraConsumir || 1}`}</Text>
+          <TouchableOpacity onPress={() => aumentarQuantidade(item.alimento.alimentoId, item.alimento.porcao, grupoNome)} style={styles.circleButton}>
+            <Ionicons name="add-circle-outline" size={28} color="black" />
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.itemText}>{`${item.alimento.nome} ${item.alimento.porcao || 0}g`}</Text>
       </View>
-      <Text style={styles.itemText}>{`${item.alimento.nome} ${item.alimento.porcao || 0}g`}</Text>
-    </View>
-);
+    </TouchableOpacity>
+  );
 
-  const renderGrupo = ({ item }: { item: IGrupoConsumoHook }) => (
+  const renderGrupo = ({ item }: { item: IGrupoConsumo }) => (
     <View style={styles.grupoContainer}>
-      <Text style={styles.grupoTitle}>{item.nome}</Text>
+      <Text style={styles.grupoTitle}>{item.grupo}</Text>
       <FlatList
         data={item.alimentos}
-        renderItem={({ item: alimentoItem }) => renderAlimento({ item: alimentoItem, grupoNome: item.nome })}
+        renderItem={({ item: alimentoItem }) => renderAlimento({ item: alimentoItem, grupoNome: item.grupo })}
         keyExtractor={(alimento) => alimento.alimento._id}
       />
     </View>
-);
+  );
+
   return (
     <View style={{flex: 1}}>
-    <View style={styles.container}>
-      <FlatList
-        data={dietasDiariasHook[0]?.gruposConsumo || []}
-        renderItem={renderGrupo}
-        keyExtractor={(grupo) => grupo._id || 'default-key'}
-      />
-     
-    </View>
-    <FooterMenu navigation={navigation} />
+      <ScrollView style={styles.container}>
+        <FlatList
+          data={dietas || []}
+          renderItem={renderGrupo}
+          keyExtractor={(grupo) => grupo._id || 'default-key'}
+        />
+      </ScrollView>
+      
+      {alimentoSelecionado && (
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={toggleModal}
+        >
+          <View style={style.modalContainer}>
+            <View style={style.modalContent}>
+              {alimentoSelecionado.categoriaUrl ? (
+                <Image
+                  source={{ uri: alimentoSelecionado.categoriaUrl }}
+                  style={style.modalImage}
+                  resizeMode="cover"
+                />
+              ) : (
+                <View style={style.imagePlaceholder}>
+                  <Text style={style.imagePlaceholderText}>Imagem não disponível</Text>
+                </View>
+              )}
+            <Text style={style.modalNome}>{alimentoSelecionado.nome}</Text>
+<Text style={style.modalInfo}>Categoria: {alimentoSelecionado.categoriaNome}</Text>
+<Text style={style.modalInfo}>Preparo: {alimentoSelecionado.preparo}</Text>
+
+{consumo === 0 || consumo === 1 ? (
+  <>
+    <Text style={style.modalInfo}>
+      Porção a consumir: {alimentoSelecionado.porcao}g
+    </Text>
+    <Text style={style.modalInfo}>
+      Valor Energético: {alimentoSelecionado.detalhes.valorEnergetico.toFixed(2)} kcal
+    </Text>
+    <Text style={style.modalInfo}>
+      Proteínas: {alimentoSelecionado.detalhes.proteinas.toFixed(2)}g
+    </Text>
+    <Text style={style.modalInfo}>
+      Carboidratos: {alimentoSelecionado.detalhes.carboidratos.toFixed(2)}g
+    </Text>
+    <Text style={style.modalInfo}>
+      Fibras: {alimentoSelecionado.detalhes.fibras.toFixed(2)}g
+    </Text>
+    <Text style={style.modalInfo}>
+      Lipídios: {alimentoSelecionado.detalhes.lipidios.toFixed(2)}g
+    </Text>
+  </>
+) : (
+  <>
+    <Text style={style.modalInfo}>
+      Porção consumida: {alimentoSelecionado.porcao * (consumo ?? 1)}g
+    </Text>
+    <Text style={style.modalInfo}>
+      Valor Energético total: {Number(alimentoSelecionado.detalhes.valorEnergetico.toFixed(2)) * (consumo ?? 1)} kcal
+    </Text>
+    <Text style={style.modalInfo}>
+      Proteínas totais: {Number(alimentoSelecionado.detalhes.proteinas.toFixed(2)) * (consumo ?? 1)}g
+    </Text>
+    <Text style={style.modalInfo}>
+      Carboidratos totais: {Number(alimentoSelecionado.detalhes.carboidratos.toFixed(2)) * (consumo ?? 1)}g
+    </Text>
+    <Text style={style.modalInfo}>
+      Fibras totais: {Number(alimentoSelecionado.detalhes.fibras.toFixed(2)) * (consumo ?? 1)}g
+    </Text>
+    <Text style={style.modalInfo}>
+      Lipídios totais: {Number(alimentoSelecionado.detalhes.lipidios.toFixed(2)) * (consumo ?? 1)}g
+    </Text>
+  </>
+)}
+
+<TouchableOpacity style={style.closeButton} onPress={toggleModal}>
+  <Text style={style.closeButtonText}>Fechar</Text>
+</TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      )}
+      
+      <FooterMenu navigation={navigation} />
     </View>
   );
 };

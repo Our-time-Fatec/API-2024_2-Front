@@ -1,22 +1,20 @@
 import { useState, useEffect, useCallback } from "react";
 import { requestWithRefresh } from "../services/api";
-import { IDietaDiaria, IDietaDiariaHook } from "../interfaces/IDieta"; // Supondo que as interfaces estão aqui
+import { IDietaDiaria } from "../interfaces/IDieta"; // Supondo que as interfaces estão aqui
 import { DiasSemana } from "../enums/diasSemana";
 import dietaProcessor from "../utils/dietaProcessor";
 import { GruposEnum } from "../screens/cadastrarDieta";
 
 const useDietas = (onlyUser: boolean = false) => {
-  const [dietasDiariasHook, setDietasDiariasHook] = useState<
-    IDietaDiariaHook[]
-  >([]);
   const [dietasDiarias, setDietasDiarias] = useState<IDietaDiaria[]>([]);
   const [selectedDiaSemana, setSelectedDiaSemana] = useState<string>("");
+  const [isEmpty, setIsEmpty] = useState<boolean>(false); 
 
   const fetchDietasDiarias = useCallback(async (diaSemana?: string) => {
     try {
       const url = diaSemana
         ? `/dietaDiaria/me?diaSemana=${diaSemana}`
-        : "/dietaDiaria/me/hoje";
+        : "/dietaDiaria/me/forma";
 
       const response = await requestWithRefresh({
         method: "GET",
@@ -25,35 +23,32 @@ const useDietas = (onlyUser: boolean = false) => {
 
       const dietas:IDietaDiaria[] = response.data
 
-      // console.log(JSON.stringify(dietas))
+      if (Array.isArray(dietas) && dietas.length === 0) {
+        setIsEmpty(true); // Define isEmpty como true se o array for vazio
+      } else {
+        setIsEmpty(false); // Caso contrário, define como false
+      }
 
-      setDietasDiarias(dietas);
-
-      const processedDietas: IDietaDiariaHook[] =
-        await dietaProcessor.processDietas(dietas);
-
-        console.log(JSON.stringify(processedDietas))
-
-      const gruposConsumo = processedDietas.flatMap(
+      const gruposConsumo = dietas.flatMap(
         (dieta) => dieta.gruposConsumo
       );
 
       const sortedGruposConsumo = dietaProcessor.sorterDiario(gruposConsumo);
 
-      const sortedDietas: IDietaDiariaHook[] = processedDietas.map(
+      const sortedDietas: IDietaDiaria[] = dietas.map(
         (dieta) => {
           return {
             ...dieta,
             gruposConsumo: sortedGruposConsumo.filter((grupo) =>
-              dieta.gruposConsumo.some((g) => g.nome === grupo.nome)
+              dieta.gruposConsumo.some((g: { grupo: string; }) => g.grupo === grupo.grupo)
             ),
           };
         }
       );
 
 
-      setDietasDiariasHook(sortedDietas);
-         console.log(JSON.stringify(sortedDietas));
+      setDietasDiarias(sortedDietas);
+        //  console.log(JSON.stringify(sortedDietas));
     } catch (error) {
       console.error("Erro ao buscar dietas:", error);
     }
@@ -69,10 +64,10 @@ const useDietas = (onlyUser: boolean = false) => {
 
   return {
     dietasDiarias,
-    dietasDiariasHook,
     selectedDiaSemana,
     setSelectedDiaSemana,
     refreshDietasDiarias,
+    isEmpty
   };
 };
 

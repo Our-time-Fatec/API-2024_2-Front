@@ -87,6 +87,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#555',
         marginBottom: 8,
+        textAlign: 'center',
+        flexWrap: 'wrap',    // Permite que o texto quebre em múltiplas linhas
+    maxWidth: '80%',
     },
     closeButton: {
         marginTop: 5,

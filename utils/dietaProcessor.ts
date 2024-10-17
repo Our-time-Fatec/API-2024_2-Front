@@ -1,6 +1,6 @@
 import { Alert } from "react-native";
 import { IAlimento } from "../interfaces/IAlimento";
-import { IAlimentoDieta, IContagem, IDietaDiaria, IDietaDiariaHook, IDietaFixa, IGrupo, IGrupoConsumoHook } from "../interfaces/IDieta";
+import { IAlimentoDieta, IContagem, IDietaDiaria, IDietaFixa, IGrupo, IGrupoConsumo } from "../interfaces/IDieta";
 import { requestWithRefresh } from "../services/api";
 
 class DietaProcessor {
@@ -16,12 +16,12 @@ class DietaProcessor {
 } 
 
 
-public sorterDiario(grupos: IGrupoConsumoHook[]): IGrupoConsumoHook[] {
+public sorterDiario(grupos: IGrupoConsumo[]): IGrupoConsumo[] {
   const ORDEM_GRUPOS = ["Café da Manhã", "Almoço", "Café da Tarde", "Janta"];
 
   return grupos.sort((a, b) => {
-      const indiceA = ORDEM_GRUPOS.indexOf(a.nome);
-      const indiceB = ORDEM_GRUPOS.indexOf(b.nome);
+      const indiceA = ORDEM_GRUPOS.indexOf(a.grupo);
+      const indiceB = ORDEM_GRUPOS.indexOf(b.grupo);
       return indiceA - indiceB;
   });
 } 
@@ -178,100 +178,6 @@ public sorterDiario(grupos: IGrupoConsumoHook[]): IGrupoConsumoHook[] {
   
     return null;
   };
-
-  public processDietas = (dietas: IDietaDiaria[]): IDietaDiariaHook[] => {
-    return dietas.map((dieta) => {
-        // Mapeando os grupos para contar as porções para consumir
-        const alimentosParaConsumirMap = new Map<string, number>();
-
-        // Função auxiliar para criar uma chave composta por alimentoId e porção
-        const criarChave = (alimentoId: string, porcao: number) => `${alimentoId}-${porcao}`;
-
-        // Contando as porções para consumir a partir dos grupos
-        dieta.grupos.forEach((grupo) => {
-            grupo.alimentos.forEach((alimento) => {
-                const chave = criarChave(alimento.alimentoId, alimento.porcao);
-                const currentCount = alimentosParaConsumirMap.get(chave) || 0;
-                alimentosParaConsumirMap.set(chave, currentCount + alimento.quantidade);
-            });
-        });
-
-        // Criando a estrutura final para os grupos unificados
-        const gruposUnificados: IGrupoConsumoHook[] = [];
-
-        // Função para calcular o total consumido para um alimento específico com base na porção
-        const calcularConsumido = (alimentoId: string, porcao: number): number => {
-            let totalConsumido = 0;
-
-            // Conta os alimentos consumidos tanto dos gruposConsumo quanto dos grupos
-            dieta.gruposConsumo.forEach((grupoConsumo) => {
-                grupoConsumo.alimentosConsumidos.forEach((alimentoConsumido) => {
-                    if (alimentoConsumido._id === alimentoId && alimentoConsumido.porcao === porcao) {
-                        totalConsumido += 1; // Adiciona 1 para cada alimento consumido
-                    }
-                });
-            });
-
-            return totalConsumido;
-        };
-
-        // Mapeando os grupos de consumo
-        dieta.gruposConsumo.forEach((grupoConsumo) => {
-            const alimentosConsumidos = grupoConsumo.alimentosConsumidos.map((alimentoConsumido) => ({
-                consumido: calcularConsumido(alimentoConsumido._id, alimentoConsumido.porcao),
-                paraConsumir: alimentosParaConsumirMap.get(criarChave(alimentoConsumido._id, alimentoConsumido.porcao)) || 0,
-                alimento: {
-                    _id: alimentoConsumido._id,
-                    nome: alimentoConsumido.nome,
-                    preparo: alimentoConsumido.preparo,
-                    porcao: alimentoConsumido.porcao,
-                    categoriaCodigo: alimentoConsumido.categoriaCodigo || 0,
-                    detalhes: alimentoConsumido.detalhes,
-                },
-            }));
-
-            // Adiciona os alimentos consumidos ao grupo unificado
-            gruposUnificados.push({
-                _id: grupoConsumo._id,
-                nome: grupoConsumo.nome,
-                alimentosConsumidos: alimentosConsumidos,
-            });
-        });
-
-        // Mapeando os grupos de alimentos para adicionar ao gruposUnificados
-        dieta.grupos.forEach((grupo) => {
-          const grupoExistente = gruposUnificados.find(g => g.nome === grupo.nome);
-          if (!grupoExistente) {
-              gruposUnificados.push({
-                  _id: grupo._id || '',
-                  nome: grupo.nome,
-                  alimentos: grupo.alimentos.map(alimento => ({
-                      consumido: calcularConsumido(alimento.alimentoId, alimento.porcao),
-                      paraConsumir: alimentosParaConsumirMap.get(criarChave(alimento.alimentoId, alimento.porcao)) || 0,
-                      alimento: {
-                          _id: alimento.alimentoId,
-                          nome: alimento.nome ?? 'Nome não disponível',
-                          preparo: alimento.preparo || '',
-                          porcao: alimento.porcao || 0,
-                          // AQUI ESTÁ A ALTERAÇÃO
-                          categoriaCodigo: alimento.categoriaCodigo ?? 0, // Garantindo que seja sempre um número
-                          detalhes: alimento.detalhes ?? {valorEnergetico: 0, carboidratos: 0, fibras: 0, lipidios: 0, proteinas: 0},
-                      },
-                  })),
-                  alimentosConsumidos: [],
-              });
-          }
-      });
-      
-
-        return {
-            usuarioId: dieta.usuarioId,
-            diaSemana: dieta.diaSemana,
-            dia: dieta.dia,
-            gruposConsumo: gruposUnificados,
-        };
-    });
-};
 
 
 }

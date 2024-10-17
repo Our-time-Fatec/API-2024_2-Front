@@ -107,6 +107,28 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
   },
+  inputError: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f2f2f2",
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: "red",
+    borderRadius: 8,
+    marginBottom: 25,
+    height: 60,
+    width: "100%", // Usa toda a largura disponível
+    maxWidth: 500,
+    minWidth: 300,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  errorMessage: {
+    color: 'red',
+  },
 });
 
 export { styles };

@@ -6,6 +6,7 @@ import { RootStackParamList } from "../../types/rootStack";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import sendPasswordResetEmail from "../../hooks/email";
+import checkEmailExists from "../../hooks/checkEmail"; // Importando a função de verificação
 
 type EsqueceuSenhaScreenNavigationProp = StackNavigationProp<RootStackParamList, "EsqueceuSenha">;
 type EsqueceuSenhaScreenRouteProp = RouteProp<RootStackParamList, "EsqueceuSenha">;
@@ -18,6 +19,7 @@ type Props = {
 const EsqueceuSenha: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [emailError, setEmailError] = useState(false);
 
   const isValidEmail = (email: string) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -31,11 +33,21 @@ const EsqueceuSenha: React.FC<Props> = ({ navigation }) => {
     }
 
     if (!isValidEmail(email)) {
-      Alert.alert("Erro", "Por favor, insira um email válido.");
+      setEmailError(true); // Define erro de e-mail como verdadeiro
       return;
+    } else {
+      setEmailError(false); // Reseta o erro se o e-mail for válido
     }
 
     setLoading(true);
+
+    const emailExists = await checkEmailExists(email);
+    if (!emailExists) {
+      Alert.alert("Erro", "Este e-mail não está cadastrado.");
+      setEmailError(true);
+      setLoading(false);
+      return;
+    }
 
     const success = await sendPasswordResetEmail(email);
 
@@ -43,7 +55,7 @@ const EsqueceuSenha: React.FC<Props> = ({ navigation }) => {
 
     if (success) {
       Alert.alert("Sucesso", "Email de redefinição de senha enviado com sucesso!");
-      navigation.navigate("Login"); // Ensure "Login" is a valid route in your navigation stack
+      navigation.navigate("Login"); // Verifique se "Login" é uma rota válida
     } else {
       Alert.alert("Erro", "Ocorreu um erro ao enviar o email. Tente novamente.");
     }
@@ -61,10 +73,10 @@ const EsqueceuSenha: React.FC<Props> = ({ navigation }) => {
           <Text style={styles.title}>Esqueceu a senha</Text>
         </View>
 
-        <View style={styles.inputContainer}>
+        <View style={emailError ? styles.inputError : styles.inputContainer}>
           <Ionicons name="mail-outline" size={20} color="gray" />
           <TextInput
-            style={styles.input}
+            style={[styles.input]}
             placeholder="Entre com seu email cadastrado"
             keyboardType="email-address"
             value={email}
@@ -72,6 +84,7 @@ const EsqueceuSenha: React.FC<Props> = ({ navigation }) => {
             placeholderTextColor="rgba(163,162,163,255)"
           />
         </View>
+        {emailError && <Text style={styles.errorMessage}>E-mail inválido</Text>}
       </ScrollView>
 
       <TouchableOpacity style={styles.button} onPress={handleSendEmail}>

@@ -14,4 +14,5 @@ export type RootStackParamList = {
   UserDietas: undefined;
   EsqueceuSenha: undefined;
   RecuperarSenha: {email: string};
+  Redirecionamento: undefined;
 };

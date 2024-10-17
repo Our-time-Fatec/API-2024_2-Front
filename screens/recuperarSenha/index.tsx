@@ -32,7 +32,7 @@ const RecuperarSenha: React.FC<Props> = ({ navigation, route }) => {
 
       if (!data.valid) {
         Alert.alert("Erro", "O email não é válido ou não está registrado.");
-        navigation.navigate("Login");
+        navigation.navigate("Redirecionamento");
       }
     };
 

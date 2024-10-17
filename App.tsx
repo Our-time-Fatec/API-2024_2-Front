@@ -17,6 +17,7 @@ import PerfilScreen from './screens/profile';
 import EditProfile from './screens/editProfile';
 import CadastroAlimentoScreen from './screens/cadastrarAlimento';
 import UserAlimentosScreen from './screens/userAlimentos';
+import Redirecionamento from './screens/redirecionamento';
 import FAQs from './screens/FAQs';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { RootStackParamList } from './types/rootStack';
@@ -50,6 +51,7 @@ const AuthenticatedStack = () => {
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="EsqueceuSenha" component={EsqueceuSenha} />
           <Stack.Screen name="RecuperarSenha" component={RecuperarSenha} />
+          <Stack.Screen name="Redirecionamento" component={Redirecionamento} />
         </>
       )}
     </Stack.Navigator>

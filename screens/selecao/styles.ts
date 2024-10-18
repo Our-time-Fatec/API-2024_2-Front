@@ -17,9 +17,10 @@ const styles = StyleSheet.create({
       profileContainer: {
         flexDirection: 'row',
         alignItems: 'center',
+        marginLeft: 10
       },
       textContainer: {
-        marginLeft: 10,
+        marginLeft: 20,
       },
       welcomeText: {
         color: 'white',

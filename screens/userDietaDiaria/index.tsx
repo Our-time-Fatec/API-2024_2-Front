@@ -27,6 +27,7 @@ import formatDate from "../../utils/formaterDate"; // Função de formatação d
 import { RootStackParamList } from "../../types/rootStack";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { styles as style } from "../../components/alimento/styles";
+import { v4 as uuidv4 } from 'uuid';
 
 type UserDietaDiariaScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -59,19 +60,22 @@ const UserDietaDiaria: React.FC<Props> = ({ navigation }) => {
 
   useEffect(() => {
     const handleDietasDiarias = async () => {
-      // Aguarda a requisição ser concluíd
-      // console.log(dietasDiarias)
-
       if (Array.isArray(dietasDiarias) && dietasDiarias.length > 0) {
-        const todosGrupos = dietasDiarias.flatMap(
-          (dieta) => dieta.gruposConsumo ?? []
-        );
+        const todosGrupos = dietasDiarias
+          .flatMap((dieta) => dieta.gruposConsumo ?? [])
+          .reduce<IGrupoConsumo[]>((acc, grupo) => {
+            // Evita grupos duplicados com base no nome
+            if (!acc.some((g) => g.grupo === grupo.grupo)) {
+              acc.push(grupo);
+            }
+            return acc;
+          }, []); // Tipo do array inicial definido como IGrupoConsumo[]
         setDietas(todosGrupos);
       } else if (isEmpty) {
-        navigation.navigate("UserAlimentosConsumidos"); // Redirecionar caso não tenha dietas
+        navigation.navigate("UserAlimentosConsumidos");
       }
     };
-
+  
     handleDietasDiarias();
   }, [dietasDiarias, navigation]);
 

@@ -1,12 +1,13 @@
-import { View, Text, TouchableOpacity } from 'react-native';
-import React, { useCallback } from 'react';
-import { Ionicons } from '@expo/vector-icons';
+import { View, Text, TouchableOpacity, Image, ActivityIndicator } from "react-native";
+import React, { useCallback, useState, useEffect } from "react";
+import { Ionicons } from "@expo/vector-icons";
 import { RootStackParamList } from "../../types/rootStack";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
-import FooterMenu from '../../components/menus';
-import useUsuario from '../../hooks/useUsuario';
-import styles from './styles';
+import FooterMenu from "../../components/menus";
+import useUsuario from "../../hooks/useUsuario";
+import styles from "./styles";
+import useProfilePicture from "../../hooks/useProfilePicture";
 
 type SelecaoScreenNavigationProp = StackNavigationProp<RootStackParamList, "Selecao">;
 type SelecaoScreenRouteProp = RouteProp<RootStackParamList, "Selecao">;
@@ -17,6 +18,8 @@ type Props = {
 };
 
 const Selecao: React.FC<Props> = ({ navigation }) => {
+  const [loading, setLoading] = useState(true);
+  const [email, setEmail] = useState<string | null>(null);
   const { usuario, refreshUser } = useUsuario();
   const margem = 100;
 
@@ -25,11 +28,11 @@ const Selecao: React.FC<Props> = ({ navigation }) => {
     const meta = usuario?.consumoDeCaloriaPorDia || 0;
 
     if (consumo > meta + margem) {
-      return { texto: 'Ultrapassou a meta', cor: 'red' };
+      return { texto: "Ultrapassou a meta", cor: "red" };
     } else if (consumo < meta - margem) {
-      return { texto: 'Ainda não atingiu a meta', cor: 'orange' };
+      return { texto: "Ainda não atingiu a meta", cor: "orange" };
     } else {
-      return { texto: 'Você está dentro da meta', cor: 'green' };
+      return { texto: "Você está dentro da meta", cor: "green" };
     }
   };
 
@@ -37,16 +40,54 @@ const Selecao: React.FC<Props> = ({ navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
-      refreshUser();
-    }, [])
+      const fetchData = async () => {
+        setLoading(true); // Inicia o carregamento
+        await refreshUser(); // Aguarda a atualização do usuário
+        setLoading(false); // Finaliza o carregamento
+      };
+      
+      fetchData();
+    }, [refreshUser])
+  );  
+
+  // Atualiza o email quando o usuario muda
+  useEffect(() => {
+    if (usuario) {
+      setEmail(usuario.email);
+    }
+  }, [usuario]);
+
+  const { image, loading: loadingImage, reloadImage } = useProfilePicture(email || '');
+
+  useFocusEffect(
+    useCallback(() => {
+      if (email) {
+        reloadImage(); // Recarrega os dados do usuário sempre que a tela ganhar foco
+      }
+    }, [email, reloadImage])
   );
+
+  // if (loading || loadingImage) {
+  //   return (
+  //     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+  //       <ActivityIndicator size="large" color="#0000ff" />
+  //     </View>
+  //   ); // Exibe um indicador de carregamento
+  // }
 
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.container}>
         <View style={styles.header}>
           <View style={styles.profileContainer}>
-            <Ionicons name="person-circle-outline" size={50} color="white" />
+            {image ? (
+              <Image
+                source={{ uri: image }}
+                style={{ width: 80, height: 80, borderRadius: 60 }}
+              />
+            ) : (
+              <Ionicons name="person-circle-outline" size={80} color="white" />
+            )}
             <View style={styles.textContainer}>
               <Text style={styles.welcomeText}>Bem vindo!</Text>
               <Text style={styles.usernameText}>{usuario?.nome}</Text>
@@ -60,18 +101,37 @@ const Selecao: React.FC<Props> = ({ navigation }) => {
 
           <TouchableOpacity style={styles.optionContainer} disabled>
             <View style={styles.optionTextContainer}>
-              <Text style={styles.optionTitle}>Meta/dia: {usuario?.consumoDeCaloriaPorDia?.toFixed(2)} Kcal</Text>
-              <Text style={[styles.optionSubtitle, { color: resultado.cor }]}> {resultado.texto} </Text>
+              <Text style={styles.optionTitle}>
+                Meta/dia: {usuario?.consumoDeCaloriaPorDia?.toFixed(2)} Kcal
+              </Text>
+              <Text style={[styles.optionSubtitle, { color: resultado.cor }]}>
+                {" "}{resultado.texto}{" "}
+              </Text>
             </View>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.optionContainer} disabled>
             <View style={styles.optionTextContainer}>
-              <Text style={styles.optionTitle}>Consumido: {usuario?.totaisAlimentosConsumidos?.valorEnergetico.toFixed(2)} Kcal</Text>
-              <Text style={styles.optionSubtitle}>{usuario?.totaisAlimentosConsumidos?.proteinas.toFixed(2)}g Proteínas</Text>
-              <Text style={styles.optionSubtitle}>{usuario?.totaisAlimentosConsumidos?.carboidratos.toFixed(2)}g Carboidratos</Text>
-              <Text style={styles.optionSubtitle}>{usuario?.totaisAlimentosConsumidos?.fibras.toFixed(2)}g Fibras</Text>
-              <Text style={styles.optionSubtitle}>{usuario?.totaisAlimentosConsumidos?.lipidios.toFixed(2)}g Lipídios</Text>
+              <Text style={styles.optionTitle}>
+                Consumido:{" "}
+                {usuario?.totaisAlimentosConsumidos?.valorEnergetico?.toFixed(2)}{" "}
+                Kcal
+              </Text>
+              <Text style={styles.optionSubtitle}>
+                {usuario?.totaisAlimentosConsumidos?.proteinas?.toFixed(2)}g
+                Proteínas
+              </Text>
+              <Text style={styles.optionSubtitle}>
+                {usuario?.totaisAlimentosConsumidos?.carboidratos?.toFixed(2)}g
+                Carboidratos
+              </Text>
+              <Text style={styles.optionSubtitle}>
+                {usuario?.totaisAlimentosConsumidos?.fibras?.toFixed(2)}g Fibras
+              </Text>
+              <Text style={styles.optionSubtitle}>
+                {usuario?.totaisAlimentosConsumidos?.lipidios?.toFixed(2)}g
+                Lipídios
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -79,6 +139,6 @@ const Selecao: React.FC<Props> = ({ navigation }) => {
       <FooterMenu navigation={navigation} />
     </View>
   );
-}
+};
 
 export default Selecao;

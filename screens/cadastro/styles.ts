@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   containerUp: {
-    paddingVertical: 40,
+    paddingVertical: 20,
     flex: 0.5,
   },
   containerDown: {
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
-    marginBottom: 30,
+    marginBottom: 0,
   },
   inputContainer: {
     flexDirection: "row",

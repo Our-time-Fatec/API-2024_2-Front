@@ -9,7 +9,7 @@ import {
   Modal,
   Image,
 } from "react-native";
-import { RouteProp, useNavigation } from "@react-navigation/native";
+import { RouteProp, useIsFocused, useNavigation } from "@react-navigation/native";
 import useDietas from "../../hooks/useDietaDiaria";
 import { IAlimento } from "../../interfaces/IAlimento";
 import { Ionicons } from "@expo/vector-icons";
@@ -43,12 +43,19 @@ type Props = {
 };
 
 const UserDietaDiaria: React.FC<Props> = ({ navigation }) => {
+  const isFocused = useIsFocused()
   const { dietasDiarias, refreshDietasDiarias, isEmpty } = useDietas();
   const [dietas, setDietas] = useState<IGrupoConsumo[]>([]);
   const [modalVisible, setModalVisible] = useState(false); // Estado do modal
   const [alimentoSelecionado, setAlimentoSelecionado] =
     useState<IAlimento | null>(null); // Alimento selecionado
   const [consumo, setConsumo] = useState<number | null>(null);
+  
+  useEffect(() => {
+    if (isFocused) {
+      refreshDietasDiarias();
+    }
+  }, [isFocused, refreshDietasDiarias]);
 
   useEffect(() => {
     const handleDietasDiarias = async () => {

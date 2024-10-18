@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { useAuth } from '../../context/AuthContext';
 import { styles } from './styles';
+import useProfilePicture from '../../hooks/useProfilePicture';
 
 type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, "Profile">;
 type ProfileScreenRouteProp = RouteProp<RootStackParamList, "Profile">;
@@ -23,11 +24,12 @@ const PerfilScreen: React.FC<Props> = ({ navigation, route }) => {
     const { usuario, loading, error, refreshUser } = useUsuario(); // Adicione a função de refreshUser aqui
     const { setIsAuthenticated } = useAuth();
 
+
     useFocusEffect(
         useCallback(() => {
             refreshUser(); // Recarrega os dados do usuário sempre que a tela ganhar foco
-        }, [])
-    );
+        }, [refreshUser])
+    );  
 
     const handleLogout = async () => {
         try {
@@ -45,6 +47,14 @@ const PerfilScreen: React.FC<Props> = ({ navigation, route }) => {
         navigation.navigate('EditProfile');
     }
 
+    const { image, reloadImage } = useProfilePicture(usuario ? usuario.email : '');
+
+    useFocusEffect(
+        useCallback(() => {
+            reloadImage(); // Recarrega os dados do usuário sempre que a tela ganhar foco
+        }, [reloadImage])
+    );  
+
     if (loading) {
         return <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator} />;
     }
@@ -57,10 +67,14 @@ const PerfilScreen: React.FC<Props> = ({ navigation, route }) => {
         <View style={styles.container}>
             <View style={styles.content}>
                 <View style={styles.profileSection}>
-                    <Image
-                        source={{ uri: 'https://via.placeholder.com/150' }}
-                        style={styles.profileImage}
-                    />
+                {image ? (
+              <Image
+              source={{ uri: image }}
+                style={{ width: 120, height: 120, borderRadius: 60 }}
+              />
+            ) : (
+              <Ionicons name="person-circle-outline" size={120} color="gray" />
+            )}
                     <Text style={styles.profileName}>{usuario?.nome} {usuario?.sobrenome}</Text>
                 </View>
                 <View style={styles.infoSection}>

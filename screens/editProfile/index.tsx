@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Image,
   Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -20,6 +21,7 @@ import useUpdateUser from "../../hooks/useUpdateUser";
 import FooterMenu from "../../components/menus";
 import formaterDate from "../../utils/formaterDate";
 import resultChecker from "../../utils/resultChecker";
+import useProfilePicture from "../../hooks/useProfilePicture";
 
 type EditProfileScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -62,6 +64,7 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
   // State para salvar as  informações ATUAIS do estado da data de nascimento
   const [dataFormatada, setDataFormatada] = useState<Date | null | undefined>();
 
+
   useEffect(() => {
     if (usuario) {
       setFormState({
@@ -80,6 +83,8 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
       setSelectedDate(new Date(usuario.dataDeNascimento));
     }
   }, [usuario]);
+
+  const { image, pickImage, takePhoto, removeProfileImage } = useProfilePicture(formState.email);
 
   const handleInputChange = (name: keyof IUsuario, value: any) => {
     if (name === "altura" || name === "peso") {
@@ -152,10 +157,30 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
           showsVerticalScrollIndicator={false}
           style={{ flex: 1 }}
         >
-          <View style={styles.containerUp}>
-            <Text style={styles.title}>Editar Perfil</Text>
-          </View>
+   <View style={{ alignItems: "center", marginBottom: 20 }}>
+  {image ? (
+    <Image
+      source={{ uri: image }}
+      style={{ width: 120, height: 120, borderRadius: 60 }}
+    />
+  ) : (
+    <Ionicons name="person-circle-outline" size={120} color="gray" />
+  )}
 
+  <View style={{ flexDirection: "row", marginTop: 10 }}>
+    <TouchableOpacity onPress={pickImage} style={styles.iconButton}>
+      <Ionicons name="folder-outline" size={30} color="black" />
+    </TouchableOpacity>
+
+    <TouchableOpacity onPress={takePhoto} style={styles.iconButton}>
+      <Ionicons name="camera-outline" size={30} color="black" />
+    </TouchableOpacity>
+
+    <TouchableOpacity onPress={removeProfileImage} style={styles.iconButton}>
+      <Ionicons name="trash-outline" size={30} color="black" />
+    </TouchableOpacity>
+  </View>
+</View>
           <View style={styles.inputContainer}>
             <Ionicons name="person-outline" size={20} color="gray" />
             <TextInput

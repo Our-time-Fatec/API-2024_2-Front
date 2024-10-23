@@ -8,6 +8,11 @@ export const styles = StyleSheet.create({
     backgroundColor: '#f0f4f8', // Fundo mais claro
     marginTop: 10
   },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+},
   grupoContainer: {
     marginBottom: 20,
     padding: 10, // Adicionando padding ao contêiner do grupo
@@ -67,4 +72,17 @@ export const styles = StyleSheet.create({
     color: '#333',
     marginHorizontal: 6,
   },
+  picker: {
+    height: 50,
+    marginBottom: 20,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    elevation: 2,
+        shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+  },
+  pickerText:{
+    fontSize: 18
+  }
 });

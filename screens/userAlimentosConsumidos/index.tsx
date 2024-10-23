@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
 import AlimentoItem from '../../components/alimento';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp, useIsFocused } from '@react-navigation/native';
@@ -76,6 +76,8 @@ const UserAlimentosConsumidosScreen: React.FC<Props> = ({ navigation }) => {
 
     return (
         <View style={{ flex: 1 }}>
+          <StatusBar backgroundColor="#f0f4f8" />
+
             <View style={styles.container}>
                 <Text style={styles.title}>Meus Alimentos consumidos</Text>
                 <FlatList

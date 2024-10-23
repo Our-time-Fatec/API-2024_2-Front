@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity, Image, ActivityIndicator, StatusBar } from "react-native";
 import React, { useCallback, useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { RootStackParamList } from "../../types/rootStack";
@@ -77,7 +77,10 @@ const Selecao: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1 }}>
+ 
+
       <View style={styles.container}>
+      <StatusBar backgroundColor="#ADD8E6" barStyle="dark-content" />
         <View style={styles.header}>
           <View style={styles.profileContainer}>
             {image ? (

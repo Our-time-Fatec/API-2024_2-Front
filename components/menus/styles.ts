@@ -3,7 +3,7 @@ import colors from "../../colors/colors";
 
 export const styles = StyleSheet.create({
     footer: {
-      backgroundColor: colors.background,
+      backgroundColor: "#fafdff",
       flexDirection: 'row',
       justifyContent: 'space-around',
       paddingVertical: 10,

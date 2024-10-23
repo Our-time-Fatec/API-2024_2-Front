@@ -7,6 +7,8 @@ import {
   ScrollView,
   Image,
   Alert,
+  StatusBar,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { styles } from "./styles";
@@ -143,7 +145,7 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
   };
 
   if (loadingUsuario) {
-    return <Text>Carregando dados...</Text>;
+    return <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator} />;
   }
 
   if (errorUsuario) {
@@ -152,6 +154,8 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1 }}>
+          <StatusBar backgroundColor="#FFF" />
+
       <View style={styles.container}>
         <ScrollView
           contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
@@ -171,18 +175,18 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
 
             <View style={{ flexDirection: "row", marginTop: 10 }}>
               <TouchableOpacity onPress={pickImage} style={styles.iconButton}>
-                <Ionicons name="folder-outline" size={30} color="black" />
+                <Ionicons name="folder-outline" size={30} color="#2d74da" />
               </TouchableOpacity>
 
               <TouchableOpacity onPress={takePhoto} style={styles.iconButton}>
-                <Ionicons name="camera-outline" size={30} color="black" />
+                <Ionicons name="camera-outline" size={30} color="#2d74da" />
               </TouchableOpacity>
 
               <TouchableOpacity
                 onPress={removeProfileImage}
                 style={styles.iconButton}
               >
-                <Ionicons name="trash-outline" size={30} color="black" />
+                <Ionicons name="trash-outline" size={30} color="#2d74da" />
               </TouchableOpacity>
             </View>
           </View>

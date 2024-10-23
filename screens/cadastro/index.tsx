@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
-  Image
+  Image,
+  StatusBar
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { styles } from "./styles";
@@ -135,6 +136,7 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <StatusBar  backgroundColor="#FFF"/>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
         keyboardShouldPersistTaps="handled"

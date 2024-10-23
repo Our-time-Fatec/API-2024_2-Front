@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Image, StatusBar } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import logo from "../../assets/googleicon.png";
 import { RootStackParamList } from "../../types/rootStack";
@@ -42,7 +42,7 @@ const Login: React.FC<Props> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>Entre</Text>
-
+      <StatusBar  backgroundColor="#FFF"/>
       <View style={styles.containerinput}>
         <Ionicons name="mail-outline" size={20} color="rgba(163,162,163,255)" />
         <TextInput

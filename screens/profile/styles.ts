@@ -1,9 +1,11 @@
 import { StyleSheet } from "react-native";
+import colors from "../../colors/colors";
 
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'space-between',
+        backgroundColor: "#f0f4f8"
     },
     content: {
         flex: 1,
@@ -15,9 +17,7 @@ export const styles = StyleSheet.create({
         marginBottom: 16,
     },
     profileImage: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
+        borderRadius: 100,
         marginBottom: 8,
         marginTop: 15,
     },
@@ -36,14 +36,16 @@ export const styles = StyleSheet.create({
         width: '30%',
     },
     infoLabel: {
-        fontSize: 14,
-        color: '#2d74da',
+        fontSize: 12,
+              color: "rgba(64, 124, 226, 0.74)",
         marginTop: 4,
         textAlign: 'center',
     },
     infoValue: {
-        fontSize: 12,
+        fontSize: 14,
         textAlign: 'center',
+  
+        color: '#407BFF',
     },
     menuSection: {
         marginTop: 16,
@@ -53,7 +55,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         paddingVertical: 15,
         borderBottomWidth: 1,
-        borderBottomColor: '#eee',
+        borderBottomColor: '#ccc',
     },
     menuText: {
         marginLeft: 10,
@@ -70,4 +72,14 @@ export const styles = StyleSheet.create({
         textAlign: 'center',
         marginTop: 20,
     },
+    circle:{
+        backgroundColor: "rgba(64, 124, 226, 0.13)",
+        borderRadius: 20,
+        // height: 35,
+        // width: 35,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 8
+    }
 });

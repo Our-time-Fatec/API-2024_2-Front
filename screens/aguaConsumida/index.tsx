@@ -11,6 +11,7 @@ import {
   Alert,
   ActivityIndicator,
   Pressable,
+  StatusBar,
 } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress"; // Usando o AnimatedCircularProgress
 import { RootStackParamList } from "../../types/rootStack";
@@ -159,7 +160,10 @@ const AguaConsumida: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+          <StatusBar backgroundColor="#f0f4f8" />
+
       <ScrollView contentContainerStyle={styles.contentContainer}>
+      <Text style={styles.title}>Minha dieta de hoje</Text>
         <TouchableOpacity
           style={styles.progressContainer}
           onPress={() => reiniciarAgua()}

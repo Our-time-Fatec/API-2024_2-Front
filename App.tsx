@@ -68,7 +68,7 @@ export default function App() {
     <AuthProvider>
       <SafeAreaProvider>
         <NavigationContainer>
-          <StatusBar style="dark" backgroundColor="#fff" />
+          <StatusBar style="dark" backgroundColor="#f0f4f8" />
           <SafeAreaView style={styles.container}>
           <SuppressWarnings />
             <AuthenticatedStack />

@@ -9,6 +9,7 @@ import {
   RefreshControl,
   Pressable,
   ActivityIndicator,
+  StatusBar,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { styles } from "./styles";
@@ -464,6 +465,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
         />
       }
     >
+         <StatusBar  backgroundColor="#FFF"/>
        {isLoading ? (
         <View style={styles.loading}>
         <ActivityIndicator size="large" color="#0000ff" />

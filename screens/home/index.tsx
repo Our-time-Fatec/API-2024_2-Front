@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, StatusBar } from 'react-native';
 import { useFonts, Poppins_700Bold, Poppins_600SemiBold, Poppins_400Regular } from '@expo-google-fonts/poppins';
 import * as SplashScreen from 'expo-splash-screen';
 import { BotaoAzul, BotaoBranco } from '../../components/buttons';
@@ -38,6 +38,8 @@ const Home: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <StatusBar  backgroundColor="#FFF"/>
+
       <View style={styles.containercima}>
         <View style={styles.containerlogo}>
           <Image style={styles.logo} source={logo} />

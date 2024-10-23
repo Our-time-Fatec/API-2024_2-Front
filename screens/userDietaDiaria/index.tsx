@@ -8,26 +8,24 @@ import {
   ScrollView,
   Modal,
   Image,
+  StatusBar,
 } from "react-native";
 import { RouteProp, useIsFocused, useNavigation } from "@react-navigation/native";
 import useDietas from "../../hooks/useDietaDiaria";
 import { IAlimento } from "../../interfaces/IAlimento";
 import { Ionicons } from "@expo/vector-icons";
 import {
-  IAlimentoDieta,
   IContagem,
-  IDietaDiaria,
-  IGrupo,
   IGrupoConsumo,
 } from "../../interfaces/IDieta";
 import FooterMenu from "../../components/menus";
 import { styles } from "./styles";
 import { requestWithRefresh } from "../../services/api";
-import formatDate from "../../utils/formaterDate"; // Função de formatação de data
 import { RootStackParamList } from "../../types/rootStack";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { styles as style } from "../../components/alimento/styles";
-import { v4 as uuidv4 } from 'uuid';
+import { GruposEnum } from "../cadastrarDieta";
+import { Picker } from "@react-native-picker/picker";
 
 type UserDietaDiariaScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -51,6 +49,7 @@ const UserDietaDiaria: React.FC<Props> = ({ navigation }) => {
   const [alimentoSelecionado, setAlimentoSelecionado] =
     useState<IAlimento | null>(null); // Alimento selecionado
   const [consumo, setConsumo] = useState<number | null>(null);
+  const [grupoSelecionado, setGrupoSelecionado] = useState<string | null>(null); 
   
   useEffect(() => {
     if (isFocused) {
@@ -78,6 +77,11 @@ const UserDietaDiaria: React.FC<Props> = ({ navigation }) => {
   
     handleDietasDiarias();
   }, [dietasDiarias, navigation]);
+
+  const gruposFiltrados = dietas.filter((grupo) => {
+    if (!grupoSelecionado) return true; // Se nenhum grupo estiver selecionado, exibe todos
+    return grupo.grupo === grupoSelecionado; // Exibe apenas os grupos selecionados
+  });
 
   const toggleModal = () => {
     setModalVisible(!modalVisible); // Alterna a visibilidade do modal
@@ -213,9 +217,22 @@ const UserDietaDiaria: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1 }}>
+          <StatusBar backgroundColor="#f0f4f8" />
+
       <ScrollView style={styles.container}>
+      <Text style={styles.title}>Minha dieta de hoje</Text>
+      <Picker
+        selectedValue={grupoSelecionado}
+        onValueChange={(itemValue) => setGrupoSelecionado(itemValue)}
+        style={styles.picker}
+      >
+        <Picker.Item label="Todos os Grupos" value={null} style={styles.pickerText} />
+        {Object.values(GruposEnum).map((grupo) => (
+          <Picker.Item key={grupo} label={grupo} value={grupo} style={styles.pickerText}/>
+        ))}
+      </Picker>
         <FlatList
-          data={dietas || []}
+          data={gruposFiltrados || []}
           renderItem={renderGrupo}
           keyExtractor={(grupo) => grupo._id || "default-key"}
         />

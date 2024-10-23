@@ -5,21 +5,32 @@ export
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f0f4f8',
+    
   },
   contentContainer: {
     padding: 20,
   },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+},
   progressContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 40,
+    marginVertical: 15,
     marginBottom: 30,
+    backgroundColor: "#FFF",
+    alignSelf: "center",
+    width: "50%",
+    borderRadius: 100
   },
   percentageContainer: {
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
+    flex: 1,
+    // backgroundColor: "#FFF"
   },
   percentageText: {
     fontSize: 40,

@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  ScrollView,
+  StatusBar,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -19,6 +21,15 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useAuth } from "../../context/AuthContext";
 import { styles } from "./styles";
 import useProfilePicture from "../../hooks/useProfilePicture";
+import {
+  useFonts,
+  Poppins_700Bold,
+  Poppins_600SemiBold,
+  Poppins_400Regular,
+} from "@expo-google-fonts/poppins";
+import * as SplashScreen from "expo-splash-screen";
+import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 type ProfileScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -32,8 +43,20 @@ type Props = {
 };
 
 const PerfilScreen: React.FC<Props> = ({ navigation, route }) => {
+  const [fontsLoaded] = useFonts({
+    Poppins_700Bold,
+    Poppins_600SemiBold,
+    Poppins_400Regular,
+  });
+
   const { usuario, loading, error, refreshUser } = useUsuario(); // Adicione a função de refreshUser aqui
   const { setIsAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
 
   useFocusEffect(
     useCallback(() => {
@@ -80,12 +103,14 @@ const PerfilScreen: React.FC<Props> = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.content}>
+          <StatusBar backgroundColor="#f0f4f8" />
+
+      <ScrollView style={styles.content}>
         <View style={styles.profileSection}>
           {image ? (
             <Image
               source={{ uri: image }}
-              style={{ width: 120, height: 120, borderRadius: 60 }}
+              style={[{ width: 120, height: 120, borderRadius: 60 }]}
             />
           ) : loading ? (
             <View
@@ -108,6 +133,7 @@ const PerfilScreen: React.FC<Props> = ({ navigation, route }) => {
         <View style={styles.infoSection}>
           <View style={styles.infoItem}>
             <Ionicons name="calendar-outline" size={24} color="#2d74da" />
+
             <Text style={styles.infoLabel}>Idade</Text>
             <Text style={styles.infoValue}>{usuario?.idade ?? "N/A"}</Text>
           </View>
@@ -146,33 +172,54 @@ const PerfilScreen: React.FC<Props> = ({ navigation, route }) => {
 
         <View style={styles.menuSection}>
           <TouchableOpacity style={styles.menuItem} onPress={handleEdit}>
-            <Ionicons name="pencil-outline" size={24} color="#2d74da" />
+            <View style={styles.circle}>
+              <SimpleLineIcons name="pencil" size={22} color="#2d74da" />
+            </View>
             <Text style={styles.menuText}>Editar Perfil</Text>
           </TouchableOpacity>
-          {/* <TouchableOpacity style={styles.menuItem}>
-                        <Ionicons name="heart-outline" size={24} color="#2d74da" />
-                        <Text style={styles.menuText}>Minhas Dietas</Text>
-                    </TouchableOpacity> */}
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => navigation.navigate("UserDietas")}
+          >
+            <View style={styles.circle}>
+              <MaterialCommunityIcons
+                name="heart-multiple-outline"
+                size={24}
+                color="#2d74da"
+              />
+            </View>
+            <Text style={styles.menuText}>Minhas Dietas</Text>
+          </TouchableOpacity>
           <TouchableOpacity
             style={styles.menuItem}
             onPress={() => navigation.navigate("UserAlimentos")}
           >
-            <Ionicons name="document-text-outline" size={24} color="#2d74da" />
+            <View style={styles.circle}>
+              <Ionicons
+                name="document-text-outline"
+                size={24}
+                color="#2d74da"
+              />
+            </View>
             <Text style={styles.menuText}>Alimentos Cadastrados</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.menuItem}
             onPress={() => navigation.navigate("FAQs")}
           >
-            <Ionicons name="chatbubble-outline" size={24} color="#2d74da" />
+            <View style={styles.circle}>
+              <Ionicons name="chatbubble-outline" size={24} color="#2d74da" />
+            </View>
             <Text style={styles.menuText}>FAQs</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
-            <Ionicons name="log-out-outline" size={24} color="#2d74da" />
+            <View style={styles.circle}>
+              <Ionicons name="log-out-outline" size={24} color="#2d74da" />
+            </View>
             <Text style={styles.menuText}>Logout</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
 
       <FooterMenu navigation={navigation} />
     </View>

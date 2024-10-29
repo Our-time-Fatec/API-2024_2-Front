@@ -163,7 +163,7 @@ const AguaConsumida: React.FC<Props> = ({ navigation }) => {
           <StatusBar backgroundColor="#f0f4f8" />
 
       <ScrollView contentContainerStyle={styles.contentContainer}>
-      <Text style={styles.title}>Minha dieta de hoje</Text>
+      <Text style={styles.title}>Agua ingerida</Text>
         <TouchableOpacity
           style={styles.progressContainer}
           onPress={() => reiniciarAgua()}

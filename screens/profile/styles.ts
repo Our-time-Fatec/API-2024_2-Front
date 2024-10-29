@@ -24,6 +24,7 @@ export const styles = StyleSheet.create({
     profileName: {
         fontSize: 18,
         fontWeight: 'bold',
+        
     },
     infoSection: {
         flexDirection: 'row',

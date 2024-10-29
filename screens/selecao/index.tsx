@@ -1,4 +1,11 @@
-import { View, Text, TouchableOpacity, Image, ActivityIndicator, StatusBar } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+  StatusBar,
+} from "react-native";
 import React, { useCallback, useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { RootStackParamList } from "../../types/rootStack";
@@ -8,8 +15,13 @@ import FooterMenu from "../../components/menus";
 import useUsuario from "../../hooks/useUsuario";
 import styles from "./styles";
 import useProfilePicture from "../../hooks/useProfilePicture";
+import DietaGrafico from "../../components/grafico";
+import useGrafico from "../../hooks/useGrafico";
 
-type SelecaoScreenNavigationProp = StackNavigationProp<RootStackParamList, "Selecao">;
+type SelecaoScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "Selecao"
+>;
 type SelecaoScreenRouteProp = RouteProp<RootStackParamList, "Selecao">;
 
 type Props = {
@@ -20,7 +32,9 @@ type Props = {
 const Selecao: React.FC<Props> = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState<string | null>(null);
+  const [isModalVisible, setModalVisible] = useState(false);
   const { usuario, refreshUser } = useUsuario();
+  const { dietaSemanal, refreshAlimentosConsumidos } = useGrafico();
   const margem = 100;
 
   const verificarCalorias = () => {
@@ -45,10 +59,10 @@ const Selecao: React.FC<Props> = ({ navigation }) => {
         await refreshUser(); // Aguarda a atualização do usuário
         setLoading(false); // Finaliza o carregamento
       };
-      
+
       fetchData();
     }, [refreshUser])
-  );  
+  );
 
   // Atualiza o email quando o usuario muda
   useEffect(() => {
@@ -57,7 +71,11 @@ const Selecao: React.FC<Props> = ({ navigation }) => {
     }
   }, [usuario]);
 
-  const { image, loading: loadingImage, reloadImage } = useProfilePicture(email || '');
+  const {
+    image,
+    loading: loadingImage,
+    reloadImage,
+  } = useProfilePicture(email || "");
 
   useFocusEffect(
     useCallback(() => {
@@ -66,6 +84,16 @@ const Selecao: React.FC<Props> = ({ navigation }) => {
       }
     }, [email, reloadImage])
   );
+
+  const openModal = () => {
+    refreshAlimentosConsumidos()
+    setModalVisible(true);
+  };
+
+  // Função para fechar o modal
+  const closeModal = () => {
+    setModalVisible(false);
+  };
 
   // if (loading || loadingImage) {
   //   return (
@@ -77,16 +105,20 @@ const Selecao: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1 }}>
- 
-
       <View style={styles.container}>
-      <StatusBar backgroundColor="#ADD8E6" barStyle="dark-content" />
+        <StatusBar backgroundColor="#ADD8E6" barStyle="dark-content" />
         <View style={styles.header}>
           <View style={styles.profileContainer}>
             {image ? (
               <Image
                 source={{ uri: image }}
-                style={{ width: 80, height: 80, borderRadius: 60 }}
+                style={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: 60,
+                  borderWidth: 2,
+                  borderColor: "#FFF",
+                }}
               />
             ) : (
               <Ionicons name="person-circle-outline" size={80} color="white" />
@@ -102,13 +134,14 @@ const Selecao: React.FC<Props> = ({ navigation }) => {
         <View style={styles.content}>
           <Text style={styles.selectText}>Ingestão diária de calorias</Text>
 
-          <TouchableOpacity style={styles.optionContainer} disabled>
+          <TouchableOpacity style={styles.optionContainer} onPress={openModal}>
             <View style={styles.optionTextContainer}>
               <Text style={styles.optionTitle}>
                 Meta/dia: {usuario?.consumoDeCaloriaPorDia?.toFixed(2)} Kcal
               </Text>
               <Text style={[styles.optionSubtitle, { color: resultado.cor }]}>
-                {" "}{resultado.texto}{" "}
+                {" "}
+                {resultado.texto}{" "}
               </Text>
             </View>
           </TouchableOpacity>
@@ -117,7 +150,9 @@ const Selecao: React.FC<Props> = ({ navigation }) => {
             <View style={styles.optionTextContainer}>
               <Text style={styles.optionTitle}>
                 Consumido:{" "}
-                {usuario?.totaisAlimentosConsumidos?.valorEnergetico?.toFixed(2)}{" "}
+                {usuario?.totaisAlimentosConsumidos?.valorEnergetico?.toFixed(
+                  2
+                )}{" "}
                 Kcal
               </Text>
               <Text style={styles.optionSubtitle}>
@@ -139,6 +174,15 @@ const Selecao: React.FC<Props> = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
+      {dietaSemanal && (
+        <DietaGrafico
+          isVisible={isModalVisible}
+          dietaSemanal={dietaSemanal} // Passa os dados da dieta
+          onClose={closeModal}
+          meta={usuario?.consumoDeCaloriaPorDia || 0}
+        />
+      )}
+
       <FooterMenu navigation={navigation} />
     </View>
   );

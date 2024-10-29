@@ -69,8 +69,8 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
   useEffect(() => {
     if (usuario) {
       setFormState({
-        nome: usuario.nome,
-        sobrenome: usuario.sobrenome,
+        nome: usuario.nome.trim(),
+        sobrenome: usuario.sobrenome.trim(),
         email: usuario.email,
         senha: "",
         confirmarSenha: "",
@@ -121,7 +121,7 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
     setSelectedDate(date);
     setDataFormatada(date);
   };
-
+  
   const handleUpdate = async () => {
     if (!resultChecker.checkDateConscile(formState, dataFormatada)) return;
 
@@ -134,8 +134,13 @@ const EditProfile: React.FC<Props> = ({ navigation }) => {
 
     // Se qualquer validação falhar, o fluxo é interrompido
     if (validators.some((validator) => !validator(formState))) return;
+    const updatedFormState = {
+      ...formState,
+      nome: formState.nome.trim(),
+      sobrenome: formState.sobrenome.trim(),
+    };
 
-    const result = await updateUser(formState);
+    const result = await updateUser(updatedFormState);
     if (result.success) {
       Alert.alert("Sucesso", "Perfil atualizado com sucesso!");
       navigation.goBack();

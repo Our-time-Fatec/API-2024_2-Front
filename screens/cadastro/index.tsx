@@ -123,9 +123,15 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
       saveProfileImage(image, formState.email)
     }
     
+    if (validators.some((validator) => !validator(formState))) return;
+    const updatedFormState = {
+      ...formState,
+      nome: formState.nome.trim(),
+      sobrenome: formState.sobrenome.trim(),
+    };
 
     // Executa o cadastro
-    const result = await register(formState);
+    const result = await register(updatedFormState);
     if (result.success) {
       Alert.alert("Sucesso", "Cadastro realizado com sucesso!");
       navigation.navigate("Selecao");

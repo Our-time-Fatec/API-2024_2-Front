@@ -110,7 +110,7 @@ const PerfilScreen: React.FC<Props> = ({ navigation, route }) => {
           {image ? (
             <Image
               source={{ uri: image }}
-              style={[{ width: 120, height: 120, borderRadius: 60 }]}
+              style={[{ width: 120, height: 120, borderRadius: 60, marginBottom: 2, borderWidth: 2, borderColor: "#FFF" }]}
             />
           ) : loading ? (
             <View
@@ -124,7 +124,7 @@ const PerfilScreen: React.FC<Props> = ({ navigation, route }) => {
               <ActivityIndicator size="small" color="gray" />
             </View>
           ) : (
-            <Ionicons name="person-circle-outline" size={120} color="gray" />
+            <Ionicons name="person-circle-outline" size={120} color="gray" style={{marginBottom: 2}}/>
           )}
           <Text style={styles.profileName}>
             {usuario?.nome} {usuario?.sobrenome}

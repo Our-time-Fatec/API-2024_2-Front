@@ -12,9 +12,7 @@ const useDietas = (onlyUser: boolean = false) => {
 
   const fetchDietasDiarias = useCallback(async (diaSemana?: string) => {
     try {
-      const url = diaSemana
-        ? `/dietaDiaria/me?diaSemana=${diaSemana}`
-        : "/dietaDiaria/me/forma";
+      const url = "/dietaDiaria/me/forma";
 
       const response = await requestWithRefresh({
         method: "GET",

@@ -36,9 +36,7 @@ const GroupModal: React.FC<GroupModalProps> = ({
   onUpdateGrupo,
 }) => {
   const [localGrupo, setLocalGrupo] = useState<IGrupo | null>(grupo); // Estado local do grupo
-  const [editingAlimentoId, setEditingAlimentoId] = useState<string | null>(
-    null
-  );
+  const [editingAlimentoId, setEditingAlimentoId] = useState<string | null>(null);
   const [newPortion, setNewPortion] = useState<string>("");
   const [newQuantity, setNewQuantity] = useState<string>("");
 
@@ -119,7 +117,7 @@ const GroupModal: React.FC<GroupModalProps> = ({
             const updatedAlimentos = localGrupo.alimentos.filter(
               (alimento) => alimento.alimentoId !== alimentoId
             );
-  
+
             if (updatedAlimentos.length === localGrupo.alimentos.length) {
               Alert.alert("Erro", "Alimento não encontrado no grupo.");
             } else {
@@ -132,7 +130,6 @@ const GroupModal: React.FC<GroupModalProps> = ({
       },
     ]);
   };
-  
 
   const startEditing = (alimentoId: string) => {
     if (editingAlimentoId === alimentoId) {
@@ -154,68 +151,80 @@ const GroupModal: React.FC<GroupModalProps> = ({
             <Text style={styles.modalNome}>{localGrupo.nome}</Text>
             <Text style={styles.modalSubNome}>Alimentos</Text>
             <View style={styles.contentWrapper}>
-            {localGrupo.alimentos.map((alimento, alimentoIndex) => (
-              <View key={alimento.alimentoId || `alimento-${alimentoIndex}`} style={styles.contentModal}>
-                <TouchableOpacity
-                  onPress={() => startEditing(alimento.alimentoId)}
-                  style={styles.alimentoContainer}
-                >
-                  <Text style={styles.modalInfo}>
-                    {alimento.quantidade}x - {alimento.nome} - {alimento.porcao}
-                    g
-                  </Text>
-                  <Ionicons
-                    name={
-                      editingAlimentoId === alimento.alimentoId
-                        ? "caret-up"
-                        : "caret-down"
-                    }
-                    size={24}
-                    color={"#000"}
-                  />
-                </TouchableOpacity>
-                {editingAlimentoId === alimento.alimentoId && (
-                  <>
-                    <View style={styles.editContainer}>
-                      <TextInput
-                        style={styles.input}
-                        keyboardType="numeric"
-                        placeholder="Nova porção"
-                        value={newPortion.toString()}
-                        onChangeText={(text) => setNewPortion(text)}
-                      />
-                      <TouchableOpacity
-                        style={styles.saveButton}
-                        onPress={() => handleEditPortion(alimento.alimentoId)}
+              {localGrupo.alimentos.map((alimento, alimentoIndex) => (
+                <View key={alimento.alimentoId || `alimento-${alimentoIndex}`} style={styles.contentModal}>
+                  <TouchableOpacity
+                    onPress={() => startEditing(alimento.alimentoId)}
+                    style={styles.alimentoContainer}
+                    testID={`alimento-container-${alimento.alimentoId}`}
+                  >
+                    <Text style={styles.modalInfo}>
+                      {alimento.quantidade}x - {alimento.nome} - {alimento.porcao}g
+                    </Text>
+                    <Ionicons
+                      name={
+                        editingAlimentoId === alimento.alimentoId
+                          ? "caret-up"
+                          : "caret-down"
+                      }
+                      size={24}
+                      color={"#000"}
+                    />
+                  </TouchableOpacity>
+                  {editingAlimentoId === alimento.alimentoId && (
+                    <>
+                      <View style={styles.editContainer}>
+                        <TextInput
+                          style={styles.input}
+                          keyboardType="numeric"
+                          placeholder="Nova porção"
+                          value={newPortion.toString()}
+                          onChangeText={(text) => setNewPortion(text)}
+                          testID={`input-nova-porcao-${alimento.alimentoId}`}
+                        />
+                        <TouchableOpacity
+                          style={styles.saveButton}
+                          onPress={() => handleEditPortion(alimento.alimentoId)}
+                          testID={`salvar-porcao`}
+                        >
+                          <Text style={styles.saveButtonText}>Salvar</Text>
+                        </TouchableOpacity>
+                      </View>
+                      <View style={styles.editContainer}>
+                        <TextInput
+                          style={styles.input}
+                          keyboardType="numeric"
+                          placeholder="Nova quantidade"
+                          value={newQuantity.toString()}
+                          onChangeText={(text) => setNewQuantity(text)}
+                          testID={`input-nova-quantidade-${alimento.alimentoId}`}
+                        />
+                        <TouchableOpacity
+                          style={styles.saveButton}
+                          onPress={() => handleEditQuantity(alimento.alimentoId)}
+                          testID={`salvar-quantidade`}
+                        >
+                          <Text style={styles.saveButtonText}>Salvar</Text>
+                        </TouchableOpacity>
+                      </View>
+                      <Pressable 
+                        style={styles.deleteButton} 
+                        onPress={() => handleRemoveAlimento(alimento.alimentoId)}
+                        testID={`remover-alimento-botao`}
                       >
-                        <Text style={styles.saveButtonText}>Salvar</Text>
-                      </TouchableOpacity>
-                    </View>
-                    <View style={styles.editContainer}>
-                      <TextInput
-                        style={styles.input}
-                        keyboardType="numeric"
-                        placeholder="Nova quantidade"
-                        value={newQuantity.toString()}
-                        onChangeText={(text) => setNewQuantity(text)}
-                      />
-                      <TouchableOpacity
-                        style={styles.saveButton}
-                        onPress={() => handleEditQuantity(alimento.alimentoId)}
-                      >
-                        <Text style={styles.saveButtonText}>Salvar</Text>
-                      </TouchableOpacity>
-                    </View>
-                    <Pressable style={styles.deleteButton} onPress={() => handleRemoveAlimento(alimento.alimentoId)}>
-                      <Text style={styles.deleteButtonText}>Remover alimento</Text>
-                    </Pressable>
-                  </>
-                )}
-              </View>
-            ))}
+                        <Text style={styles.deleteButtonText} testID="remover-alimento">Remover alimento</Text>
+                      </Pressable>
+                    </>
+                  )}
+                </View>
+              ))}
             </View>
           </ScrollView>
-          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+          <TouchableOpacity 
+            style={styles.closeButton} 
+            onPress={onClose}
+            testID="fechar-botao"
+          >
             <Text style={styles.closeButtonText}>Fechar</Text>
           </TouchableOpacity>
         </View>

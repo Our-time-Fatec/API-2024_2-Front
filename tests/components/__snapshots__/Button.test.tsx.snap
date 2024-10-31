@@ -1,0 +1,125 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Componentes de botões BotaoAzul deve renderizar corretamente 1`] = `
+<View>
+  <View
+    accessibilityState={
+      {
+        "busy": undefined,
+        "checked": undefined,
+        "disabled": undefined,
+        "expanded": undefined,
+        "selected": undefined,
+      }
+    }
+    accessibilityValue={
+      {
+        "max": undefined,
+        "min": undefined,
+        "now": undefined,
+        "text": undefined,
+      }
+    }
+    accessible={true}
+    collapsable={false}
+    focusable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      {
+        "alignItems": "center",
+        "backgroundColor": "#407CE2",
+        "borderRadius": 40,
+        "opacity": 1,
+        "paddingHorizontal": 100,
+        "paddingVertical": 14,
+        "textAlign": "center",
+        "width": "100%",
+      }
+    }
+  >
+    <Text
+      style={
+        [
+          {
+            "color": "#FFFFFF",
+            "fontFamily": "Poppins_700Bold",
+            "fontSize": 20,
+          },
+          undefined,
+        ]
+      }
+    >
+      Clique aqui
+    </Text>
+  </View>
+</View>
+`;
+
+exports[`Componentes de botões BotaoBranco deve renderizar corretamente 1`] = `
+<View>
+  <View
+    accessibilityState={
+      {
+        "busy": undefined,
+        "checked": undefined,
+        "disabled": undefined,
+        "expanded": undefined,
+        "selected": undefined,
+      }
+    }
+    accessibilityValue={
+      {
+        "max": undefined,
+        "min": undefined,
+        "now": undefined,
+        "text": undefined,
+      }
+    }
+    accessible={true}
+    collapsable={false}
+    focusable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      {
+        "alignItems": "center",
+        "backgroundColor": "#FFFFFF",
+        "borderColor": "#407CE2",
+        "borderRadius": 40,
+        "borderWidth": 2,
+        "marginTop": 15,
+        "opacity": 1,
+        "paddingHorizontal": 60,
+        "paddingVertical": 14,
+        "textAlign": "center",
+      }
+    }
+  >
+    <Text
+      style={
+        [
+          {
+            "color": "#407CE2",
+            "fontFamily": "Poppins_700Bold",
+            "fontSize": 20,
+          },
+          undefined,
+        ]
+      }
+    >
+      Clique aqui
+    </Text>
+  </View>
+</View>
+`;

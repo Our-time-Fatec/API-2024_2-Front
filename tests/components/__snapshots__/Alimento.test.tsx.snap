@@ -1,0 +1,343 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Componente AlimentoItem Deve renderizar corretamente com os dados do alimento fornecidos 1`] = `
+<View
+  style={
+    {
+      "backgroundColor": "#fff",
+      "borderColor": "#ddd",
+      "borderRadius": 8,
+      "borderWidth": 1,
+      "elevation": 2,
+      "flex": 1,
+      "justifyContent": "space-between",
+      "margin": 8,
+      "overflow": "hidden",
+      "shadowColor": "#000",
+      "shadowOffset": {
+        "height": 2,
+        "width": 0,
+      },
+      "shadowOpacity": 0.1,
+      "shadowRadius": 4,
+    }
+  }
+>
+  <View
+    accessibilityState={
+      {
+        "busy": undefined,
+        "checked": undefined,
+        "disabled": undefined,
+        "expanded": undefined,
+        "selected": undefined,
+      }
+    }
+    accessibilityValue={
+      {
+        "max": undefined,
+        "min": undefined,
+        "now": undefined,
+        "text": undefined,
+      }
+    }
+    accessible={true}
+    collapsable={false}
+    focusable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      {
+        "alignItems": "center",
+        "backgroundColor": "#f0f0f0",
+        "height": 100,
+        "justifyContent": "center",
+        "opacity": 1,
+        "width": "100%",
+      }
+    }
+    testID="imageTouchable"
+  >
+    <View
+      style={
+        {
+          "alignItems": "center",
+          "backgroundColor": "#e0e0e0",
+          "borderRadius": 8,
+          "height": "100%",
+          "justifyContent": "center",
+          "width": "100%",
+        }
+      }
+      testID="imagePlaceholder"
+    >
+      <Text
+        style={
+          {
+            "color": "#888",
+            "fontSize": 14,
+          }
+        }
+      >
+        Imagem não disponível
+      </Text>
+    </View>
+  </View>
+  <View
+    style={
+      {
+        "flex": 1,
+        "justifyContent": "flex-start",
+      }
+    }
+  >
+    <View
+      style={
+        {
+          "padding": 8,
+        }
+      }
+    >
+      <Text
+        style={
+          {
+            "fontSize": 16,
+            "fontWeight": "bold",
+            "marginBottom": 4,
+          }
+        }
+        testID="alimentoNome"
+      >
+        Banana
+      </Text>
+      <Text
+        style={
+          {
+            "color": "#555",
+            "fontSize": 14,
+            "marginBottom": 2,
+          }
+        }
+        testID="alimentoPorcao"
+      >
+        100g
+      </Text>
+      <Text
+        style={
+          {
+            "color": "#555",
+            "fontSize": 14,
+            "marginBottom": 2,
+          }
+        }
+        testID="alimentoPreparo"
+      >
+        Preparo: 
+        In Natura
+      </Text>
+      <Text
+        style={
+          {
+            "color": "#555",
+            "fontSize": 14,
+            "marginBottom": 2,
+          }
+        }
+        testID="alimentoCategoria"
+      >
+        Categoria: 
+        Frutas
+      </Text>
+    </View>
+    <View>
+      <View
+        style={
+          {
+            "flexDirection": "column",
+            "gap": 3,
+            "justifyContent": "space-between",
+            "marginBottom": 10,
+            "paddingHorizontal": 10,
+            "paddingVertical": 1,
+          }
+        }
+      >
+        <View
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": undefined,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onClick={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            {
+              "alignItems": "center",
+              "backgroundColor": "#2d74da",
+              "borderRadius": 5,
+              "flex": 0.5,
+              "marginTop": 5,
+              "opacity": 1,
+              "paddingVertical": 8,
+            }
+          }
+          testID="editButton"
+        >
+          <Text
+            style={
+              {
+                "color": "#fff",
+                "fontSize": 16,
+              }
+            }
+          >
+            Editar
+          </Text>
+        </View>
+        <View
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": undefined,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onClick={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            {
+              "alignItems": "center",
+              "backgroundColor": "#e13f2f",
+              "borderRadius": 5,
+              "flex": 0.5,
+              "marginTop": 5,
+              "opacity": 1,
+              "paddingVertical": 8,
+            }
+          }
+          testID="deleteButton"
+        >
+          <Text
+            style={
+              {
+                "color": "#fff",
+                "fontSize": 16,
+              }
+            }
+          >
+            Remover
+          </Text>
+        </View>
+      </View>
+      <View
+        style={
+          {
+            "flexDirection": "column",
+            "gap": 3,
+            "justifyContent": "space-between",
+            "marginBottom": 10,
+            "paddingHorizontal": 10,
+            "paddingVertical": 1,
+          }
+        }
+      >
+        <View
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": undefined,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onClick={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            {
+              "alignItems": "center",
+              "backgroundColor": "#2d74da",
+              "borderRadius": 5,
+              "flex": 0.5,
+              "marginTop": 5,
+              "opacity": 1,
+              "paddingVertical": 8,
+            }
+          }
+          testID="consumirButton"
+        >
+          <Text
+            style={
+              {
+                "color": "#fff",
+                "fontSize": 16,
+              }
+            }
+          >
+            Consumir
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+</View>
+`;

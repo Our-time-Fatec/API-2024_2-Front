@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - teste-component  # ou a branch que você desejar
+  pull_request:
+    branches:
+      - main  # ou a branch que você desejar
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'  # Use a versão do Node.js compatível com o seu projeto
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test

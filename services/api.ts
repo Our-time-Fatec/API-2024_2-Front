@@ -4,7 +4,7 @@ import { ILoginRequest, ILoginSuccessResponse } from '../interfaces/ILogin';
 import { IUsuario } from '../interfaces/IUsuario';
 import { API_HOST } from '@env';
 
-const APIHOST = API_HOST || 'http://10.68.55.192:3010';
+const APIHOST = API_HOST || 'http://10.68.55.185:3000';
 const api = axios.create({
     baseURL: APIHOST,
 });

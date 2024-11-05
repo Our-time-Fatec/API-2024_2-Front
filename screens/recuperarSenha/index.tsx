@@ -55,7 +55,7 @@ const RecuperarSenha: React.FC<Props> = ({ navigation, route }) => {
 
     if (result.success) {
       Alert.alert("Sucesso", "Senha alterada com sucesso!");
-      navigation.navigate("Login");
+      navigation.navigate("Redirecionamento");
     } else {
       Alert.alert("Erro", result.error);
     }

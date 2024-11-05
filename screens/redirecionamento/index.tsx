@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View,Text,TextInput, TouchableOpacity, ScrollView,Alert,} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { styles } from "./styles";
+import  styles  from "./styles";
 import { RootStackParamList } from "../../types/rootStack";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
@@ -22,7 +22,8 @@ type Props = {
 const Redirecionamento: React.FC<Props> = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
-      <Text>Enviamos um e-mail para recuperação de senha, consulte a caixa de entrada e o Spam</Text>
+      <Ionicons style={styles.icon} name="mail-outline" size={20} color="gray" />
+      <Text style={styles.title}>Enviamos um e-mail para recuperação de senha, consulte a caixa de entrada e o Spam.</Text>
     </View>
   );
 };

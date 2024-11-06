@@ -65,7 +65,7 @@ const DietaGrafico: React.FC<DietaGraficoProps> = ({ dietaSemanal, isVisible, on
               maxValue={meta}
               yAxisTextStyle={{ color: '#777', fontSize: 12 }}
               isAnimated
-  
+              
             />
           </View>
             <TouchableOpacity style={styles.closeButton} onPress={onClose}>

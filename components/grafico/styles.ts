@@ -37,4 +37,7 @@ export const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
     },
+    bar:{
+      borderColor: "#6EBD"
+    }
   });

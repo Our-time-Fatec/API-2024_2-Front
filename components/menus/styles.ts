@@ -22,5 +22,15 @@ export const styles = StyleSheet.create({
       fontSize: 12,
       marginTop: 4,
       color: 'black',
-    }
+    },
+    focusedMenuText: {
+
+      color: 'black',
+  
+    },
+    focusedMenuItem: {
+
+      backgroundColor: '#e0e0e0',
+  
+    },
   });

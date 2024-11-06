@@ -164,6 +164,7 @@ exports[`Componente AlimentoItem Deve renderizar corretamente com os dados do al
             "marginBottom": 10,
             "paddingHorizontal": 10,
             "paddingVertical": 1,
+            "width": "100%",
           }
         }
       >
@@ -203,7 +204,7 @@ exports[`Componente AlimentoItem Deve renderizar corretamente com os dados do al
               "flex": 0.5,
               "marginTop": 5,
               "opacity": 1,
-              "paddingVertical": 8,
+              "paddingVertical": 10,
             }
           }
           testID="editButton"
@@ -255,7 +256,7 @@ exports[`Componente AlimentoItem Deve renderizar corretamente com os dados do al
               "flex": 0.5,
               "marginTop": 5,
               "opacity": 1,
-              "paddingVertical": 8,
+              "paddingVertical": 10,
             }
           }
           testID="deleteButton"
@@ -281,6 +282,7 @@ exports[`Componente AlimentoItem Deve renderizar corretamente com os dados do al
             "marginBottom": 10,
             "paddingHorizontal": 10,
             "paddingVertical": 1,
+            "width": "100%",
           }
         }
       >
@@ -320,7 +322,7 @@ exports[`Componente AlimentoItem Deve renderizar corretamente com os dados do al
               "flex": 0.5,
               "marginTop": 5,
               "opacity": 1,
-              "paddingVertical": 8,
+              "paddingVertical": 10,
             }
           }
           testID="consumirButton"

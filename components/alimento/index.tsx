@@ -14,6 +14,8 @@ import { requestWithRefresh } from "../../services/api";
 import { styles } from "./styles";
 import { Picker } from "@react-native-picker/picker";
 import { GruposEnum } from "../../screens/cadastrarDieta";
+import useGrafico from "../../hooks/useGrafico";
+import useUsuario from "../../hooks/useUsuario";
 
 interface AlimentoProps {
   alimento: IAlimento;
@@ -35,6 +37,9 @@ const AlimentoItem: React.FC<AlimentoProps> = ({
   const [porcaoInput, setPorcaoInput] = useState("");
   const [quantidadeInput, setQuantidadeInput] = useState("");
   const [nomeGrupo, setNomeGrupo] = useState<string>("");
+
+  const { usuario, refreshUser } = useUsuario();
+  const { dietaSemanal, refreshGrafico } = useGrafico();
 
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString("pt-BR");
@@ -66,7 +71,10 @@ const AlimentoItem: React.FC<AlimentoProps> = ({
       console.log(error);
       alert("Erro ao adicionar alimento consumido.");
     }
-  };
+    finally{
+      refreshGrafico(true)
+      refreshUser(true)
+    }  };
 
   const handleConfirmarConsumo = () => {
     handleConsumir();

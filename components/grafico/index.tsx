@@ -57,6 +57,7 @@ const DietaGrafico: React.FC<DietaGraficoProps> = ({ dietaSemanal, isVisible, on
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Consumo Energético Semanal</Text>
+            <View style={styles.chartContainer}>
             <BarChart
               frontColor={'#177AD5'}
               barWidth={22}
@@ -64,7 +65,9 @@ const DietaGrafico: React.FC<DietaGraficoProps> = ({ dietaSemanal, isVisible, on
               maxValue={meta}
               yAxisTextStyle={{ color: '#777', fontSize: 12 }}
               isAnimated
+  
             />
+          </View>
             <TouchableOpacity style={styles.closeButton} onPress={onClose}>
               <Text style={styles.closeButtonText}>Fechar</Text>
             </TouchableOpacity>

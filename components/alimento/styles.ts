@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     closeButton: {
         marginTop: 5,
         backgroundColor: '#e13f2f',
-        paddingVertical: 8,
+        paddingVertical: 10,
         borderRadius: 5,
         alignItems: 'center',
         width: '100%',
@@ -109,12 +109,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 1,
         marginBottom: 10,
-        gap: 3
+        gap: 3,
+        width: "100%"
     },
     editButton: {
         marginTop: 5,
         backgroundColor: '#2d74da',
-        paddingVertical: 8,
+        paddingVertical: 10,
         borderRadius: 5,
         alignItems: 'center',
         flex: 0.5
@@ -122,7 +123,7 @@ const styles = StyleSheet.create({
     deleteButton: {
         marginTop: 5,
         backgroundColor: '#e13f2f',
-        paddingVertical: 8,
+        paddingVertical: 10,
         borderRadius: 5,
         alignItems: 'center',
         flex: 0.5

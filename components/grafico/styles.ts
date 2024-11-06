@@ -32,4 +32,9 @@ export const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
     },
+    chartContainer: {
+      width: '100%',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
   });

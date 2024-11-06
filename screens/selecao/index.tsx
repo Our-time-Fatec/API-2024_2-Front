@@ -34,7 +34,7 @@ const Selecao: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState<string | null>(null);
   const [isModalVisible, setModalVisible] = useState(false);
   const { usuario, refreshUser } = useUsuario();
-  const { dietaSemanal, refreshAlimentosConsumidos } = useGrafico();
+  const { dietaSemanal, refreshGrafico } = useGrafico();
   const margem = 100;
 
   const verificarCalorias = () => {
@@ -86,7 +86,7 @@ const Selecao: React.FC<Props> = ({ navigation }) => {
   );
 
   const openModal = () => {
-    refreshAlimentosConsumidos()
+    refreshGrafico()
     setModalVisible(true);
   };
 
@@ -152,22 +152,22 @@ const Selecao: React.FC<Props> = ({ navigation }) => {
                 Consumido:{" "}
                 {usuario?.totaisAlimentosConsumidos?.valorEnergetico?.toFixed(
                   2
-                )}{" "}
+                ) || 0}{" "}
                 Kcal
               </Text>
               <Text style={styles.optionSubtitle}>
-                {usuario?.totaisAlimentosConsumidos?.proteinas?.toFixed(2)}g
+                {usuario?.totaisAlimentosConsumidos?.proteinas?.toFixed(2) || 0}g
                 Proteínas
               </Text>
               <Text style={styles.optionSubtitle}>
-                {usuario?.totaisAlimentosConsumidos?.carboidratos?.toFixed(2)}g
+                {usuario?.totaisAlimentosConsumidos?.carboidratos?.toFixed(2) || 0}g
                 Carboidratos
               </Text>
               <Text style={styles.optionSubtitle}>
-                {usuario?.totaisAlimentosConsumidos?.fibras?.toFixed(2)}g Fibras
+                {usuario?.totaisAlimentosConsumidos?.fibras?.toFixed(2) || 0}g Fibras
               </Text>
               <Text style={styles.optionSubtitle}>
-                {usuario?.totaisAlimentosConsumidos?.lipidios?.toFixed(2)}g
+                {usuario?.totaisAlimentosConsumidos?.lipidios?.toFixed(2) || 0}g
                 Lipídios
               </Text>
             </View>

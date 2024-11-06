@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { requestWithRefresh } from '../services/api'; // Certifique-se de ajustar o caminho conforme necessário
 import { IUsuario } from '../interfaces/IUsuario';
+import useUsuario from './useUsuario';
 
 const useUpdateUser = () => {
     const [loading, setLoading] = useState<boolean>(false);
+    const { refreshUser } = useUsuario()
 
     const updateUser = async (updateRequest: IUsuario) => {
         setLoading(true);
@@ -20,6 +22,7 @@ const useUpdateUser = () => {
             return { success: false, error: errorMessage };
         } finally {
             setLoading(false);
+            refreshUser(true)
         }
     };
 

@@ -26,6 +26,8 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { styles as style } from "../../components/alimento/styles";
 import { GruposEnum } from "../cadastrarDieta";
 import { Picker } from "@react-native-picker/picker";
+import useGrafico from '../../hooks/useGrafico'; // Importe o hook
+import useUsuario from "../../hooks/useUsuario";
 
 type UserDietaDiariaScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -42,15 +44,20 @@ type Props = {
 };
 
 const UserDietaDiaria: React.FC<Props> = ({ navigation }) => {
-  const isFocused = useIsFocused()
+  const isFocused = useIsFocused();
   const { dietasDiarias, refreshDietasDiarias, isEmpty } = useDietas();
   const [dietas, setDietas] = useState<IGrupoConsumo[]>([]);
   const [modalVisible, setModalVisible] = useState(false); // Estado do modal
   const [alimentoSelecionado, setAlimentoSelecionado] =
     useState<IAlimento | null>(null); // Alimento selecionado
   const [consumo, setConsumo] = useState<number | null>(null);
-  const [grupoSelecionado, setGrupoSelecionado] = useState<string | null>(null); 
-  
+  const [grupoSelecionado, setGrupoSelecionado] = useState<string | null>(null);
+
+
+  const { dietaSemanal, loading, error, refreshGrafico } = useGrafico(); // Use o hook
+  const {usuario, refreshUser} = useUsuario()
+
+
   useEffect(() => {
     if (isFocused) {
       refreshDietasDiarias();
@@ -74,7 +81,7 @@ const UserDietaDiaria: React.FC<Props> = ({ navigation }) => {
         navigation.navigate("UserAlimentosConsumidos");
       }
     };
-  
+
     handleDietasDiarias();
   }, [dietasDiarias, navigation]);
 
@@ -124,6 +131,8 @@ const UserDietaDiaria: React.FC<Props> = ({ navigation }) => {
       console.error("Erro ao registrar o consumo de alimentos:", error);
     } finally {
       refreshDietasDiarias();
+      refreshGrafico(true)
+      refreshUser(true)
     }
   };
 
@@ -154,6 +163,8 @@ const UserDietaDiaria: React.FC<Props> = ({ navigation }) => {
       console.error("Erro ao criar a dieta:", error);
     } finally {
       refreshDietasDiarias();
+      refreshGrafico(true)
+      refreshUser(true)
     }
   };
 
@@ -217,20 +228,20 @@ const UserDietaDiaria: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1 }}>
-          <StatusBar backgroundColor="#f0f4f8" />
+      <StatusBar backgroundColor="#f0f4f8" />
 
       <ScrollView style={styles.container}>
-      <Text style={styles.title}>Minha dieta de hoje</Text>
-      <Picker
-        selectedValue={grupoSelecionado}
-        onValueChange={(itemValue) => setGrupoSelecionado(itemValue)}
-        style={styles.picker}
-      >
-        <Picker.Item label="Todos os Grupos" value={null} style={styles.pickerText} />
-        {Object.values(GruposEnum).map((grupo) => (
-          <Picker.Item key={grupo} label={grupo} value={grupo} style={styles.pickerText}/>
-        ))}
-      </Picker>
+        <Text style={styles.title}>Minha dieta de hoje</Text>
+        <Picker
+          selectedValue={grupoSelecionado}
+          onValueChange={(itemValue) => setGrupoSelecionado(itemValue)}
+          style={styles.picker}
+        >
+          <Picker.Item label="Todos os Grupos" value={null} style={styles.pickerText} />
+          {Object.values(GruposEnum).map((grupo) => (
+            <Picker.Item key={grupo} label={grupo} value={grupo} style={styles.pickerText}/>
+          ))}
+        </Picker>
         <FlatList
           data={gruposFiltrados || []}
           renderItem={renderGrupo}

@@ -18,19 +18,19 @@ const DiaDetalhesModal: React.FC<DiaDetalhesModalProps> = ({ selectedDay, dietaS
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>Detalhes do Dia: {selectedDay}</Text>
           <Text style={styles.modalText}>
-            Valor Energético: {selectedDay && dietaSemanal[selectedDay]?.total?.valorEnergetico || 0} kcal
+            Valor Energético: {selectedDay && dietaSemanal[selectedDay]?.total?.valorEnergetico.toFixed(2) || 0} kcal
           </Text>
           <Text style={styles.modalText}>
-            Proteínas: {selectedDay && dietaSemanal[selectedDay]?.total?.proteinas || 0} g
+            Proteínas: {selectedDay && dietaSemanal[selectedDay]?.total?.proteinas.toFixed(2) || 0} g
           </Text>
           <Text style={styles.modalText}>
-            Carboidratos: {selectedDay && dietaSemanal[selectedDay]?.total?.carboidratos || 0} g
+            Carboidratos: {selectedDay && dietaSemanal[selectedDay]?.total?.carboidratos.toFixed(2) || 0} g
           </Text>
           <Text style={styles.modalText}>
-            Fibras: {selectedDay && dietaSemanal[selectedDay]?.total?.fibras || 0} g
+            Fibras: {selectedDay && dietaSemanal[selectedDay]?.total?.fibras.toFixed(2) || 0} g
           </Text>
           <Text style={styles.modalText}>
-            Lipídios: {selectedDay && dietaSemanal[selectedDay]?.total?.lipidios || 0} g
+            Lipídios: {selectedDay && dietaSemanal[selectedDay]?.total?.lipidios.toFixed(2) || 0} g
           </Text>
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
             <Text style={styles.closeButtonText}>Fechar</Text>

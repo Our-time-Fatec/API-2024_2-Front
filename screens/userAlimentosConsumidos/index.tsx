@@ -8,6 +8,8 @@ import FooterMenu from '../../components/menus';
 import { requestWithRefresh } from '../../services/api';
 import { IAlimento } from '../../interfaces/IAlimento';
 import { styles } from './styles';
+import useGrafico from '../../hooks/useGrafico'; // Importe o hook
+import useUsuario from '../../hooks/useUsuario';
 
 type UserAlimentosConsumidosScreenNavigationProp = StackNavigationProp<RootStackParamList, "UserAlimentosConsumidos">;
 type UserAlimentosConsumidosScreenRouteProp = RouteProp<RootStackParamList, "UserAlimentosConsumidos">;
@@ -22,9 +24,13 @@ const UserAlimentosConsumidosScreen: React.FC<Props> = ({ navigation }) => {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
+    const [refreshTrigger, setRefreshTrigger] = useState(false); // Estado para controlar a atualização
     const limit = 10;
 
     const isFocused = useIsFocused();
+    
+    const { dietaSemanal, loading, error, refreshGrafico } = useGrafico(); // Use o hook
+    const {usuario, refreshUser} = useUsuario()
 
     useEffect(() => {
         if (isFocused) {
@@ -69,6 +75,8 @@ const UserAlimentosConsumidosScreen: React.FC<Props> = ({ navigation }) => {
             });
             alert('Alimento removido com sucesso!');
             fetchAlimentos(1);
+            refreshGrafico(true)
+            refreshUser(true)
         } catch (error) {
             alert('Erro ao remover alimento.');
         }
@@ -113,7 +121,5 @@ const UserAlimentosConsumidosScreen: React.FC<Props> = ({ navigation }) => {
         </View>
     );
 };
-
-
 
 export default UserAlimentosConsumidosScreen;

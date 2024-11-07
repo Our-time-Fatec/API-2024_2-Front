@@ -145,6 +145,9 @@ const AguaConsumida: React.FC<Props> = ({ navigation }) => {
           } catch (error) {
             console.error("Erro ao inserir quantia de água:", error);
           }
+          finally{
+            refreshUser(true)
+          }
         },
       },
     ]);

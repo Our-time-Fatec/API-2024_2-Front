@@ -19,7 +19,7 @@ export interface IDiaTotal {
 }
 
 export interface IDiaAlimentos {
-  dia: Date;
+  dia: DiasSemana;
   total: IDiaTotal;
   alimentos: IAlimentoConsumido[];
 }

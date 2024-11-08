@@ -1,42 +1,38 @@
 ---
 title: styles
-description: 'Estilos para a tela inicial do aplicativo, utilizando React Native.'
+description: 'Estilos para a tela inicial do aplicativo, utilizando React Native e StyleSheet.'
 ---
 
 # styles
 
-Este arquivo contém a definição de estilos para a tela inicial do aplicativo, utilizando a biblioteca `react-native`. Os estilos são organizados em um objeto que é exportado como padrão.
+Este arquivo contém os estilos utilizados na tela inicial do aplicativo, implementados com o `StyleSheet` do React Native. Os estilos são organizados em um objeto que define a aparência de diversos componentes da interface.
 
-## Estilos Definidos
+## Estrutura dos Estilos
 
-- **container**: Estilo principal que ocupa toda a tela, com fundo branco e centralização do conteúdo.
-- **containercima**: Estilo para a parte superior da tela, ocupando 50% da altura.
-- **containerlogo**: Estilo que centraliza o logo na tela.
-- **logo**: Define a altura e largura do logo.
-- **title**: Estilo para o título, com fonte semi-negrito, tamanho 25 e cor específica.
-- **subtitle**: Estilo para o subtítulo, com fonte regular, tamanho 20 e margem inferior.
-- **welcome**: Estilo para a mensagem de boas-vindas, com fonte semi-negrito, tamanho 30 e margens ajustadas.
+Os estilos são definidos da seguinte forma:
+
+- **container**: Estilo principal que ocupa toda a tela, com direção de coluna e centralização do conteúdo.
+- **containercima**: Estilo para a parte superior da tela, ocupando 50% do espaço disponível.
+- **containerlogo**: Estilo para centralizar o logotipo.
+- **logo**: Define a altura e largura do logotipo.
+- **title**: Estilo para o título, com alinhamento central, fonte em negrito e cor específica.
+- **subtitle**: Estilo para o subtítulo, com alinhamento central, fonte regular e margem inferior.
+- **welcome**: Estilo para a mensagem de boas-vindas, com fonte em negrito, alinhamento central e margens ajustadas.
 - **containerButton**: Estilo para o contêiner dos botões, centralizado e com largura total.
 
-## Exemplo de Uso
+## Importações
 
-Para utilizar os estilos definidos neste arquivo, importe o objeto `styles` em seu componente React Native:
+O arquivo importa o módulo `StyleSheet` do React Native e um arquivo de cores que contém as definições de cores utilizadas nos estilos.
 
 ```javascript
-import styles from './styles';
+import { StyleSheet } from 'react-native';
+import colors from '../../colors/colors';
 ```
 
-Em seguida, aplique os estilos aos componentes desejados:
+## Exportação
+
+Os estilos são exportados como um objeto padrão, permitindo que sejam utilizados em outros componentes da tela inicial.
 
 ```javascript
-<View style={styles.container}>
-  <View style={styles.containerlogo}>
-    <Image source={require('./logo.png')} style={styles.logo} />
-  </View>
-  <Text style={styles.title}>Título do App</Text>
-  <Text style={styles.subtitle}>Subtítulo do App</Text>
-  <View style={styles.containerButton}>
-    <Button title="Iniciar" onPress={handleStart} />
-  </View>
-</View>
+export default styles;
 ```

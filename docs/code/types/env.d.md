@@ -1,11 +1,11 @@
 ---
 title: env.d.ts
-description: 'Declaração de tipos para variáveis de ambiente no módulo @env.'
+description: 'Declaração de tipos para variáveis de ambiente utilizadas no projeto.'
 ---
 
 # env.d.ts
 
-Este arquivo contém a declaração de tipos para variáveis de ambiente utilizadas no módulo `@env`. Ele é essencial para garantir que as variáveis de ambiente sejam reconhecidas corretamente pelo TypeScript, permitindo um desenvolvimento mais seguro e eficiente.
+Este arquivo contém a declaração de um módulo para variáveis de ambiente, especificamente para a biblioteca `@env`. Ele é utilizado para tipar as variáveis de ambiente que serão importadas no projeto.
 
 ## Conteúdo
 
@@ -17,4 +17,5 @@ declare module '@env' {
 
 ## Descrição
 
-- **API_HOST**: Uma constante do tipo `string` que representa a URL do host da API. Esta variável deve ser configurada no ambiente de execução da aplicação, permitindo que a aplicação se conecte ao backend apropriado.
+- **Módulo `@env`**: Este módulo é utilizado para acessar variáveis de ambiente definidas no projeto.
+- **Variável `API_HOST`**: Uma constante do tipo `string` que representa o host da API utilizada pela aplicação. É importante garantir que essa variável esteja definida no ambiente de execução para que a aplicação funcione corretamente.

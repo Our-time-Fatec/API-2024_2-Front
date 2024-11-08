@@ -17,7 +17,7 @@ interface ILogin {
 }
 ```
 
-A interface `ILogin` contém uma mensagem que pode ser utilizada para fornecer feedback ao usuário sobre o estado do login.
+Representa uma mensagem de status relacionada ao login.
 
 ### ILoginRequest
 
@@ -28,7 +28,7 @@ interface ILoginRequest {
 }
 ```
 
-A interface `ILoginRequest` define a estrutura da requisição de login, que inclui:
+Define a estrutura da requisição de login, que inclui:
 
 - `email`: O endereço de e-mail do usuário.
 - `senha`: A senha do usuário.
@@ -43,11 +43,11 @@ interface ILoginSuccessResponse extends ILogin {
 }
 ```
 
-A interface `ILoginSuccessResponse` estende a interface `ILogin` e inclui:
+Extende a interface `ILogin` para incluir informações sobre uma resposta de login bem-sucedida, que contém:
 
-- `usuario`: Um objeto do tipo `IUsuario`, representando o usuário autenticado.
-- `token`: Um token de autenticação para acesso a recursos protegidos.
-- `refreshToken`: Um token utilizado para obter um novo token de acesso quando o atual expira.
+- `usuario`: Um objeto do tipo `IUsuario` representando o usuário autenticado.
+- `token`: O token de autenticação gerado.
+- `refreshToken`: O token de atualização para manter a sessão ativa.
 
 ### ILoginErrorResponse
 
@@ -56,4 +56,8 @@ interface ILoginErrorResponse extends ILogin {
 }
 ```
 
-A interface `ILoginErrorResponse` estende a interface `ILogin` e é utilizada para representar uma resposta de erro durante o processo de login. Não possui propriedades adicionais além da mensagem herdada de `ILogin`.
+Extende a interface `ILogin` para representar uma resposta de erro durante o processo de login. Não adiciona propriedades adicionais, mas herda a mensagem de status.
+
+## Exportação
+
+As interfaces `ILoginRequest`, `ILoginSuccessResponse` e `ILoginErrorResponse` são exportadas para uso em outras partes do aplicativo.

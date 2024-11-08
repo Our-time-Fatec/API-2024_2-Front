@@ -1,4 +1,3 @@
-
 ---
 title: userAlimentosConsumidos
 description: 'Pasta que contém a tela de visualização dos alimentos consumidos pelo usuário.'
@@ -6,23 +5,20 @@ description: 'Pasta que contém a tela de visualização dos alimentos consumido
 
 # userAlimentosConsumidos
 
-A pasta `userAlimentosConsumidos` é responsável por abrigar os componentes e arquivos relacionados à tela que exibe os alimentos consumidos pelo usuário. Esta tela permite que os usuários visualizem seu histórico de consumo, facilitando o acompanhamento de sua dieta.
+A pasta `userAlimentosConsumidos` contém os arquivos necessários para a implementação da tela que exibe os alimentos consumidos pelo usuário. Esta tela é parte do sistema de gerenciamento de dietas e alimentação, permitindo que os usuários visualizem seu histórico de consumo.
 
-## Estrutura
+## Estrutura da Pasta
 
-A pasta pode conter os seguintes arquivos e subpastas:
-
-- `index.tsx`: Componente principal da tela de alimentos consumidos.
-- `styles.ts`: Arquivo de estilos para a tela, definindo a aparência e o layout dos componentes.
+- **index.tsx**: Componente principal da tela, responsável por renderizar a interface de visualização dos alimentos consumidos.
+- **styles.ts**: Arquivo de estilos que define a aparência da tela `userAlimentosConsumidos`.
 
 ## Funcionalidade
 
-A tela de alimentos consumidos é uma parte essencial da aplicação, pois fornece informações relevantes sobre a dieta do usuário, permitindo um melhor gerenciamento de sua alimentação. Os dados exibidos podem incluir:
+A tela `userAlimentosConsumidos` permite que os usuários:
 
-- Lista de alimentos consumidos.
-- Informações nutricionais.
-- Data e hora do consumo.
+- Visualizem uma lista dos alimentos que foram consumidos em um determinado período.
+- Acessem detalhes sobre cada alimento, como quantidade e valor nutricional.
 
 ## Considerações
 
-Certifique-se de que os dados estejam sendo corretamente integrados com o backend para que as informações exibidas sejam precisas e atualizadas. A interação com outros componentes, como a tela de cadastro de alimentos, pode ser necessária para um fluxo de usuário mais coeso.
+Certifique-se de que a lógica de estado e as chamadas de API necessárias para obter os dados dos alimentos consumidos estejam implementadas corretamente no componente `index.tsx`.

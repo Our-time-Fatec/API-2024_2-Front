@@ -1,62 +1,54 @@
 ---
 title: UserAlimentosScreen
-description: 'Tela para gerenciar e visualizar os alimentos do usuário, permitindo busca, filtragem por categoria e ações de edição e exclusão.'
+description: 'Tela para gerenciar os alimentos do usuário, permitindo busca, cadastro, edição e exclusão de alimentos.'
 ---
 
 # UserAlimentosScreen
 
-A `UserAlimentosScreen` é uma tela que permite ao usuário visualizar, buscar e gerenciar seus alimentos. A tela inclui funcionalidades para filtrar alimentos por categoria, buscar por nome e realizar ações de cadastro, edição e exclusão de alimentos.
+A `UserAlimentosScreen` é uma tela que permite ao usuário visualizar, buscar, cadastrar, editar e excluir alimentos. Esta tela utiliza componentes do React Native e hooks personalizados para gerenciar o estado e as interações.
 
 ## Estrutura do Componente
 
-O componente é implementado como uma função React que utiliza hooks para gerenciar estado e efeitos colaterais. Abaixo estão os principais elementos e funcionalidades:
+O componente é estruturado da seguinte forma:
 
-### Props
+- **Imports**: Importa bibliotecas e componentes necessários, como `React`, `FlatList`, `Picker`, e ícones do `Ionicons`.
+- **Tipos**: Define os tipos de navegação e rotas utilizando `StackNavigationProp` e `RouteProp`.
+- **Props**: Recebe as propriedades de navegação e rota.
 
-- `navigation`: Objeto de navegação para permitir a navegação entre telas.
-- `route`: Objeto de rota que contém informações sobre a navegação.
+## Estado e Efeitos
 
-### Estado
+- **Estado**:
+  - `searchTerm`: Armazena o termo de busca do usuário.
+  
+- **Hooks**:
+  - `useAlimentos`: Hook personalizado que gerencia a lista de alimentos, categorias e a lógica de carregamento.
+  - `useIsFocused`: Verifica se a tela está em foco para atualizar a lista de alimentos.
 
-- `searchTerm`: Termo de busca para filtrar alimentos.
-- `selectedCategoria`: Categoria selecionada para filtrar alimentos.
+- **Efeito**:
+  - Um `useEffect` que chama `refreshAlimentos` sempre que a tela é focada.
 
-### Hooks Utilizados
+## Funções
 
-- `useAlimentos`: Hook personalizado que gerencia a lógica de busca e filtragem de alimentos.
-- `useIsFocused`: Hook que verifica se a tela está focada, permitindo atualizar a lista de alimentos quando a tela é exibida.
+- **handleSearchChange**: Atualiza o termo de busca.
+- **handleCategoriaChange**: Atualiza a categoria selecionada.
+- **handleRegister**: Navega para a tela de cadastro de alimentos.
+- **handleEdit**: Navega para a tela de cadastro de alimentos com o ID do alimento a ser editado.
+- **handleDelete**: Exclui um alimento e atualiza a lista.
 
-### Efeitos
+## Renderização
 
-- `useEffect`: Atualiza a lista de alimentos sempre que a tela é focada.
+A tela é renderizada com os seguintes componentes:
 
-### Funções
+- **Picker**: Para selecionar a categoria de alimentos.
+- **TextInput**: Para buscar alimentos.
+- **TouchableOpacity**: Para cadastrar um novo alimento.
+- **FlatList**: Para listar os alimentos, permitindo a edição e exclusão de cada item.
+- **FooterMenu**: Componente de menu de navegação na parte inferior da tela.
 
-- `handleSearchChange`: Atualiza o termo de busca.
-- `handleCategoriaChange`: Atualiza a categoria selecionada.
-- `handleRegister`: Navega para a tela de cadastro de alimentos.
-- `handleEdit`: Navega para a tela de cadastro de alimentos com o ID do alimento a ser editado.
-- `handleDelete`: Exclui um alimento e atualiza a lista.
+## Estilos
 
-### Renderização
+Os estilos são importados de um arquivo separado (`styles.ts`) e aplicados aos componentes para garantir uma apresentação visual adequada.
 
-A tela é composta por:
+## Conclusão
 
-- Um título.
-- Um `Picker` para seleção de categorias.
-- Um campo de busca.
-- Um botão para cadastrar novos alimentos.
-- Uma lista de alimentos renderizada com `FlatList`, que permite carregar mais itens conforme necessário.
-- Um componente de menu de rodapé.
-
-### Estilos
-
-Os estilos são definidos utilizando `StyleSheet.create`, proporcionando uma aparência consistente e responsiva para a tela.
-
-## Exemplo de Uso
-
-```tsx
-<UserAlimentosScreen navigation={navigation} route={route} />
-```
-
-Esta tela é uma parte fundamental da aplicação, permitindo que os usuários gerenciem seus alimentos de forma eficiente e intuitiva.
+A `UserAlimentosScreen` é uma parte essencial do aplicativo, permitindo que os usuários gerenciem seus alimentos de forma eficiente e intuitiva.

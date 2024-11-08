@@ -1,53 +1,178 @@
 ---
 title: styles
-description: 'Estilos para a tela de login no aplicativo React Native.'
+description: 'Estilos utilizados na tela de login do aplicativo.'
 ---
 
 # styles
 
-Este arquivo contém os estilos utilizados na tela de login do aplicativo, implementados com a biblioteca `react-native`. Os estilos são definidos utilizando o método `StyleSheet.create`, que otimiza a performance ao agrupar os estilos.
+Este arquivo contém os estilos utilizados na tela de login do aplicativo, implementados com a biblioteca `react-native`. Os estilos são organizados em um objeto criado pela função `StyleSheet.create`, que permite a definição de estilos de forma otimizada e eficiente.
 
-## Estrutura dos Estilos
+## Estilos
 
-Abaixo estão os estilos definidos no arquivo:
-
-- **container**: Estilo principal da tela, configurando a direção dos itens, cor de fundo e espaçamento.
-- **titulo**: Estilo para o título da tela, com tamanho de fonte, peso e alinhamento.
-- **containerinput**: Estilo para o contêiner dos campos de entrada, incluindo cor de fundo e espaçamento.
-- **textoinput**: Estilo para o texto dentro dos campos de entrada.
-- **botaocontainer**: Estilo para o contêiner do botão, definindo margens e largura.
-- **textocadastro**: Estilo para o texto de cadastro, com peso e alinhamento.
-- **linkcadastro**: Estilo para o link de cadastro, definindo cor e peso.
-- **textoesqueceu**: Estilo para o texto de "esqueceu a senha", alinhado à direita.
-- **containerline**: Estilo para o contêiner que contém a linha de separação, ajustando margens.
-- **line**: Estilo para a linha de separação, definindo altura e cor.
-- **ortext**: Estilo para o texto que aparece entre as linhas de separação.
-- **button**: Estilo para o botão, incluindo bordas, padding e alinhamento.
-- **iconContainer**: Estilo para o contêiner do ícone dentro do botão.
-- **buttonText**: Estilo para o texto do botão, definindo tamanho e cor.
-- **googleIcon**: Estilo para o ícone do Google, definindo largura e altura.
-
-## Exemplo de Uso
-
-Os estilos podem ser aplicados nos componentes da tela de login da seguinte forma:
-
+### container
 ```javascript
-import styles from './styles';
-
-// Exemplo de uso em um componente
-<View style={styles.container}>
-    <Text style={styles.titulo}>Login</Text>
-    <View style={styles.containerinput}>
-        <TextInput style={styles.textoinput} placeholder="Email" />
-    </View>
-    <View style={styles.botaocontainer}>
-        <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Entrar</Text>
-        </TouchableOpacity>
-    </View>
-</View>
+{
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: 'flex-start',
+    width: '100%',
+    paddingTop: 50,
+    backgroundColor: colors.background
+}
 ```
+- **Descrição**: Define o contêiner principal da tela, ocupando toda a área disponível e alinhando os itens no topo.
 
-## Considerações Finais
+### titulo
+```javascript
+{
+    fontSize: 24,
+    fontFamily: "Poppins_700Bold",
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 40
+}
+```
+- **Descrição**: Estilo para o título da tela, centralizado e com um espaçamento inferior.
 
-Os estilos definidos neste arquivo são fundamentais para garantir uma interface de usuário consistente e agradável na tela de login do aplicativo. É recomendável manter a organização e a clareza nos estilos para facilitar futuras manutenções e alterações.
+### containerinput
+```javascript
+{
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f2f2f2',
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    marginBottom: 25,
+    height: 60,
+    width: "90%",
+    alignSelf: "center"
+}
+```
+- **Descrição**: Estilo para o contêiner de entrada de texto, com fundo cinza claro e bordas arredondadas.
+
+### textoinput
+```javascript
+{
+    flex: 1,
+    marginLeft: 10,
+    fontSize: 16,
+    padding: 20
+}
+```
+- **Descrição**: Estilo para o texto dentro do campo de entrada, com espaçamento e tamanho de fonte definidos.
+
+### botaocontainer
+```javascript
+{
+    marginTop: 20,
+    marginBottom: 5,
+    width: "80%",
+    alignSelf: 'center',
+}
+```
+- **Descrição**: Estilo para o contêiner do botão, centralizado com margens superior e inferior.
+
+### textocadastro
+```javascript
+{
+    fontWeight: '500',
+    textAlign: 'center',
+    marginBottom: 10
+}
+```
+- **Descrição**: Estilo para o texto de cadastro, centralizado com espaçamento inferior.
+
+### linkcadastro
+```javascript
+{
+    color: '#007bff',
+    fontWeight: 'bold'
+}
+```
+- **Descrição**: Estilo para o link de cadastro, com cor azul e texto em negrito.
+
+### textoesqueceu
+```javascript
+{
+    alignSelf: 'flex-end',
+    color: '#007bff',
+    fontWeight: 'bold',
+    marginRight: 15
+}
+```
+- **Descrição**: Estilo para o texto de "esqueceu a senha", alinhado à direita.
+
+### containerline
+```javascript
+{
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 15,
+    marginTop: "5%"
+}
+```
+- **Descrição**: Estilo para o contêiner que contém a linha de separação, com margens verticais.
+
+### line
+```javascript
+{
+    flex: 1,
+    height: 1,
+    backgroundColor: '#D3D3D3'
+}
+```
+- **Descrição**: Estilo para a linha de separação, com altura e cor definidas.
+
+### ortext
+```javascript
+{
+    marginHorizontal: 10,
+    fontSize: 14,
+    color: '#A3A2A3'
+}
+```
+- **Descrição**: Estilo para o texto que aparece ao lado da linha de separação.
+
+### button
+```javascript
+{
+    flexDirection: 'row',
+    textAlign: 'center',
+    borderColor: '#D3D3D3',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    width: '80%',
+    alignSelf: 'center',
+    marginTop: 10
+}
+```
+- **Descrição**: Estilo para o botão, com bordas e espaçamento definidos.
+
+### iconContainer
+```javascript
+{
+    marginRight: 75,
+}
+```
+- **Descrição**: Estilo para o contêiner do ícone dentro do botão.
+
+### buttonText
+```javascript
+{
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#000',
+}
+```
+- **Descrição**: Estilo para o texto do botão, com tamanho e cor definidos.
+
+### googleIcon
+```javascript
+{
+    width: 24,
+    height: 24,
+}
+```
+- **Descrição**: Estilo para o ícone do Google, com dimensões definidas.

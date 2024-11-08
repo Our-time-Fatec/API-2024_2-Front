@@ -1,49 +1,73 @@
 ---
 title: Selecao
-description: 'Tela de seleção que exibe informações sobre a ingestão diária de calorias do usuário.'
+description: 'Componente da tela de seleção que exibe informações sobre a ingestão diária de calorias e permite a visualização de gráficos de dieta.'
 ---
 
 # Selecao
 
-A tela `Selecao` é responsável por apresentar ao usuário informações sobre sua ingestão diária de calorias, incluindo metas e consumo atual. Ela utiliza o contexto do usuário para obter dados relevantes e exibe mensagens de feedback com base no consumo de calorias.
+O componente `Selecao` é uma tela que apresenta informações sobre a ingestão diária de calorias do usuário e permite a visualização de gráficos relacionados à dieta. Ele utiliza hooks personalizados para gerenciar o estado do usuário e a imagem de perfil.
 
 ## Estrutura do Componente
 
-O componente é estruturado da seguinte forma:
+### Importações
 
-- **Props**: Recebe `navigation` e `route` como propriedades, que são utilizados para navegação e manipulação de rotas.
-- **Estado do Usuário**: Utiliza o hook `useUsuario` para acessar informações do usuário, como metas de calorias e totais consumidos.
-- **Verificação de Calorias**: A função `verificarCalorias` compara o consumo atual com a meta estabelecida e retorna um objeto com texto e cor apropriados para feedback visual.
+O componente importa os seguintes módulos e componentes:
 
-## Ciclo de Vida
+- **React e Hooks**: `useCallback`, `useState`, `useEffect`
+- **React Native**: `View`, `Text`, `TouchableOpacity`, `Image`, `ActivityIndicator`, `StatusBar`
+- **Ionicons**: Para ícones
+- **Navegação**: `StackNavigationProp`, `RouteProp`, `useFocusEffect`
+- **Componentes Personalizados**: `FooterMenu`, `DietaGrafico`
+- **Hooks Personalizados**: `useUsuario`, `useProfilePicture`, `useGrafico`
+- **Estilos**: Importação de estilos do arquivo `styles`
 
-O componente utiliza o hook `useFocusEffect` para garantir que as informações do usuário sejam atualizadas sempre que a tela estiver em foco, chamando a função `refreshUser`.
+### Tipos
 
-## Renderização
+Define os tipos para as propriedades de navegação e rota:
 
-A renderização do componente é dividida em duas partes principais:
+```typescript
+type SelecaoScreenNavigationProp = StackNavigationProp<RootStackParamList, "Selecao">;
+type SelecaoScreenRouteProp = RouteProp<RootStackParamList, "Selecao">;
 
-1. **Cabeçalho**: Exibe uma saudação ao usuário e seu nome.
-2. **Conteúdo**: Mostra a ingestão diária de calorias, incluindo:
-   - Meta de calorias por dia.
-   - Status do consumo em relação à meta.
-   - Detalhes sobre os alimentos consumidos, como proteínas, carboidratos, fibras e lipídios.
-
-## Estilos
-
-Os estilos são importados de um arquivo separado (`styles`), permitindo uma separação clara entre a lógica do componente e a apresentação visual.
-
-## Dependências
-
-- `react-native`: Para componentes de interface.
-- `@expo/vector-icons`: Para ícones.
-- `@react-navigation/stack`: Para navegação entre telas.
-- `@react-navigation/native`: Para manipulação de rotas.
-
-## Exemplo de Uso
-
-```tsx
-<Selecao navigation={navigation} route={route} />
+type Props = {
+  navigation: SelecaoScreenNavigationProp;
+  route: SelecaoScreenRouteProp;
+};
 ```
 
-Este componente é uma parte essencial da aplicação, proporcionando ao usuário uma visão clara de sua ingestão calórica e ajudando na gestão de sua dieta.
+### Estado
+
+O componente utiliza os seguintes estados:
+
+- `loading`: Indica se os dados estão sendo carregados.
+- `email`: Armazena o email do usuário.
+- `isModalVisible`: Controla a visibilidade do modal de gráfico.
+
+### Funções
+
+- **verificarCalorias**: Avalia se o consumo de calorias do usuário está acima, abaixo ou dentro da meta estabelecida.
+- **fetchData**: Função assíncrona que atualiza os dados do usuário.
+- **openModal**: Abre o modal para visualizar o gráfico da dieta.
+- **closeModal**: Fecha o modal.
+
+### Efeitos
+
+Utiliza `useFocusEffect` para recarregar os dados do usuário e a imagem de perfil sempre que a tela ganha foco.
+
+### Renderização
+
+O componente renderiza:
+
+- Um cabeçalho com a imagem de perfil e uma mensagem de boas-vindas.
+- Informações sobre a ingestão diária de calorias, incluindo a meta e o consumo atual.
+- Um modal que exibe um gráfico da dieta semanal, que é ativado ao clicar em um botão.
+
+### Exemplo de Uso
+
+```typescript
+<Selecao navigation={navigation} />
+```
+
+## Conclusão
+
+O componente `Selecao` é uma parte fundamental da interface do usuário, permitindo que os usuários visualizem e gerenciem suas metas de ingestão calórica de forma interativa e informativa.

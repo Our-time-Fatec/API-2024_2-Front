@@ -1,45 +1,64 @@
 ---
 title: PerfilScreen
-description: 'Tela de perfil do usuário, exibindo informações pessoais e opções de navegação.'
+description: 'Componente de tela de perfil do usuário, exibindo informações e opções de edição.'
 ---
 
 # PerfilScreen
 
-A `PerfilScreen` é um componente React que representa a tela de perfil do usuário em um aplicativo React Native. Esta tela exibe informações pessoais do usuário, como nome, idade, altura, peso e outros dados relevantes, além de fornecer opções para editar o perfil, visualizar dietas e alimentos cadastrados, acessar FAQs e realizar logout.
+O componente `PerfilScreen` é responsável por exibir as informações do perfil do usuário, permitindo que ele visualize e edite seus dados. Este componente utiliza hooks personalizados para gerenciar o estado do usuário e a imagem do perfil.
 
 ## Estrutura do Componente
 
-### Props
+### Importações
 
-- `navigation`: Objeto de navegação que permite a navegação entre as telas.
-- `route`: Objeto que contém informações sobre a rota atual.
+O componente importa diversas bibliotecas e hooks, incluindo:
 
-### Hooks Utilizados
+- **React**: Para a criação do componente.
+- **React Native**: Para a construção da interface do usuário.
+- **Expo**: Para gerenciamento de fontes e splash screen.
+- **Hooks personalizados**: `useUsuario` e `useProfilePicture` para gerenciar dados do usuário e a imagem do perfil.
 
-- `useUsuario`: Hook personalizado que gerencia o estado do usuário, incluindo informações, carregamento e erros.
-- `useAuth`: Hook que fornece métodos de autenticação, como definir o estado de autenticação do usuário.
-- `useFocusEffect`: Hook que permite executar efeitos colaterais quando a tela está em foco.
+### Tipos
 
-### Funções Principais
+Define os tipos de navegação e rota:
 
-- `handleLogout`: Remove os tokens de autenticação e navega para a tela inicial.
-- `handleEdit`: Navega para a tela de edição de perfil.
+```typescript
+type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, "Profile">;
+type ProfileScreenRouteProp = RouteProp<RootStackParamList, "Profile">;
 
-### Renderização Condicional
+type Props = {
+  navigation: ProfileScreenNavigationProp;
+  route: ProfileScreenRouteProp;
+};
+```
 
-- Exibe um indicador de carregamento enquanto os dados do usuário estão sendo carregados.
-- Exibe uma mensagem de erro caso ocorra um problema ao carregar os dados do usuário.
+### Estado e Efeitos
 
-## Estilos
+- **Carregamento de fontes**: Utiliza o hook `useFonts` para carregar fontes personalizadas.
+- **Dados do usuário**: Obtém informações do usuário através do hook `useUsuario`.
+- **Efeitos de foco**: Utiliza `useFocusEffect` para recarregar os dados do usuário sempre que a tela ganha foco.
 
-Os estilos são definidos utilizando `StyleSheet.create`, organizando a aparência da tela, incluindo a disposição dos elementos, tamanhos e cores.
+### Funções
 
-### Exemplo de Uso
+- **handleLogout**: Realiza o logout do usuário, removendo tokens do armazenamento assíncrono e redirecionando para a tela inicial.
+- **handleEdit**: Navega para a tela de edição de perfil.
 
-```jsx
+### Renderização
+
+O componente renderiza:
+
+- Uma imagem de perfil ou um ícone padrão se a imagem não estiver disponível.
+- Informações do usuário, como nome, idade, altura, peso, objetivo e nível de sedentarismo.
+- Um menu com opções para editar o perfil, visualizar dietas, alimentos cadastrados, FAQs e logout.
+
+### Estilos
+
+Os estilos são importados de um arquivo separado (`styles.ts`), garantindo uma separação clara entre a lógica do componente e a apresentação visual.
+
+## Exemplo de Uso
+
+```typescript
 <PerfilScreen navigation={navigation} route={route} />
 ```
 
-## Conclusão
-
-A `PerfilScreen` é uma parte essencial do aplicativo, permitindo que os usuários visualizem e gerenciem suas informações pessoais de forma intuitiva.
+Este componente deve ser utilizado dentro de um contexto de navegação, onde `navigation` e `route` são passados como props.

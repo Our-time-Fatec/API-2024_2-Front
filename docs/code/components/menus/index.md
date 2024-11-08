@@ -1,54 +1,76 @@
 ---
 title: FooterMenu
-description: 'Componente de menu de rodapé para navegação entre telas no aplicativo.'
+description: 'Componente de menu de rodapé que permite a navegação entre diferentes telas da aplicação.'
 ---
 
 # FooterMenu
 
-O componente `FooterMenu` é um menu de rodapé que permite a navegação entre diferentes telas do aplicativo. Ele utiliza ícones do pacote `Ionicons` para representar visualmente cada opção de menu.
+O componente `FooterMenu` é um menu de rodapé que permite a navegação entre diferentes telas da aplicação. Ele utiliza ícones do pacote `Ionicons` e é projetado para se adaptar ao estado de foco da tela atual.
 
 ## Props
 
 ### `navigation`
 
 - **Tipo**: `any`
-- **Descrição**: Propriedade que representa o objeto de navegação. Deve ser passado a partir do stack de navegação do React Navigation.
+- **Descrição**: Propriedade que representa o objeto de navegação, utilizado para navegar entre as telas.
 
-## Estrutura do Componente
+## Estado
 
-O componente é composto por uma `View` que contém vários `TouchableOpacity`, cada um representando uma opção de menu. Ao clicar em uma opção, o usuário é redirecionado para a tela correspondente.
+### `focusedScreen`
 
-### Opções de Menu
+- **Tipo**: `string | null`
+- **Descrição**: Armazena o nome da tela atualmente focada. É atualizado sempre que a tela muda.
 
-- **Home**: Navega para a tela 'Selecao'.
-- **Dietas**: Navega para a tela 'UserDietas'.
-- **Check-list**: Navega para a tela 'UserAlimentosConsumidos'.
-- **Alimentos**: Navega para a tela 'ListAlimentos'.
-- **Perfil**: Navega para a tela 'Profile'.
+## Hooks Utilizados
+
+- **`useFocusEffect`**: Este hook é utilizado para executar um efeito sempre que o componente ganha ou perde o foco. Ele atualiza o estado `focusedScreen` com o nome da rota atual.
+
+## Funções
+
+### `handlePress(screen: string)`
+
+- **Parâmetro**: 
+  - `screen`: O nome da tela para a qual navegar.
+- **Descrição**: Atualiza o estado `focusedScreen` e navega para a tela especificada.
+
+## Renderização
+
+O componente renderiza uma `View` contendo vários `TouchableOpacity`, cada um representando uma opção de menu. Cada opção de menu exibe um ícone e um texto correspondente à tela que será acessada ao ser pressionada.
+
+### Itens do Menu
+
+1. **Home**
+   - Navega para a tela `Selecao`.
+   - Ícone: `home` ou `home-outline` dependendo do estado de foco.
+
+2. **Dietas**
+   - Navega para a tela `UserDietas`.
+   - Ícone: `restaurant` ou `restaurant-outline`.
+
+3. **Check-list**
+   - Navega para a tela `UserDietaDiaria`.
+   - Ícone: `checkmark-circle` ou `checkmark-circle-outline`.
+
+4. **Alimentos**
+   - Navega para a tela `ListAlimentos`.
+   - Ícone: `search` ou `search-outline`.
+
+5. **Água**
+   - Navega para a tela `AguaConsumida`.
+   - Ícone: `water` ou `water-outline`.
+
+6. **Profile**
+   - Navega para a tela `Profile`.
+   - Ícone: `person` ou `person-outline`.
 
 ## Estilos
 
-Os estilos são definidos utilizando `StyleSheet` do React Native:
-
-- **footer**: Estilo do contêiner do menu, com fundo branco, disposição em linha e sombra.
-- **menuItem**: Estilo para cada item do menu, centralizando o conteúdo.
-- **menuText**: Estilo do texto do menu, com tamanho de fonte e cor definidos.
+Os estilos do componente são importados do arquivo `styles.ts`, que define a aparência do menu e de seus itens.
 
 ## Exemplo de Uso
 
 ```jsx
-import FooterMenu from './components/menus/index';
-
-const App = () => {
-  return (
-    <NavigationContainer>
-      {/* Outras telas */}
-      <FooterMenu navigation={navigation} />
-    </NavigationContainer>
-  );
-};
+<FooterMenu navigation={navigation} />
 ```
 
-## Exportação
-
-O componente é exportado como padrão para ser utilizado em outras partes do aplicativo.
+Este componente deve ser utilizado dentro de um contexto onde o objeto `navigation` está disponível, como em uma tela gerenciada pelo React Navigation.

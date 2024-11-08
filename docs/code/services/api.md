@@ -7,85 +7,67 @@ description: 'Módulo de serviços para comunicação com a API, incluindo auten
 
 Este módulo fornece funções para interagir com a API, incluindo autenticação de usuários e gerenciamento de tokens. Utiliza a biblioteca `axios` para realizar requisições HTTP e `AsyncStorage` para armazenar tokens de autenticação.
 
-## Configuração da API
-
-A base URL da API é definida pela variável de ambiente `API_HOST`. Caso não esteja definida, um valor padrão é utilizado.
-
-```typescript
-const APIHOST = API_HOST || 'http://192.168.1.45:3010';
-const api = axios.create({
-    baseURL: APIHOST,
-});
-```
-
-## Funções Exportadas
-
-### `requestWithRefresh(config: any)`
-
-Realiza uma requisição à API com o token de autenticação. Se o token estiver expirado (status 401), tenta atualizar o token e realiza a requisição novamente.
-
-#### Parâmetros
-
-- `config`: Configurações da requisição, incluindo headers e dados.
-
-#### Retorno
-
-- Retorna a resposta da requisição.
-
-### `login(loginRequest: ILoginRequest)`
-
-Realiza o login do usuário e armazena o token e informações do usuário no `AsyncStorage`.
-
-#### Parâmetros
-
-- `loginRequest`: Objeto contendo as credenciais de login.
-
-#### Retorno
-
-- Retorna os dados de sucesso do login, incluindo o token e informações do usuário.
-
-### `register(registerRequest: IUsuario)`
-
-Registra um novo usuário e armazena o token e informações do usuário no `AsyncStorage`.
-
-#### Parâmetros
-
-- `registerRequest`: Objeto contendo os dados do usuário a ser registrado.
-
-#### Retorno
-
-- Retorna os dados de sucesso do registro, incluindo o token e informações do usuário.
-
-## Funções Internas
+## Funções
 
 ### `getToken()`
 
-Recupera o token de autenticação armazenado no `AsyncStorage`.
+Obtém o token de autenticação armazenado no `AsyncStorage`.
 
-#### Retorno
+**Retorno:**  
+- `Promise<string>`: O token de autenticação.
 
-- Retorna o token armazenado.
+**Exceções:**  
+- Lança um erro se o token não for encontrado.
 
 ### `refreshAuthToken()`
 
-Atualiza o token de autenticação utilizando o refresh token armazenado.
+Renova o token de autenticação utilizando o refresh token armazenado.
 
-#### Retorno
+**Retorno:**  
+- `Promise<string>`: O novo token de autenticação.
 
-- Retorna o novo token de autenticação.
+**Exceções:**  
+- Lança um erro se o refresh token não for encontrado ou se a renovação falhar.
 
-## Exemplo de Uso
+### `requestWithRefresh(config: any)`
 
-```typescript
-import { login, register, requestWithRefresh } from './services/api';
+Realiza uma requisição à API, adicionando o token de autenticação ao cabeçalho. Se a requisição falhar devido a um token expirado (status 401), tenta renovar o token e realiza a requisição novamente.
 
-// Exemplo de login
-const loginRequest = { username: 'user', password: 'pass' };
-login(loginRequest).then(response => {
-    console.log('Login bem-sucedido:', response);
-}).catch(error => {
-    console.error('Erro no login:', error);
-});
-```
+**Parâmetros:**  
+- `config`: Configurações da requisição (ex: método, URL, dados).
 
-Este módulo é essencial para gerenciar a autenticação e a comunicação com a API, garantindo que as requisições sejam feitas de forma segura e eficiente.
+**Retorno:**  
+- `Promise<any>`: A resposta da requisição.
+
+**Exceções:**  
+- Lança um erro se a requisição falhar e não for possível renovar o token.
+
+### `login(loginRequest: ILoginRequest)`
+
+Realiza o login de um usuário.
+
+**Parâmetros:**  
+- `loginRequest`: Objeto contendo as credenciais de login.
+
+**Retorno:**  
+- `Promise<ILoginSuccessResponse>`: Dados do usuário e tokens de autenticação.
+
+### `register(registerRequest: IUsuario)`
+
+Registra um novo usuário.
+
+**Parâmetros:**  
+- `registerRequest`: Objeto contendo os dados do usuário a ser registrado.
+
+**Retorno:**  
+- `Promise<ILoginSuccessResponse>`: Dados do usuário e tokens de autenticação.
+
+## Exportações
+
+As seguintes funções são exportadas para uso em outros módulos:
+
+- `requestWithRefresh`
+- `refreshAuthToken`
+- `login`
+- `register`
+- `api` (instância do axios configurada)

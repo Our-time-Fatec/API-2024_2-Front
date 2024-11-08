@@ -1,49 +1,36 @@
 ---
 title: IDieta
-description: 'Interfaces relacionadas à estrutura de dietas e alimentos no sistema.'
+description: 'Interfaces relacionadas à dieta, incluindo detalhes, grupos e consumo de alimentos.'
 ---
 
 # IDieta
 
-Este arquivo contém definições de interfaces que representam a estrutura de dietas e alimentos no sistema. As interfaces são utilizadas para garantir a tipagem correta dos dados manipulados nas operações relacionadas a dietas.
+Este arquivo contém definições de interfaces relacionadas à estrutura de dados de dietas, incluindo detalhes, grupos de alimentos e consumo diário.
 
 ## Interfaces
 
 ### IDietaDetalhes
-
 ```typescript
 export interface IDietaDetalhes extends Detalhes {
 }
 ```
-
-A interface `IDietaDetalhes` estende a interface `Detalhes`, permitindo a inclusão de propriedades adicionais que podem ser definidas na interface `Detalhes`.
+Interface que estende a interface `Detalhes`, representando detalhes adicionais de uma dieta.
 
 ### IAlimentoDieta
-
 ```typescript
 export interface IAlimentoDieta {
-    _id?: string;
-    nome: string;
-    preparo: string;
-    porcao: Number;
+    alimentoId: string;
+    nome?: string;
+    preparo?: string;
+    porcao: number;
     quantidade: number;
-    categoriaCodigo: Number;
-    detalhes: Detalhes;
+    categoriaCodigo?: number;
+    detalhes?: Detalhes;
 }
 ```
-
-A interface `IAlimentoDieta` representa um alimento que pode ser parte de uma dieta. As propriedades incluem:
-
-- `_id?`: Identificador único do alimento (opcional).
-- `nome`: Nome do alimento.
-- `preparo`: Método de preparo do alimento.
-- `porcao`: Tamanho da porção em unidades.
-- `quantidade`: Quantidade do alimento.
-- `categoriaCodigo`: Código da categoria do alimento.
-- `detalhes`: Detalhes adicionais sobre o alimento, conforme definido na interface `Detalhes`.
+Interface que representa um alimento dentro de uma dieta. Contém informações como ID, nome, preparo, porção, quantidade e categoria.
 
 ### IGrupo
-
 ```typescript
 export interface IGrupo {
     _id?: string;
@@ -51,35 +38,69 @@ export interface IGrupo {
     alimentos: IAlimentoDieta[];
 }
 ```
-
-A interface `IGrupo` representa um grupo de alimentos dentro de uma dieta. As propriedades incluem:
-
-- `_id?`: Identificador único do grupo (opcional).
-- `nome`: Nome do grupo.
-- `alimentos`: Lista de alimentos que pertencem a este grupo, utilizando a interface `IAlimentoDieta`.
+Interface que representa um grupo de alimentos. Inclui um ID opcional, nome do grupo e uma lista de alimentos (`IAlimentoDieta`).
 
 ### IDietaFixa
-
 ```typescript
-export interface IDietaFixa extends Document {
+export interface IDietaFixa {
     _id?: string;
-    usuarioId: string;
-    diaSemana: DiasSemana;
-    criadoEm: Date;
+    usuarioId?: string;
+    diaSemana: DiasSemana[] | DiasSemana;
+    criadoEm?: Date;
     atualizadoEm?: Date | null;
     removidoEm?: Date | null;
-    detalhes: IDietaDetalhes;
+    detalhes?: IDietaDetalhes;
     grupos: IGrupo[];
 }
 ```
+Interface que representa uma dieta fixa. Inclui informações sobre o usuário, dias da semana, datas de criação, atualização e remoção, detalhes da dieta e grupos de alimentos.
 
-A interface `IDietaFixa` representa uma dieta fixa associada a um usuário. As propriedades incluem:
+### IDietaDiaria
+```typescript
+export interface IDietaDiaria {
+    usuarioId: string;
+    diaSemana: DiasSemana;
+    dia: Date;
+    gruposConsumo: IGrupoConsumo[];
+}
+```
+Interface que representa a dieta diária de um usuário, incluindo o ID do usuário, dia da semana, data e grupos de consumo.
 
-- `_id?`: Identificador único da dieta (opcional).
-- `usuarioId`: Identificador do usuário ao qual a dieta pertence.
-- `diaSemana`: Dia da semana em que a dieta é aplicada, utilizando a enumeração `DiasSemana`.
-- `criadoEm`: Data de criação da dieta.
-- `atualizadoEm?`: Data da última atualização da dieta (opcional).
-- `removidoEm?`: Data em que a dieta foi removida (opcional).
-- `detalhes`: Detalhes adicionais da dieta, conforme definido na interface `IDietaDetalhes`.
-- `grupos`: Lista de grupos de alimentos que compõem a dieta, utilizando a interface `IGrupo`.
+### IGrupoConsumo
+```typescript
+export interface IGrupoConsumo {
+    _id: string;
+    grupo: string;  
+    alimentos: IContagem[]; 
+}
+```
+Interface que representa um grupo de consumo, contendo um ID, nome do grupo e uma lista de contagens de alimentos.
+
+### IContagem
+```typescript
+export interface IContagem {
+    consumido: number;
+    paraConsumir: number;
+    alimento: IAlimentoConsumo; // Referência à interface IAlimento
+}
+```
+Interface que representa a contagem de um alimento consumido e a quantidade a ser consumida, referenciando a interface `IAlimentoConsumo`.
+
+### IAlimentoConsumo
+```typescript
+interface IAlimentoConsumo {
+    _id: string,
+    alimentoId: string;
+    nome: string;
+    preparo: string;
+    categoriaUrl?: string;
+    porcao: number;
+    quantidade?: number;
+    categoriaNome?: string;
+    categoriaCodigo: number;
+    detalhes: Detalhes;
+    criadoEm?: Date;
+    nomeGrupo?: string,
+}
+```
+Interface que representa um alimento consumido, incluindo informações como ID, nome, preparo, categoria, porção e detalhes adicionais.

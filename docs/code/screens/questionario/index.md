@@ -16,40 +16,52 @@ O componente é implementado como uma função React que utiliza as seguintes bi
 - **Ionicons**: Para ícones utilizados nos campos de entrada.
 - **Estilos**: Importa estilos de um arquivo externo.
 
-## Props
+## Tipos
 
-O componente `Questionario` recebe as seguintes propriedades:
+O componente utiliza tipos do TypeScript para definir as propriedades de navegação e rota:
 
-- `navigation`: Objeto de navegação que permite a navegação entre telas.
-- `route`: Objeto que contém informações sobre a rota atual.
+- `QuestionarioScreenNavigationProp`: Tipo para navegação.
+- `QuestionarioScreenRouteProp`: Tipo para a rota.
+
+### Props
+
+As propriedades do componente são definidas como:
+
+```typescript
+type Props = {
+    navigation: QuestionarioScreenNavigationProp;
+    route: QuestionarioScreenRouteProp;
+};
+```
 
 ## Renderização
 
-A tela é composta pelos seguintes elementos:
+O componente renderiza uma série de campos de entrada para o usuário preencher:
 
-1. **Cabeçalho**: Um texto que indica "Informações básicas".
-2. **Imagem de Perfil**: Um componente `Image` que exibe a foto do usuário.
-3. **Botão de Edição de Foto**: Um `TouchableOpacity` que permite ao usuário editar sua foto.
-4. **Campos de Entrada**: Vários `TextInput` para coletar informações:
+1. **Imagem de Perfil**: Exibe uma imagem de perfil com a opção de editar.
+2. **Campos de Entrada**:
    - Nome
    - Idade
    - Altura
    - Peso
    - Objetivo
-5. **Botão de Finalização**: Um `TouchableOpacity` que, ao ser pressionado, navega para a tela de login.
 
-## Estilos
-
-Os estilos são importados de um arquivo externo `styles`, que define a aparência dos componentes, como layout, cores e tamanhos.
+Cada campo de entrada é acompanhado por um ícone correspondente.
 
 ## Navegação
 
-Ao finalizar o cadastro, o usuário é redirecionado para a tela de login através da função `navigation.navigate("Login")`.
+Ao finalizar o cadastro, o usuário pode clicar no botão "Finalizar cadastro", que navega para a tela de login:
 
-## Exemplo de Uso
-
-```tsx
-<Questionario navigation={navigation} route={route} />
+```javascript
+<TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Login")}>
+    <Text style={styles.buttonText}>Finalizar cadastro</Text>
+</TouchableOpacity>
 ```
 
-Esta tela é uma parte essencial do fluxo de cadastro, garantindo que o usuário forneça informações necessárias para personalização e uso do aplicativo.
+## Estilos
+
+Os estilos são importados de um arquivo externo `styles.ts`, que define a aparência da tela e dos componentes.
+
+## Conclusão
+
+A tela `Questionario` é uma parte essencial do fluxo de cadastro, permitindo que os usuários forneçam informações necessárias para personalizar sua experiência no aplicativo.

@@ -12,7 +12,7 @@ O `useRegister` é um hook personalizado que facilita o processo de registro de 
 Para utilizar o `useRegister`, você deve importá-lo em seu componente:
 
 ```javascript
-import useRegister from 'caminho/para/hooks/useRegister';
+import useRegister from '../hooks/useRegister';
 ```
 
 ## Retorno
@@ -22,7 +22,7 @@ O hook retorna um objeto contendo:
 - `register`: uma função assíncrona que aceita um objeto do tipo `IUsuario` e realiza o registro do usuário.
 - `loading`: um booleano que indica se a operação de registro está em andamento.
 
-## Uso
+## Como Usar
 
 Aqui está um exemplo de como utilizar o `useRegister` em um componente:
 
@@ -48,18 +48,21 @@ const MyComponent = () => {
 };
 ```
 
-## Funcionamento
+## Funcionamento Interno
 
 1. **Estado de Carregamento**: O hook utiliza o `useState` para gerenciar o estado de carregamento durante a operação de registro.
-2. **Registro**: A função `register` é chamada com um objeto `IUsuario`, que é passado para a função `registerApi` do serviço de API.
-3. **Autenticação**: Se o registro for bem-sucedido, o estado de autenticação é atualizado para `true`. Caso contrário, um erro é capturado e o estado de autenticação é definido como `false`.
-4. **Tratamento de Erros**: O hook captura erros e retorna uma mensagem de erro apropriada.
+2. **Função de Registro**: A função `register` é responsável por chamar a API de registro. Ela:
+   - Define o estado de carregamento como `true`.
+   - Tenta registrar o usuário chamando a função `registerApi`.
+   - Atualiza o estado de autenticação com `setIsAuthenticated`.
+   - Retorna um objeto com o resultado da operação, incluindo dados ou mensagens de erro.
+   - Finalmente, redefine o estado de carregamento como `false`.
 
 ## Dependências
 
-- `useState` do React para gerenciar o estado.
-- `registerApi` do serviço de API para realizar a chamada de registro.
-- `useAuth` do contexto de autenticação para gerenciar o estado de autenticação do usuário.
-- Interfaces `ILoginSuccessResponse` e `IUsuario` para tipagem.
+O `useRegister` depende das seguintes interfaces e serviços:
 
-Este hook é uma parte essencial da lógica de registro de usuários e deve ser utilizado em componentes que requerem essa funcionalidade.
+- `registerApi` do serviço `api`.
+- `ILoginSuccessResponse` da interface `ILogin`.
+- `IUsuario` da interface `IUsuario`.
+- `useAuth` do contexto `AuthContext`.

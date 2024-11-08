@@ -1,29 +1,16 @@
-
 ---
 title: fonts
-description: 'Pasta contendo as fontes utilizadas no projeto.'
+description: 'Pasta que contém os componentes de fonte utilizados na aplicação.'
 ---
 
 # fonts
 
-A pasta `fonts` contém os arquivos de fontes utilizados no projeto. Essas fontes são essenciais para a estilização e apresentação visual da aplicação. 
+A pasta `fonts` contém os componentes relacionados às fontes utilizadas na aplicação. Esses componentes são responsáveis por gerenciar e aplicar as fontes de texto em diferentes partes da interface do usuário. 
 
-## Estrutura da Pasta
+## Estrutura
 
-Abaixo estão os arquivos de fonte disponíveis na pasta:
+A estrutura da pasta é a seguinte:
 
-- **Poppins-Bold.ttf**: Fonte Poppins em estilo negrito.
-- **Poppins-ExtraBold.ttf**: Fonte Poppins em estilo extra negrito.
-- **Poppins-Medium.ttf**: Fonte Poppins em estilo médio.
-- **Poppins-Regular.ttf**: Fonte Poppins em estilo regular.
-- **Poppins-SemiBold.ttf**: Fonte Poppins em estilo semi-negrito.
-- **SUSE-Bold.ttf**: Fonte SUSE em estilo negrito.
-- **SUSE-ExtraLight.ttf**: Fonte SUSE em estilo extra leve.
-- **SUSE-Light.ttf**: Fonte SUSE em estilo leve.
-- **SUSE-Medium.ttf**: Fonte SUSE em estilo médio.
-- **SUSE-Regular.ttf**: Fonte SUSE em estilo regular.
-- **SUSE-SemiBold.ttf**: Fonte SUSE em estilo semi-negrito.
-- **SUSE-Thin.ttf**: Fonte SUSE em estilo fino.
-- **SUSE-ExtraBold.ttf**: Fonte SUSE em estilo extra negrito.
-
-Essas fontes podem ser utilizadas em diferentes componentes da aplicação para garantir uma tipografia consistente e atraente.
+- **index.ts**: Arquivo principal que exporta os componentes de fonte.
+  
+Os componentes dentro desta pasta são utilizados em toda a aplicação para garantir consistência na apresentação do texto.

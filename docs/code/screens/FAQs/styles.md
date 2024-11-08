@@ -3,119 +3,43 @@ title: styles
 description: 'Estilos utilizados na tela de FAQs do aplicativo.'
 ---
 
-# styles
+# styles.ts
 
-Este arquivo contém a definição dos estilos utilizados na tela de FAQs do aplicativo. Os estilos são criados utilizando a API `StyleSheet` do React Native, que permite a criação de estilos de forma otimizada.
+O arquivo `styles.ts` contém as definições de estilo para a tela de FAQs do aplicativo. Utiliza a biblioteca `react-native` para criar estilos que garantem uma interface de usuário responsiva e visualmente agradável.
 
-## Estilos Definidos
+## Estrutura de Estilos
 
-### container
+Os estilos são definidos utilizando o método `StyleSheet.create`, que permite agrupar estilos de forma eficiente. Abaixo estão os estilos definidos neste arquivo:
+
+- **container**: Estilo principal que ocupa toda a tela com um fundo claro.
+- **content**: Estilo para o conteúdo, com margens e preenchimento horizontal.
+- **selectText**: Estilo para o texto de seleção, com tamanho e peso de fonte destacados.
+- **optionContainer**: Estilo para cada opção, com layout em linha, fundo branco e sombra para destaque.
+- **optionImage**: Estilo para a imagem da opção, com dimensões fixas.
+- **optionTextContainer**: Estilo que permite que o texto da opção ocupe o espaço restante.
+- **optionTitle**: Estilo para o título da opção, com tamanho e peso de fonte destacados.
+- **optionSubtitle**: Estilo para o subtítulo da opção, com cor mais clara.
+- **footer**: Estilo para o rodapé, com disposição em linha e sombra.
+- **infoText**: Estilo para textos informativos, com tamanho e cor definidos.
+
+## Exemplo de Uso
+
+Os estilos definidos podem ser utilizados em componentes React Native da seguinte forma:
+
 ```javascript
-container: {
-  flex: 1,
-  backgroundColor: '#f5f5f5',
-}
-```
-- **Descrição**: Define o contêiner principal da tela, ocupando todo o espaço disponível e com um fundo cinza claro.
+import styles from './styles';
 
-### content
-```javascript
-content: {
-  flex: 1,
-  marginTop: 20,
-  paddingHorizontal: 20,
-}
+// Dentro do componente
+<View style={styles.container}>
+  <Text style={styles.selectText}>Selecione uma opção</Text>
+  <View style={styles.optionContainer}>
+    <Image style={styles.optionImage} source={require('./path/to/image.png')} />
+    <View style={styles.optionTextContainer}>
+      <Text style={styles.optionTitle}>Título da Opção</Text>
+      <Text style={styles.optionSubtitle}>Subtítulo da Opção</Text>
+    </View>
+  </View>
+</View>
 ```
-- **Descrição**: Estilo para o conteúdo da tela, com margem superior e preenchimento horizontal.
 
-### selectText
-```javascript
-selectText: {
-  fontSize: 18,
-  fontWeight: 'bold',
-  marginBottom: 20,
-}
-```
-- **Descrição**: Estilo para o texto de seleção, com tamanho de fonte maior e negrito.
-
-### optionContainer
-```javascript
-optionContainer: {
-  flexDirection: 'row',
-  backgroundColor: '#fff',
-  padding: 15,
-  borderRadius: 15,
-  marginBottom: 20,
-  alignItems: 'center',
-  shadowColor: '#000',
-  shadowOpacity: 0.1,
-  shadowOffset: { width: 0, height: 5 },
-  elevation: 5,
-}
-```
-- **Descrição**: Estilo para o contêiner de cada opção, com fundo branco, bordas arredondadas e sombra para efeito de elevação.
-
-### optionImage
-```javascript
-optionImage: {
-  width: 50,
-  height: 50,
-  marginRight: 15,
-}
-```
-- **Descrição**: Estilo para a imagem da opção, com dimensões fixas e margem à direita.
-
-### optionTextContainer
-```javascript
-optionTextContainer: {
-  flex: 1,
-}
-```
-- **Descrição**: Estilo para o contêiner de texto da opção, ocupando o espaço restante.
-
-### optionTitle
-```javascript
-optionTitle: {
-  fontSize: 16,
-  fontWeight: 'bold',
-}
-```
-- **Descrição**: Estilo para o título da opção, com tamanho de fonte e negrito.
-
-### optionSubtitle
-```javascript
-optionSubtitle: {
-  fontSize: 14,
-  color: '#888',
-}
-```
-- **Descrição**: Estilo para o subtítulo da opção, com tamanho de fonte menor e cor cinza.
-
-### footer
-```javascript
-footer: {
-  backgroundColor: "#FFFFFF",
-  flexDirection: 'row',
-  justifyContent: 'space-around',
-  paddingVertical: 15,
-  borderTopWidth: 1,
-  borderColor: '#eee',
-  shadowColor: '#000',
-  shadowOpacity: 0.1,
-  shadowOffset: { width: 2, height: -5 },
-  shadowRadius: 5,
-  elevation: 5,
-}
-```
-- **Descrição**: Estilo para o rodapé da tela, com fundo branco, disposição em linha e sombra.
-
-### infoText
-```javascript
-infoText: {
-  fontSize: 16,
-  lineHeight: 24,
-  marginBottom: 20,
-  color: '#333',
-}
-```
-- **Descrição**: Estilo para o texto informativo, com tamanho de fonte, altura de linha e cor escura.
+Esses estilos ajudam a manter a consistência visual e a usabilidade da tela de FAQs, proporcionando uma experiência de usuário agradável.

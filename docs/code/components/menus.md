@@ -1,15 +1,19 @@
-
 ---
 title: menus
-description: 'Componente responsável pela renderização e gerenciamento de menus na aplicação.'
+description: 'Pasta contendo componentes relacionados ao menu da aplicação.'
 ---
 
 # menus
 
-O diretório `menus` contém componentes relacionados à criação e gerenciamento de menus na aplicação. Esses componentes são utilizados para estruturar a navegação e a interação do usuário com diferentes seções do aplicativo.
+A pasta `menus` contém componentes que são utilizados para a construção e gerenciamento de menus na aplicação. Esses componentes são fundamentais para a navegação e interação do usuário com a interface.
 
-## Estrutura
+## Estrutura da Pasta
 
-- **index.tsx**: Componente principal que exporta as funcionalidades do menu.
-  
-Os componentes dentro deste diretório são projetados para serem reutilizáveis e configuráveis, permitindo uma fácil integração em diferentes partes da aplicação. A implementação segue as melhores práticas de desenvolvimento em React, garantindo uma experiência de usuário fluida e intuitiva.
+A estrutura da pasta `menus` é a seguinte:
+
+- **index.tsx**: Componente principal do menu, responsável por renderizar a estrutura do menu e gerenciar a lógica de navegação.
+- **styles.ts**: Arquivo de estilos associado ao componente de menu, onde são definidos os estilos visuais aplicados ao menu.
+
+## Uso
+
+Os componentes dentro da pasta `menus` devem ser importados e utilizados nas telas da aplicação onde a navegação é necessária. A implementação correta desses componentes garante uma experiência de usuário fluida e intuitiva.

@@ -1,73 +1,60 @@
 ---
 title: FAQs
-description: 'Tela de Perguntas Frequentes que fornece informações sobre cálculos de TMB, dietas e suporte ao usuário.'
+description: 'Tela de Perguntas Frequentes que fornece informações sobre cálculos nutricionais e dietas.'
 ---
 
 # FAQs
 
-A tela de Perguntas Frequentes (FAQs) é responsável por apresentar informações relevantes sobre como os dados são calculados, diferentes tipos de dietas e informações de contato para suporte.
+A tela de FAQs (Perguntas Frequentes) é responsável por apresentar informações relevantes sobre cálculos nutricionais e diferentes tipos de dietas. Esta tela é implementada em React Native e utiliza componentes como `View`, `Text`, `ScrollView` e `FooterMenu`.
 
 ## Estrutura do Componente
 
-O componente `FAQs` é um componente funcional que utiliza as seguintes bibliotecas e componentes:
+O componente `FAQs` é um Functional Component que recebe as propriedades de navegação e rota. Abaixo está a estrutura básica do componente:
 
-- **React Native**: Para a construção da interface do usuário.
-- **React Navigation**: Para a navegação entre telas.
-- **FooterMenu**: Um componente que exibe um menu de rodapé.
+```tsx
+const FAQs: React.FC<Props> = ({ navigation, route }) => {
+  return (
+    <View style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <ScrollView style={styles.content}>
+          {/* Conteúdo das FAQs */}
+        </ScrollView>
+      </View>
+      <FooterMenu navigation={navigation} />
+    </View>
+  );
+}
+```
 
-### Props
+## Conteúdo
 
-O componente recebe as seguintes propriedades:
+O conteúdo da tela é dividido em seções que abordam os seguintes tópicos:
 
-- `navigation`: Um objeto que permite a navegação entre as telas.
-- `route`: Um objeto que contém informações sobre a rota atual.
+1. **Cálculo de Informações Nutricionais**:
+   - Fórmulas para calcular a Taxa Metabólica Basal (TMB) para homens e mulheres.
+   - Ajustes de TMB com base no nível de atividade física.
 
-### Renderização
+2. **Dietas**:
+   - Descrição de diferentes tipos de dietas, incluindo:
+     - Dieta de Emagrecimento
+     - Dieta de Ganho de Massa Muscular
+     - Dieta Low Carb
+   - Recomendações de macronutrientes para cada tipo de dieta.
 
-O componente renderiza uma `View` principal que contém:
+3. **Base de Dados de Alimentos**:
+   - Informações sobre a origem dos dados alimentares utilizados na aplicação.
 
-- Um `ScrollView` para permitir a rolagem do conteúdo.
-- Vários elementos `Text` que descrevem:
-  - Como calcular a Taxa Metabólica Basal (TMB) para homens e mulheres.
-  - Diferentes tipos de dietas e suas respectivas recomendações.
-  - Informações sobre a base de dados de alimentos.
-  - Informações de contato para suporte.
+4. **Suporte**:
+   - Informações de contato para suporte via e-mail.
 
-### Cálculo da TMB
+## Estilos
 
-A TMB é calculada com as seguintes fórmulas:
+Os estilos são importados de um arquivo separado `styles`, que define a aparência visual da tela, incluindo a formatação de texto e layout.
 
-- **Homens**: 
-  ```
-  TMB = 88,36 + (13,4 × peso em kg) + (4,8 × altura em cm) - (5,7 × idade em anos)
-  ```
-- **Mulheres**: 
-  ```
-  TMB = 447,6 + (9,2 × peso em kg) + (3,1 × altura em cm) - (4,3 × idade em anos)
-  ```
+## Navegação
 
-### Níveis de Atividade
+O componente utiliza o `FooterMenu` para permitir a navegação entre diferentes telas da aplicação, passando as propriedades de navegação recebidas.
 
-Os níveis de atividade física são utilizados para ajustar a TMB:
+## Conclusão
 
-- Sedentário: TMB × 1,2
-- Levemente ativo: TMB × 1,375
-- Moderadamente ativo: TMB × 1,55
-- Altamente ativo: TMB × 1,725
-- Extremamente ativo: TMB × 1,9
-
-### Tipos de Dietas
-
-O componente descreve três tipos principais de dietas:
-
-1. **Dieta de Emagrecimento**: Redução de 15-25% das calorias totais.
-2. **Dieta de Ganho de Massa Muscular**: Aumento de 10-20% das calorias totais.
-3. **Dieta Low Carb**: Redução da ingestão de carboidratos para 20-50% das calorias diárias.
-
-### Suporte
-
-Para suporte, os usuários podem entrar em contato pelo e-mail: `davincicode.fatec@gmail.com`.
-
-### Estilos
-
-Os estilos são importados de um arquivo separado `styles`, que define a aparência dos componentes na tela.
+A tela de FAQs é uma parte essencial da aplicação, fornecendo aos usuários informações úteis sobre nutrição e dietas, além de um meio de contato para suporte.

@@ -1,58 +1,43 @@
 ---
 title: Cadastro
-description: 'Tela de cadastro de usuário com validação e gerenciamento de estado.'
+description: 'Componente de cadastro de usuário, permitindo a entrada de informações pessoais e a criação de uma nova conta.'
 ---
 
 # Cadastro
 
-A tela de cadastro permite que novos usuários se registrem no aplicativo. Ela coleta informações essenciais, como nome, sobrenome, email, senha, data de nascimento, altura, peso, nível de sedentarismo, sexo e objetivo da dieta.
+O componente `Cadastro` é responsável por permitir que novos usuários se registrem no aplicativo. Ele coleta informações pessoais, como nome, sobrenome, email, senha, data de nascimento, altura, peso, nível de sedentarismo, sexo e objetivo da dieta.
 
 ## Estrutura do Componente
 
-O componente `Cadastro` é um componente funcional que utiliza hooks do React para gerenciar o estado e a navegação.
+O componente é construído utilizando React e React Native, e possui a seguinte estrutura:
 
-### Props
+- **Imports**: Importa bibliotecas e componentes necessários, incluindo hooks personalizados e utilitários.
+- **Tipos**: Define os tipos de navegação e propriedades do componente.
+- **Estado**: Utiliza o hook `useState` para gerenciar o estado do formulário e da imagem de perfil.
+- **Funções**: Contém várias funções para manipulação de dados, como:
+  - `handleInputChange`: Atualiza o estado do formulário com base na entrada do usuário.
+  - `handleDateChange`: Formata e valida a data de nascimento.
+  - `handleRegister`: Realiza a validação e o registro do usuário.
 
-- `navigation`: Objeto de navegação que permite a transição entre telas.
-- `route`: Objeto que contém informações sobre a rota atual.
+## Funcionalidades
 
-### Estado
+- **Seleção de Imagem**: Permite que o usuário selecione uma imagem de perfil ou tire uma foto.
+- **Validação de Formulário**: Verifica se os dados inseridos estão corretos antes de enviar o registro.
+- **Data de Nascimento**: Utiliza um seletor de data para facilitar a entrada da data de nascimento.
+- **Feedback ao Usuário**: Exibe alertas para informar o sucesso ou falha no registro.
 
-O estado do componente é gerenciado através do hook `useState`, que armazena as informações do formulário em um objeto do tipo `IUsuario`.
+## Estilos
 
-### Funções Principais
+Os estilos são importados de um arquivo separado (`styles.ts`) e aplicados a diferentes partes do componente para garantir uma interface de usuário consistente e responsiva.
 
-- **handleInputChange**: Atualiza o estado do formulário com base na entrada do usuário. Trata entradas numéricas para altura e peso.
-  
-- **handleDateConfirm**: Atualiza a data de nascimento no estado quando o usuário seleciona uma data no `DateTimePickerModal`.
+## Uso
 
-- **handleRegister**: Valida as senhas e chama a função de registro. Se o registro for bem-sucedido, navega para a tela de seleção; caso contrário, exibe um alerta com o erro.
+Para utilizar o componente `Cadastro`, basta importá-lo e incluí-lo na sua árvore de componentes:
 
-### Renderização
-
-A tela é composta por:
-
-- Um `ScrollView` que permite a rolagem do conteúdo.
-- Vários campos de entrada (`TextInput`) para coletar informações do usuário.
-- Um `DateTimePickerModal` para seleção da data de nascimento.
-- `Picker` para seleção de opções como nível de sedentarismo, sexo e objetivo da dieta.
-- Um botão para submeter o formulário.
-
-### Estilos
-
-Os estilos são importados de um arquivo separado (`styles`), que define a aparência dos componentes.
-
-### Dependências
-
-- `react-native`: Biblioteca principal para construção de interfaces móveis.
-- `@expo/vector-icons`: Para ícones utilizados nos campos de entrada.
-- `react-native-modal-datetime-picker`: Para seleção de data.
-- `@react-navigation/stack`: Para navegação entre telas.
-
-### Exemplo de Uso
-
-```tsx
-<Cadastro navigation={navigation} route={route} />
+```javascript
+import Cadastro from './screens/cadastro';
 ```
 
-Esta tela é uma parte fundamental do fluxo de registro de usuários, garantindo que as informações sejam coletadas de forma organizada e validada antes de serem enviadas para o backend.
+## Conclusão
+
+O componente `Cadastro` é uma parte essencial do fluxo de registro do usuário, garantindo que as informações sejam coletadas de forma organizada e validada antes de serem enviadas para o backend.

@@ -1,60 +1,74 @@
 ---
 title: CadastroAlimentoScreen
-description: 'Tela para cadastro e edição de alimentos, permitindo a inserção de detalhes nutricionais.'
+description: 'Tela para cadastro e edição de alimentos, permitindo a inserção de informações nutricionais.'
 ---
 
 # CadastroAlimentoScreen
 
-A `CadastroAlimentoScreen` é um componente React que permite ao usuário cadastrar ou editar informações sobre alimentos. A tela inclui campos para inserir detalhes nutricionais e uma lista de categorias de alimentos.
+A `CadastroAlimentoScreen` é um componente React que permite ao usuário cadastrar ou editar informações sobre alimentos. A tela inclui campos para inserir dados nutricionais e uma lista de categorias de alimentos.
 
 ## Estrutura do Componente
 
 O componente é estruturado da seguinte forma:
 
-- **Estado Local**:
-  - `formState`: Armazena os dados do formulário, incluindo nome, preparo, porção, categoria e detalhes nutricionais.
-  - `categorias`: Armazena a lista de categorias de alimentos.
-  - `isLoading`: Indica se os dados estão sendo carregados.
-  - `isEditing`: Indica se a tela está em modo de edição.
-  - `alimentoId`: Armazena o ID do alimento a ser editado.
+- **Estado Local**: Utiliza o hook `useState` para gerenciar o estado do formulário e o carregamento das categorias.
+- **Efeitos Colaterais**: Utiliza o hook `useEffect` para buscar categorias e, se necessário, os dados do alimento a ser editado.
+- **Manipulação de Formulário**: Funções para lidar com mudanças nos campos do formulário e para cadastrar ou atualizar alimentos.
 
-- **Efeitos**:
-  - Um `useEffect` para buscar as categorias de alimentos ao montar o componente.
-  - Um segundo `useEffect` para buscar os dados do alimento a ser editado, se um `alimentoId` for passado via `route.params`.
+## Props
+
+O componente recebe as seguintes propriedades:
+
+- `navigation`: Objeto de navegação para permitir a navegação entre telas.
+- `route`: Objeto que contém informações sobre a rota atual, incluindo parâmetros.
+
+## Estado do Componente
+
+O estado do componente é composto por:
+
+- `formState`: Objeto que contém os dados do formulário, incluindo nome, preparo, porção, categoria, e valores nutricionais.
+- `categorias`: Array que armazena as categorias de alimentos.
+- `isLoading`: Booleano que indica se os dados estão sendo carregados.
+- `isEditing`: Booleano que indica se o componente está em modo de edição.
+- `alimentoId`: ID do alimento a ser editado.
 
 ## Funções Principais
 
-- **handleChange**: Atualiza o estado do formulário com os valores inseridos pelo usuário.
-  
-- **cadastrarAlimento**: Envia os dados do alimento para a API. Se `isEditing` for verdadeiro, atualiza o alimento existente; caso contrário, cadastra um novo alimento. Exibe alertas de sucesso ou erro conforme o resultado da operação.
+### `fetchCategorias`
 
-- **limparFormState**: Reseta o estado do formulário para os valores iniciais.
+Busca as categorias de alimentos da API e atualiza o estado `categorias`.
+
+### `fetchAlimento`
+
+Busca os dados de um alimento específico se o componente estiver em modo de edição.
+
+### `handleChange`
+
+Atualiza o estado do formulário quando um campo é alterado.
+
+### `cadastrarAlimento`
+
+Valida os dados do formulário e envia uma requisição para cadastrar ou atualizar um alimento na API.
+
+### `limparFormState`
+
+Reseta o estado do formulário para os valores iniciais.
 
 ## Renderização
 
-A tela é composta por:
+O componente renderiza uma interface que inclui:
 
-- Um título que muda entre "Cadastro de Alimento" e "Editar Alimento" dependendo do modo.
-- Vários campos de entrada (`TextInput`) para coletar informações sobre o alimento.
-- Um `Picker` para selecionar a categoria do alimento.
-- Um botão que aciona a função de cadastro ou atualização do alimento.
-- Um componente `FooterMenu` para navegação.
+- Campos de entrada para nome, preparo, porção e valores nutricionais.
+- Um seletor para escolher a categoria do alimento.
+- Um botão para cadastrar ou atualizar o alimento.
+- Um menu de rodapé para navegação.
 
-## Estilos
+## Exemplo de Uso
 
-Os estilos são importados de um arquivo separado (`styles`), que define a aparência dos componentes, como containers, inputs e botões.
+```jsx
+<CadastroAlimentoScreen navigation={navigation} route={route} />
+```
 
-## Importações
+## Considerações Finais
 
-O componente utiliza as seguintes bibliotecas e módulos:
-
-- `React` e hooks (`useState`, `useEffect`) para gerenciamento de estado e efeitos colaterais.
-- Componentes do `react-native` como `View`, `Text`, `TextInput`, `TouchableOpacity`, `ScrollView`, e `Alert`.
-- `Picker` do `@react-native-picker/picker` para seleção de categorias.
-- Ícones do `Ionicons` para melhorar a interface do usuário.
-- Funções de API do módulo `api` para realizar requisições HTTP.
-- Interfaces `IAlimento` e `ICategoria` para tipagem TypeScript.
-
-## Conclusão
-
-A `CadastroAlimentoScreen` é uma parte essencial do aplicativo, permitindo que os usuários gerenciem informações sobre alimentos de forma intuitiva e eficiente.
+A `CadastroAlimentoScreen` é uma parte essencial do aplicativo, permitindo que os usuários gerenciem informações nutricionais de forma eficiente. A validação dos dados e a interação com a API garantem que as informações sejam precisas e atualizadas.

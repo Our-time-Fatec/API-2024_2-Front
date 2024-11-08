@@ -1,28 +1,26 @@
-
 ---
 title: hooks
-description: 'Uma coleção de hooks personalizados para gerenciar estados e interações em componentes React.'
+description: 'Uma coleção de hooks personalizados para gerenciar estados e lógicas de negócios na aplicação.'
 ---
 
 # hooks
 
-A pasta `hooks` contém uma série de hooks personalizados que facilitam a gestão de estados e interações em componentes React. Esses hooks são projetados para encapsular lógica reutilizável, promovendo a separação de preocupações e a manutenção do código.
+A pasta `hooks` contém uma série de hooks personalizados que facilitam a gestão de estados e a implementação de lógicas de negócios na aplicação. Esses hooks são projetados para serem reutilizáveis e para promover uma melhor organização do código.
 
 ## Estrutura
 
-A estrutura da pasta `hooks` é a seguinte:
+Abaixo está a lista dos hooks disponíveis na pasta:
 
-- **UseDietas.ts**: Hook para gerenciar dietas.
-- **useAlimentos.ts**: Hook para gerenciar alimentos.
-- **useLogin.ts**: Hook para gerenciar o processo de login.
+- **useAlimentos.ts**: Hook para gerenciar a lógica relacionada aos alimentos.
+- **useDietaDiaria.ts**: Hook para manipulação e controle da dieta diária do usuário.
+- **useDietas.ts**: Hook para gerenciar as dietas disponíveis e suas interações.
+- **useGrafico.ts**: Hook para a geração e manipulação de gráficos.
+- **useLogin.ts**: Hook para gerenciar o processo de login do usuário.
+- **useProfilePicture.ts**: Hook para manipulação da imagem de perfil do usuário.
+- **useUpdateUser.ts**: Hook para atualizar as informações do usuário.
 - **useRegister.ts**: Hook para gerenciar o registro de novos usuários.
-- **useUpdateUser.ts**: Hook para gerenciar a atualização de informações do usuário.
-- **useUsuario.ts**: Hook para gerenciar informações do usuário.
+- **useUsuario.ts**: Hook para gerenciar as informações do usuário.
 
 ## Uso
 
-Cada hook pode ser importado e utilizado em componentes React para fornecer funcionalidades específicas. Por exemplo, o hook `useLogin` pode ser utilizado para gerenciar o estado de autenticação de um usuário, enquanto `useAlimentos` pode ser utilizado para manipular dados relacionados a alimentos.
-
-## Contribuição
-
-Para adicionar novos hooks ou modificar os existentes, siga as diretrizes de codificação do projeto e garanta que os hooks sejam bem documentados e testados.
+Cada hook pode ser importado e utilizado em componentes React para encapsular a lógica de estado e efeitos colaterais, promovendo uma arquitetura mais limpa e modular.

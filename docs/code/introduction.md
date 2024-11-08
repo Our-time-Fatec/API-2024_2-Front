@@ -5,7 +5,7 @@ description: 'Uma visão geral do projeto, incluindo requisitos, como rodar e es
 
 # Introdução
 
-Este projeto é um aplicativo frontend desenvolvido com React Native e Expo, denominado **api-2024_2-front**. O objetivo principal é fornecer uma interface de usuário para interagir com uma API, permitindo que os usuários gerenciem dietas e alimentos de forma eficiente.
+Este projeto é um aplicativo frontend desenvolvido com React Native e Expo, denominado **davinci-front**. O objetivo principal é fornecer uma interface de usuário para interagir com uma API, permitindo que os usuários gerenciem dietas e alimentos de forma eficiente.
 
 ## Visão Geral
 
@@ -32,7 +32,7 @@ Para rodar este projeto, você precisará ter os seguintes requisitos instalados
 1. Clone o repositório:
    ```bash
    git clone <URL_DO_REPOSITORIO>
-   cd api-2024_2-front
+   cd davinci-front
    ```
 
 2. Instale as dependências:
@@ -52,7 +52,7 @@ Para rodar este projeto, você precisará ter os seguintes requisitos instalados
 A estrutura de pastas do projeto é a seguinte:
 
 ```
-api-2024_2-front/
+davinci-front/
 ├── app.json
 ├── App.tsx
 ├── babel.config.js
@@ -63,16 +63,20 @@ api-2024_2-front/
 ├── enums/
 │   └── diasSemana.ts
 ├── hooks/
-│   ├── UseDietas.ts
 │   ├── useAlimentos.ts
+│   ├── useDietaDiaria.ts
+│   ├── useDietas.ts
+│   ├── useGrafico.ts
 │   ├── useLogin.ts
-│   ├── useRegister.ts
+│   ├── useProfilePicture.ts
 │   ├── useUpdateUser.ts
+│   ├── useRegister.ts
 │   └── useUsuario.ts
 ├── interfaces/
 │   ├── IAlimento.ts
 │   ├── ICategoria.ts
 │   ├── IDieta.ts
+│   ├── IGrafico.ts
 │   ├── ILogin.ts
 │   └── IUsuario.ts
 ├── services/
@@ -82,28 +86,32 @@ api-2024_2-front/
 │   ├── env.d.ts
 │   └── rootStack.ts
 ├── assets/
-│   └── fonts/
+│   └── images/
 ├── components/
-│   ├── colors/
-│   ├── fonts/
-│   ├── dieta/
+│   ├── detalhesAlimentacao/
 │   ├── alimento/
+│   ├── dieta/
 │   ├── buttons/
-│   └── menus/
+│   ├── menus/
+│   └── grafico/
 └── screens/
+    ├── aguaConsumida/
     ├── cadastrarAlimento/
-    ├── FAQs/
+    ├── cadastrarDieta/
     ├── cadastro/
+    ├── dietasPersonalizadas/
+    ├── dietasPredefinidas/
     ├── editProfile/
+    ├── FAQs/
     ├── home/
     ├── listAlimentos/
-    ├── selecao/
-    ├── questionario/
-    ├── profile/
-    ├── userDietas/
-    ├── userAlimentos/
     ├── login/
-    └── userAlimentosConsumidos/
+    ├── profile/
+    ├── questionario/
+    ├── selecao/
+    ├── userAlimentos/
+    ├── userAlimentosConsumidos/
+    └── userDietas/
 ```
 
 Com esta introdução, você deve estar preparado para começar a trabalhar no projeto e explorar suas funcionalidades.

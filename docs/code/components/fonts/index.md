@@ -1,13 +1,13 @@
 ---
 title: index
-description: 'Configuração das fontes utilizadas no projeto.'
+description: 'Configuração das fontes utilizadas na aplicação.'
 ---
 
 # index.ts
 
-Este arquivo contém a configuração das fontes utilizadas no projeto. Abaixo está a estrutura do objeto exportado:
+Este arquivo contém a configuração das fontes utilizadas na aplicação. Abaixo está a estrutura do objeto exportado:
 
-```typescript
+```javascript
 export default {
     fonts: {
         title: 'Poppins_700Bold'
@@ -18,6 +18,6 @@ export default {
 ## Estrutura do Objeto
 
 - **fonts**: Um objeto que contém as definições das fontes.
-  - **title**: O nome da fonte, neste caso, 'Poppins_700Bold'. 
+  - **title**: O nome da fonte utilizada, neste caso, 'Poppins_700Bold'. 
 
-Essa configuração é utilizada para garantir que a fonte correta seja aplicada em diferentes componentes do aplicativo.
+Essa configuração é essencial para garantir a consistência visual da aplicação, permitindo que a fonte especificada seja utilizada em diferentes componentes.

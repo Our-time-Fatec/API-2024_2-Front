@@ -23,4 +23,8 @@ A interface `ICategoria` define a estrutura de uma categoria no sistema, incluin
 
 ## Exportação
 
-A interface é exportada como padrão para ser utilizada em outras partes do sistema.
+A interface é exportada como padrão para ser utilizada em outras partes do sistema:
+
+```typescript
+export default ICategoria;
+```

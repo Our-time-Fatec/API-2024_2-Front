@@ -1,11 +1,11 @@
 ---
 title: Home
-description: 'Componente principal da tela inicial do aplicativo, apresentando informações e opções de navegação.'
+description: 'Componente principal da tela inicial do aplicativo, que exibe informações e navegação para outras telas.'
 ---
 
 # Home
 
-O componente `Home` é a tela inicial do aplicativo, projetada para fornecer uma interface amigável ao usuário, com opções de navegação para as telas de login e cadastro.
+O componente `Home` é a tela inicial do aplicativo, responsável por apresentar informações ao usuário e permitir a navegação para outras telas, como Login e Cadastro.
 
 ## Estrutura do Componente
 
@@ -14,9 +14,9 @@ O componente é construído utilizando React e React Native, e utiliza fontes pe
 ### Importações
 
 - **React e Hooks**: Importa `React`, `useEffect` e `useCallback` para gerenciar o ciclo de vida do componente.
-- **Componentes do React Native**: Importa `View`, `Text`, e `Image` para a construção da interface.
+- **Componentes do React Native**: Importa `View`, `Text`, `Image`, e `StatusBar` para a construção da interface.
 - **Fontes**: Utiliza `useFonts` do `@expo-google-fonts/poppins` para carregar fontes personalizadas.
-- **Splash Screen**: Importa `SplashScreen` da biblioteca `expo-splash-screen` para gerenciar a tela de carregamento.
+- **Splash Screen**: Utiliza `SplashScreen` do `expo-splash-screen` para gerenciar a tela de carregamento.
 - **Botões**: Importa `BotaoAzul` e `BotaoBranco` de componentes personalizados.
 - **Estilos**: Importa estilos do arquivo `styles`.
 - **Logo**: Importa a imagem do logo do aplicativo.
@@ -24,7 +24,7 @@ O componente é construído utilizando React e React Native, e utiliza fontes pe
 
 ### Tipos
 
-Define os tipos de navegação e rota para garantir a tipagem correta das propriedades:
+Define os tipos de navegação e rota para o componente:
 
 ```typescript
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, "Home">;
@@ -43,12 +43,11 @@ type Props = {
 
 ### Renderização
 
-O componente renderiza a seguinte estrutura:
+O componente renderiza uma estrutura que inclui:
 
-- Um `View` principal que contém:
-  - Um `View` superior com o logo e títulos.
-  - Um `Text` de boas-vindas.
-  - Botões para navegação para as telas de "Login" e "Cadastro".
+- **StatusBar**: Configura a cor de fundo da barra de status.
+- **Logo e Títulos**: Exibe o logo do aplicativo e textos de boas-vindas.
+- **Botões de Navegação**: Dois botões que permitem ao usuário navegar para as telas de Login e Cadastro.
 
 ### Exemplo de Uso
 
@@ -56,10 +55,6 @@ O componente renderiza a seguinte estrutura:
 <Home navigation={navigation} route={route} />
 ```
 
-### Estilos
-
-Os estilos são importados do arquivo `styles` e aplicados aos componentes para garantir uma apresentação visual consistente.
-
 ## Conclusão
 
-O componente `Home` serve como a porta de entrada para o aplicativo, oferecendo uma interface clara e opções de navegação para os usuários. É um exemplo de como integrar fontes personalizadas e gerenciar o ciclo de vida de um componente em um aplicativo React Native.
+O componente `Home` é essencial para a experiência do usuário, fornecendo uma interface amigável e opções de navegação para as funcionalidades principais do aplicativo.

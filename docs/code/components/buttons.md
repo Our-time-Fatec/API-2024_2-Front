@@ -1,24 +1,19 @@
 
 ---
 title: buttons
-description: 'Contém componentes de botões reutilizáveis para a aplicação.'
+description: 'Pasta contendo componentes de botões reutilizáveis para a aplicação.'
 ---
-
 # buttons
 
-A pasta `buttons` contém componentes de botões reutilizáveis que são utilizados em diferentes partes da aplicação. Esses componentes são projetados para garantir consistência visual e funcionalidade em toda a interface do usuário.
+A pasta `buttons` contém componentes de botões reutilizáveis que podem ser utilizados em diferentes partes da aplicação. Esses componentes são projetados para garantir consistência visual e funcionalidade em toda a interface do usuário.
 
 ## Estrutura
 
-A pasta `buttons` inclui os seguintes arquivos:
+A estrutura da pasta é a seguinte:
 
-- `index.tsx`: O arquivo principal que exporta os componentes de botão.
-- `styles.ts`: Define os estilos dos componentes de botão, permitindo personalização e manutenção centralizada.
+- **index.tsx**: Componente principal do botão, que pode incluir diferentes variantes e estilos.
+- **styles.ts**: Arquivo de estilos associado ao componente de botão, definindo a aparência e o layout.
 
 ## Uso
 
-Os componentes de botão podem ser importados e utilizados em outras partes da aplicação, garantindo uma experiência de usuário coesa. A estrutura modular permite fácil modificação e extensão dos estilos e comportamentos dos botões.
-
-## Contribuição
-
-Para adicionar novos estilos ou tipos de botões, crie novos arquivos dentro da pasta `buttons` e atualize o `index.tsx` para exportar os novos componentes.
+Os componentes de botão podem ser importados e utilizados em outras partes da aplicação, permitindo a reutilização e a manutenção simplificada do código. É recomendável seguir as diretrizes de estilo e acessibilidade ao implementar botões na interface do usuário.

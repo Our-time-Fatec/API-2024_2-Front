@@ -5,7 +5,7 @@ description: 'Interface que define a estrutura de um usuário no sistema, inclui
 
 # IUsuario
 
-A interface `IUsuario` define a estrutura de um usuário no sistema, incluindo informações pessoais e dados relacionados à saúde e objetivos. Abaixo estão os detalhes dos campos que compõem esta interface.
+A interface `IUsuario` define a estrutura de um usuário no sistema, incluindo informações pessoais, de saúde e preferências alimentares. Abaixo estão os detalhes dos campos que compõem esta interface.
 
 ## Campos
 
@@ -73,4 +73,19 @@ A interface `IUsuario` define a estrutura de um usuário no sistema, incluindo i
   Data em que o registro do usuário foi removido.
 
 - **totaisAlimentosConsumidos**: `Detalhes` (opcional)  
-  Detalhes sobre os alimentos consumidos pelo usuário. Este campo é importado da interface `IAlimento`.
+  Detalhes sobre os alimentos consumidos pelo usuário.
+
+- **metaAgua**: `number` (opcional)  
+  Meta de ingestão de água do usuário em mililitros.
+
+- **agua**: `IAgua` (opcional)  
+  Informações sobre a ingestão de água do usuário.
+
+## Interface IAgua
+
+A interface `IAgua` define a estrutura relacionada à ingestão de água do usuário.
+
+### Campos
+
+- **aguaIngerida**: `number`  
+  Quantidade de água ingerida pelo usuário em mililitros.

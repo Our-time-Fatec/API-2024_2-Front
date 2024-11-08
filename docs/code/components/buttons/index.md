@@ -3,13 +3,13 @@ title: index
 description: 'Componente de Botões para React Native com estilos personalizados.'
 ---
 
-# index.tsx
+# Componente de Botões
 
 Este arquivo contém a implementação de dois componentes de botão para uso em aplicações React Native: `BotaoAzul` e `BotaoBranco`. Ambos os componentes são projetados para serem reutilizáveis e personalizáveis.
 
 ## BotaoAzul
 
-O componente `BotaoAzul` é um botão estilizado que utiliza a fonte Poppins. Ele aceita as seguintes propriedades:
+O componente `BotaoAzul` é um botão estilizado que utiliza a fonte Poppins. Ele é ideal para ações que requerem destaque.
 
 ### Props
 
@@ -31,7 +31,7 @@ O componente `BotaoAzul` é um botão estilizado que utiliza a fonte Poppins. El
 
 ## BotaoBranco
 
-O componente `BotaoBranco` é um botão simples que também aceita propriedades semelhantes ao `BotaoAzul`, mas com um estilo diferente.
+O componente `BotaoBranco` é um botão simples, ideal para ações secundárias ou menos destacadas.
 
 ### Props
 
@@ -53,7 +53,13 @@ O componente `BotaoBranco` é um botão simples que também aceita propriedades 
 
 ## Considerações
 
-- O componente `BotaoAzul` carrega fontes usando o hook `useFonts` do Expo. Enquanto as fontes estão sendo carregadas, o componente impede a exibição da tela até que as fontes estejam prontas.
-- O `SplashScreen` é utilizado para gerenciar a tela de carregamento enquanto as fontes estão sendo carregadas.
+- O componente `BotaoAzul` carrega fontes utilizando o hook `useFonts` do Expo. Enquanto as fontes não estiverem carregadas, o componente não será exibido.
+- O `SplashScreen` é utilizado para evitar que a tela inicial do aplicativo apareça antes que as fontes estejam carregadas.
 
-Esses componentes são úteis para criar interfaces de usuário consistentes e estilizadas em aplicações React Native.
+## Exportação
+
+Os componentes `BotaoAzul` e `BotaoBranco` são exportados para serem utilizados em outras partes da aplicação:
+
+```javascript
+export { BotaoAzul, BotaoBranco };
+```

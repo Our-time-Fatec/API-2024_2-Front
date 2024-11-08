@@ -1,21 +1,21 @@
 
 ---
 title: interfaces
-description: 'Contém definições de interfaces utilizadas no projeto para tipagem e estruturação de dados.'
+description: 'Pasta que contém as definições de interfaces utilizadas no projeto.'
 ---
-
 # interfaces
 
-A pasta `interfaces` contém definições de interfaces que são utilizadas em todo o projeto para garantir a tipagem e a estruturação adequada dos dados. As interfaces ajudam a manter a consistência e a clareza no código, facilitando a manutenção e a colaboração entre os desenvolvedores.
+A pasta `interfaces` contém as definições de interfaces que são utilizadas em todo o projeto. As interfaces são fundamentais para garantir a tipagem e a estrutura dos dados, proporcionando uma melhor organização e manutenção do código.
 
 ## Estrutura da Pasta
 
-Abaixo estão as interfaces disponíveis na pasta:
+Abaixo estão as interfaces disponíveis nesta pasta:
 
-- **IAlimento.ts**: Define a estrutura de um alimento, incluindo propriedades como nome, calorias, e outros atributos relevantes.
-- **ICategoria.ts**: Especifica a estrutura de uma categoria de alimentos, permitindo a organização e classificação dos mesmos.
-- **IDieta.ts**: Define a estrutura de uma dieta, incluindo informações sobre os alimentos e categorias que a compõem.
-- **ILogin.ts**: Especifica a estrutura de dados necessária para o processo de login de um usuário.
-- **IUsuario.ts**: Define a estrutura de um usuário, incluindo informações pessoais e de autenticação.
+- **IAlimento.ts**: Define a estrutura de um alimento, incluindo suas propriedades e tipos.
+- **ICategoria.ts**: Define a estrutura de uma categoria de alimentos.
+- **IDieta.ts**: Define a estrutura de uma dieta, incluindo os alimentos e categorias associadas.
+- **IGrafico.ts**: Define a estrutura de dados para gráficos utilizados no aplicativo.
+- **ILogin.ts**: Define a estrutura de dados para o processo de login.
+- **IUsuario.ts**: Define a estrutura de um usuário, incluindo suas informações e preferências.
 
-Essas interfaces são fundamentais para a tipagem estática em TypeScript, proporcionando um desenvolvimento mais seguro e eficiente.
+Essas interfaces são utilizadas em diversos componentes e serviços do projeto, garantindo a consistência e a segurança dos dados manipulados.

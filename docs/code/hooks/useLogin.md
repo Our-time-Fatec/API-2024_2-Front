@@ -5,60 +5,58 @@ description: 'Um hook personalizado para gerenciar o processo de login, incluind
 
 # useLogin
 
-O `useLogin` é um hook personalizado que facilita a implementação do processo de login em uma aplicação React. Ele gerencia o estado de erro e carregamento, além de interagir com a API de autenticação.
+O `useLogin` é um hook personalizado que facilita a implementação do processo de login em uma aplicação React. Ele gerencia o estado de autenticação, erros e carregamento durante a operação de login.
 
-## Estrutura
+## Importação
 
-O hook utiliza os seguintes estados:
+Para utilizar o `useLogin`, você deve importá-lo em seu componente:
 
-- `error`: Armazena mensagens de erro, caso ocorram durante o processo de login.
-- `loading`: Indica se a requisição de login está em andamento.
+```javascript
+import useLogin from '../hooks/useLogin';
+```
 
-## Funcionalidades
+## Retorno
 
-### login
+O hook retorna um objeto contendo:
 
-A função `login` é responsável por realizar a autenticação do usuário. Ela aceita um objeto `loginRequest` do tipo `ILoginRequest` e retorna um objeto que indica se a operação foi bem-sucedida e, em caso afirmativo, os dados da resposta.
-
-#### Parâmetros
-
-- `loginRequest` (ILoginRequest): Objeto contendo as credenciais do usuário.
-
-#### Retorno
-
-Um objeto com as seguintes propriedades:
-
-- `success` (boolean): Indica se o login foi bem-sucedido.
-- `data` (ILoginSuccessResponse | undefined): Dados retornados pela API em caso de sucesso.
+- `login`: Função assíncrona que aceita um objeto de solicitação de login (`ILoginRequest`) e tenta autenticar o usuário.
+- `error`: Uma string que representa a mensagem de erro, caso ocorra durante o login. Se não houver erro, será `null`.
+- `loading`: Um booleano que indica se a operação de login está em andamento.
 
 ## Exemplo de Uso
 
-```javascript
-import useLogin from 'hooks/useLogin';
+Aqui está um exemplo de como usar o `useLogin` em um componente:
 
+```javascript
 const LoginComponent = () => {
     const { login, error, loading } = useLogin();
 
-    const handleLogin = async () => {
-        const result = await login({ username: 'user', password: 'pass' });
+    const handleLogin = async (credentials) => {
+        const result = await login(credentials);
         if (result.success) {
-            // Login bem-sucedido
+            // Redirecionar ou realizar outra ação em caso de sucesso
         } else {
-            // Tratar erro
+            // Exibir mensagem de erro
+            console.error(error);
         }
     };
 
     return (
         <div>
-            <button onClick={handleLogin} disabled={loading}>
-                {loading ? 'Carregando...' : 'Login'}
-            </button>
+            <form onSubmit={handleLogin}>
+                {/* Campos de entrada para login */}
+                <button type="submit" disabled={loading}>
+                    {loading ? 'Carregando...' : 'Login'}
+                </button>
+            </form>
             {error && <p>{error}</p>}
         </div>
     );
 };
 ```
 
-## Considerações Finais
+## Considerações
 
-O `useLogin` é uma solução prática para gerenciar o fluxo de autenticação em aplicações React, permitindo que os desenvolvedores se concentrem na lógica de negócios sem se preocupar com a implementação detalhada do estado de login.
+- O hook utiliza o contexto de autenticação (`AuthContext`) para gerenciar o estado de autenticação do usuário.
+- A função `loginApi` é responsável por fazer a chamada à API para autenticação.
+- O tratamento de erros é feito para capturar mensagens específicas retornadas pela API, além de um fallback para erros desconhecidos.

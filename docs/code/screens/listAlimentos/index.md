@@ -1,63 +1,55 @@
 ---
-title: ListAlimentos
-description: 'Tela para listar e gerenciar alimentos, permitindo busca e filtragem por categoria.'
+title: AlimentosScreen
+description: 'Tela para listar e buscar alimentos, permitindo a seleção de categorias e a adição de novos alimentos.'
 ---
 
-# ListAlimentos
+# AlimentosScreen
 
-A tela `ListAlimentos` é responsável por exibir uma lista de alimentos disponíveis, permitindo ao usuário buscar e filtrar por categorias. Além disso, oferece a opção de cadastrar novos alimentos.
+A `AlimentosScreen` é uma tela do aplicativo que permite ao usuário listar e buscar alimentos. A tela oferece funcionalidades para filtrar alimentos por categoria e realizar buscas por nome.
 
 ## Estrutura do Componente
 
-O componente `AlimentosScreen` utiliza os seguintes hooks e bibliotecas:
+O componente é implementado como uma função React que utiliza hooks para gerenciar estado e efeitos colaterais.
 
-- **React**: Para gerenciamento de estado e efeitos colaterais.
-- **React Native**: Para a construção da interface do usuário.
-- **React Navigation**: Para navegação entre telas.
-- **Custom Hooks**: Utiliza o hook `useAlimentos` para gerenciar a lógica de busca e filtragem de alimentos.
+### Props
 
-## Props
-
-O componente recebe as seguintes propriedades:
-
-- `navigation`: Objeto de navegação para permitir a transição entre telas.
+- `navigation`: Objeto de navegação que permite a navegação entre telas.
 - `route`: Objeto que contém informações sobre a rota atual.
 
-## Estado
-
-O componente mantém o seguinte estado:
+### Estado
 
 - `searchTerm`: Termo de busca para filtrar alimentos.
 - `selectedCategoria`: Categoria selecionada para filtrar a lista de alimentos.
 
-## Efeitos
+### Hooks Utilizados
 
-- O hook `useEffect` é utilizado para atualizar a lista de alimentos sempre que a tela estiver em foco.
+- `useAlimentos`: Hook customizado que gerencia a lógica de busca e filtragem de alimentos.
+- `useIsFocused`: Hook que verifica se a tela está focada, permitindo atualizar a lista de alimentos quando a tela é exibida.
 
-## Funções
+### Efeitos
 
-- `handleSearchChange`: Atualiza o estado `searchTerm` com o texto inserido pelo usuário.
-- `handleCategoriaChange`: Atualiza a categoria selecionada.
-- `handleRegister`: Navega para a tela de cadastro de alimentos.
+- O `useEffect` é utilizado para chamar a função `refreshAlimentos` sempre que a tela se torna focada.
 
 ## Renderização
 
 A tela é composta pelos seguintes elementos:
 
-- **Picker**: Para seleção de categorias.
-- **TextInput**: Campo de busca para filtrar alimentos.
-- **FlatList**: Exibe a lista de alimentos, permitindo rolagem e carregamento de mais itens.
-- **FooterMenu**: Componente de menu inferior para navegação.
+- **StatusBar**: Configura a cor da barra de status.
+- **Picker**: Componente para seleção de categorias de alimentos.
+- **TextInput**: Campo de busca para filtrar alimentos pelo nome.
+- **TouchableOpacity**: Botão para navegar para a tela de cadastro de alimentos.
+- **FlatList**: Lista que exibe os alimentos filtrados, com suporte para carregamento de mais itens.
+
+### Funções
+
+- `handleSearchChange`: Atualiza o estado `searchTerm` com o texto digitado pelo usuário.
+- `handleCategoriaChange`: Atualiza a categoria selecionada.
+- `handleRegister`: Navega para a tela de cadastro de alimentos.
 
 ## Estilos
 
-Os estilos são definidos utilizando `StyleSheet.create`, garantindo uma aparência consistente e responsiva. Os principais estilos incluem:
-
-- `container`: Estilo principal do contêiner.
-- `title`: Estilo do título da tela.
-- `button`: Estilo do botão para cadastrar novos alimentos.
-- `searchContainer`: Estilo do contêiner de busca.
+Os estilos são importados de um arquivo separado e aplicados aos componentes para garantir uma apresentação visual consistente.
 
 ## Conclusão
 
-A tela `ListAlimentos` oferece uma interface intuitiva para listar, buscar e cadastrar alimentos, integrando-se perfeitamente com a lógica de navegação e gerenciamento de estado do aplicativo.
+A `AlimentosScreen` é uma parte essencial do aplicativo, permitindo que os usuários gerenciem e busquem alimentos de forma eficiente. A combinação de filtros e busca proporciona uma experiência de usuário intuitiva e prática.

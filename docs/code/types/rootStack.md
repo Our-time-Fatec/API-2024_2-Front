@@ -1,11 +1,11 @@
 ---
 title: rootStack
-description: 'Definição da lista de parâmetros para a navegação no aplicativo.'
+description: 'Define a lista de parâmetros para a navegação entre as telas da aplicação.'
 ---
 
 # RootStackParamList
 
-O `RootStackParamList` é um tipo TypeScript que define os parâmetros de navegação para as diferentes telas do aplicativo. Cada chave representa uma tela e o valor associado indica os parâmetros que podem ser passados para essa tela.
+O `RootStackParamList` é um tipo TypeScript que define os parâmetros de navegação para as diferentes telas da aplicação. Cada chave representa uma tela e o valor associado indica os parâmetros que podem ser passados para essa tela.
 
 ## Estrutura
 
@@ -24,25 +24,35 @@ export type RootStackParamList = {
   UserAlimentosConsumidos: undefined;
   FAQs: undefined;
   UserDietas: undefined;
+  DietasPredefinidas: undefined;
+  DietasPersonalizadas: undefined;
+  CadastroDieta: { dietaId: string };
+  AguaConsumida: undefined;
+  UserDietaDiaria: undefined;
 };
 ```
 
 ## Descrição dos Parâmetros
 
-- **Home**: Tela inicial do aplicativo. Não requer parâmetros.
-- **Login**: Tela de login do usuário. Não requer parâmetros.
-- **Cadastro**: Tela de cadastro de novos usuários. Não requer parâmetros.
-- **Questionario**: Tela para responder a um questionário. Não requer parâmetros.
-- **Selecao**: Tela de seleção de opções. Não requer parâmetros.
-- **ListAlimentos**: Tela que lista os alimentos disponíveis. Não requer parâmetros.
-- **Profile**: Tela de perfil do usuário. Não requer parâmetros.
-- **EditProfile**: Tela para edição do perfil do usuário. Não requer parâmetros.
-- **CadastroAlimento**: Tela para cadastro de um alimento específico. Requer o parâmetro `alimentoId` do tipo `string`.
-- **UserAlimentos**: Tela que exibe os alimentos do usuário. Não requer parâmetros.
-- **UserAlimentosConsumidos**: Tela que mostra os alimentos consumidos pelo usuário. Não requer parâmetros.
-- **FAQs**: Tela de perguntas frequentes. Não requer parâmetros.
-- **UserDietas**: Tela que exibe as dietas do usuário. Não requer parâmetros.
+- **Home**: Tela inicial da aplicação, sem parâmetros.
+- **Login**: Tela de login, sem parâmetros.
+- **Cadastro**: Tela de cadastro, sem parâmetros.
+- **Questionario**: Tela de questionário, sem parâmetros.
+- **Selecao**: Tela de seleção, sem parâmetros.
+- **ListAlimentos**: Tela para listar alimentos, sem parâmetros.
+- **Profile**: Tela de perfil do usuário, sem parâmetros.
+- **EditProfile**: Tela para editar o perfil do usuário, sem parâmetros.
+- **CadastroAlimento**: Tela para cadastrar um alimento, requer `alimentoId` como parâmetro.
+- **UserAlimentos**: Tela que exibe os alimentos do usuário, sem parâmetros.
+- **UserAlimentosConsumidos**: Tela que exibe os alimentos consumidos pelo usuário, sem parâmetros.
+- **FAQs**: Tela de perguntas frequentes, sem parâmetros.
+- **UserDietas**: Tela que exibe as dietas do usuário, sem parâmetros.
+- **DietasPredefinidas**: Tela que exibe dietas predefinidas, sem parâmetros.
+- **DietasPersonalizadas**: Tela que exibe dietas personalizadas, sem parâmetros.
+- **CadastroDieta**: Tela para cadastrar uma dieta, requer `dietaId` como parâmetro.
+- **AguaConsumida**: Tela que exibe o consumo de água, sem parâmetros.
+- **UserDietaDiaria**: Tela que exibe a dieta diária do usuário, sem parâmetros.
 
 ## Uso
 
-Este tipo é utilizado para garantir que a navegação entre as telas do aplicativo seja feita de forma segura, evitando erros de tipo ao passar parâmetros.
+Este tipo é utilizado para garantir que os parâmetros passados entre as telas estejam corretos, proporcionando uma navegação segura e tipada na aplicação.

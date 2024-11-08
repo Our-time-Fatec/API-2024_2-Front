@@ -13,7 +13,7 @@ O contexto é composto por um provedor (`AuthProvider`) e um hook personalizado 
 
 ### AuthProvider
 
-O `AuthProvider` é um componente que encapsula a lógica de autenticação. Ele utiliza o `useState` para armazenar o estado de autenticação e o `useEffect` para verificar a presença de um token de autenticação armazenado no `AsyncStorage` quando o componente é montado.
+O `AuthProvider` é um componente que encapsula a lógica de autenticação. Ele utiliza o `AsyncStorage` para recuperar um token de autenticação e determinar se o usuário está autenticado.
 
 #### Props
 
@@ -23,32 +23,50 @@ O `AuthProvider` é um componente que encapsula a lógica de autenticação. Ele
 
 - `isAuthenticated`: Um booleano que indica se o usuário está autenticado.
 - `setIsAuthenticated`: Função para atualizar o estado de autenticação.
+- `loading`: Um booleano que indica se o estado de autenticação está sendo carregado.
 
-#### Exemplo de uso
+#### Efeito
 
-```tsx
-<AuthProvider>
-    <YourComponent />
-</AuthProvider>
-```
+O `useEffect` é utilizado para verificar a presença de um token de autenticação no `AsyncStorage` ao montar o componente. Se um token for encontrado, ele tenta renová-lo usando a função `refreshAuthToken`.
+
+#### Comportamento
+
+Se o estado estiver carregando, um componente de loading é exibido. Caso contrário, o contexto é fornecido aos componentes filhos.
 
 ### useAuth
 
-O hook `useAuth` permite que componentes acessem o contexto de autenticação. Ele deve ser utilizado dentro de um componente que está encapsulado pelo `AuthProvider`.
+O hook `useAuth` permite que componentes acessem o contexto de autenticação.
 
 #### Retorno
 
-- Retorna um objeto com as seguintes propriedades:
+- Retorna um objeto contendo:
   - `isAuthenticated`: O estado atual de autenticação.
-  - `setIsAuthenticated`: Função para atualizar o estado de autenticação.
+  - `setIsAuthenticated`: A função para atualizar o estado de autenticação.
 
-#### Exemplo de uso
+#### Erro
+
+Se o hook for utilizado fora de um `AuthProvider`, ele lançará um erro.
+
+## Exemplo de Uso
 
 ```tsx
-const { isAuthenticated, setIsAuthenticated } = useAuth();
+import React from 'react';
+import { useAuth } from './context/AuthContext';
+
+const MyComponent = () => {
+    const { isAuthenticated, setIsAuthenticated } = useAuth();
+
+    return (
+        <div>
+            {isAuthenticated ? 'Usuário autenticado' : 'Usuário não autenticado'}
+            <button onClick={() => setIsAuthenticated(!isAuthenticated)}>
+                Toggle Auth
+            </button>
+        </div>
+    );
+};
 ```
 
-## Considerações
+## Conclusão
 
-- O `useAuth` deve ser utilizado apenas dentro de um componente que está dentro do `AuthProvider`. Caso contrário, um erro será lançado.
-- O estado de autenticação é verificado uma vez na montagem do componente, garantindo que a aplicação tenha acesso ao estado correto desde o início.
+O `AuthContext` fornece uma maneira eficiente de gerenciar o estado de autenticação em uma aplicação React, permitindo que componentes acessem e modifiquem o estado de autenticação de forma simples e direta.

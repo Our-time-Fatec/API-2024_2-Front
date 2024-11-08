@@ -19,15 +19,15 @@ declare module "*.png" {
 ## Descrição
 
 - **declare module "*.png"**: Esta linha declara um módulo para todos os arquivos que terminam com a extensão `.png`.
-- **const value: any**: Define uma constante chamada `value` do tipo `any`, que representa o conteúdo do arquivo PNG importado.
-- **export default value**: Exporta a constante `value` como a exportação padrão do módulo, permitindo que outros arquivos a importem.
+- **const value: any**: Define uma constante chamada `value` que pode ser de qualquer tipo. Isso é útil para permitir a importação de imagens sem especificar um tipo exato.
+- **export default value**: Exporta a constante `value` como a exportação padrão do módulo, permitindo que outros arquivos importem imagens PNG diretamente.
 
 ## Uso
 
-Com esta declaração, você pode importar arquivos PNG em seus componentes TypeScript da seguinte maneira:
+Após a inclusão deste arquivo, você pode importar arquivos PNG em seus componentes TypeScript da seguinte forma:
 
 ```typescript
 import logo from './logo.png';
 ```
 
-Isso permite que você utilize imagens PNG diretamente em seu código TypeScript sem erros de tipo.
+Isso facilita a utilização de imagens em projetos TypeScript, garantindo que o compilador reconheça as importações de arquivos PNG.

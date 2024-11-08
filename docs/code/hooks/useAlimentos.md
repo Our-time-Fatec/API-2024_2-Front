@@ -5,15 +5,15 @@ description: 'Um hook customizado para gerenciar e buscar alimentos e categorias
 
 # useAlimentos
 
-O `useAlimentos` é um hook customizado que facilita a busca e gerenciamento de alimentos e suas respectivas categorias em uma aplicação React. Ele permite filtrar alimentos com base em um termo de busca e em categorias específicas, além de suportar a paginação dos resultados.
+O `useAlimentos` é um hook customizado que facilita a busca e o gerenciamento de alimentos e categorias em uma aplicação React. Ele permite filtrar alimentos com base em um termo de busca e em categorias específicas, além de gerenciar a paginação dos resultados.
 
 ## Estrutura
 
 O hook utiliza os seguintes estados:
 
 - `alimentos`: Armazena a lista de alimentos retornados pela API.
-- `categorias`: Armazena a lista de categorias de alimentos.
-- `selectedCategoria`: Armazena a categoria atualmente selecionada para filtragem.
+- `categorias`: Armazena a lista de categorias disponíveis.
+- `selectedCategoria`: Armazena a categoria atualmente selecionada.
 - `page`: Armazena o número da página atual para a paginação.
 - `totalPages`: Armazena o total de páginas disponíveis.
 
@@ -36,7 +36,7 @@ Os resultados são armazenados no estado `alimentos` e o total de páginas é at
 
 ### loadMore
 
-Função que incrementa o número da página atual, permitindo a carga de mais alimentos, desde que ainda haja páginas disponíveis.
+Função que incrementa o número da página atual, permitindo carregar mais alimentos, desde que ainda haja páginas disponíveis.
 
 ### refreshAlimentos
 
@@ -44,27 +44,24 @@ Função que reinicia a página para 1 e busca novamente os alimentos com os fil
 
 ## Uso
 
-Para utilizar o `useAlimentos`, basta importá-lo e chamá-lo em um componente funcional, passando o termo de busca e um booleano para filtrar apenas os alimentos do usuário:
+Para utilizar o `useAlimentos`, basta importá-lo e chamá-lo dentro de um componente funcional, passando o termo de busca e um booleano para filtrar apenas os alimentos do usuário, se necessário.
 
 ```javascript
-const { alimentos, categorias, loadMore, refreshAlimentos } = useAlimentos(searchTerm, onlyUser);
-```
+import useAlimentos from 'caminho/para/hooks/useAlimentos';
 
-## Exemplo
-
-```javascript
 const MyComponent = () => {
-    const { alimentos, categorias, loadMore, refreshAlimentos } = useAlimentos('', false);
+    const { alimentos, categorias, loadMore, refreshAlimentos } = useAlimentos('termo', true);
 
-    return (
-        <div>
-            {/* Renderizar categorias e alimentos */}
-        </div>
-    );
+    // Lógica do componente...
 };
 ```
 
-## Considerações
+## Dependências
 
-- O hook utiliza `useEffect` para buscar categorias e alimentos sempre que os parâmetros relevantes mudam.
-- É importante tratar erros nas chamadas da API para garantir uma boa experiência do usuário.
+- `requestWithRefresh`: Função responsável por realizar as requisições à API.
+- `IAlimento`: Interface que define a estrutura de um alimento.
+- `ICategoria`: Interface que define a estrutura de uma categoria.
+
+## Considerações Finais
+
+O `useAlimentos` é uma solução eficiente para gerenciar a busca de alimentos e categorias, proporcionando uma experiência de usuário fluida e responsiva.

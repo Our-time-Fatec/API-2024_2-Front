@@ -5,67 +5,140 @@ description: 'Tela que exibe as dietas do usuário, permitindo a seleção de di
 
 # UserDietasScreen
 
-A `UserDietasScreen` é um componente React que exibe as dietas do usuário. Esta tela permite que o usuário visualize suas dietas, selecione um dia da semana, e realize operações de cadastro, edição e exclusão de dietas.
+A `UserDietasScreen` é um componente React que representa a tela onde os usuários podem visualizar, cadastrar, editar e excluir suas dietas. Esta tela utiliza a biblioteca React Navigation para gerenciar a navegação entre diferentes telas do aplicativo.
 
 ## Estrutura do Componente
 
-O componente utiliza os seguintes hooks e bibliotecas:
+O componente é estruturado da seguinte forma:
 
-- **React**: Para a criação do componente e gerenciamento de estado.
-- **React Navigation**: Para navegação entre telas.
-- **React Native**: Para a construção da interface do usuário.
-- **Picker**: Para seleção de dias da semana.
-- **FlatList**: Para renderização de listas de dietas.
+- **Imports**: Importa bibliotecas e componentes necessários, como `React`, `FlatList`, `Picker`, e ícones do `Ionicons`.
+- **Tipos**: Define os tipos de navegação e rotas utilizando `StackNavigationProp` e `RouteProp`.
+- **Props**: Recebe as propriedades de navegação e rota.
+- **Estado e Efeitos**: Utiliza o hook `useEffect` para atualizar as dietas quando a tela está em foco.
+- **Manipuladores de Eventos**: Define funções para cadastro, edição, exclusão e mudança de dia da semana.
 
-## Props
+## Funcionalidades
 
-### Props
+- **Exibição de Dietas**: Utiliza um `FlatList` para renderizar a lista de dietas do usuário.
+- **Cadastro de Dietas**: Um botão que navega para a tela de cadastro de dieta.
+- **Edição de Dietas**: Permite ao usuário editar uma dieta existente ao clicar em um item da lista.
+- **Exclusão de Dietas**: Permite ao usuário excluir uma dieta com confirmação de sucesso ou erro.
+- **Filtro por Dia da Semana**: Um `Picker` que permite ao usuário selecionar um dia da semana para filtrar as dietas.
 
-- `navigation`: Objeto de navegação que permite a navegação entre telas.
-- `route`: Objeto que contém informações sobre a rota atual.
+## Código
 
-## Hooks Utilizados
+```javascript
+import React, { useEffect } from "react";
+import { View, Text, TouchableOpacity, FlatList, StatusBar } from "react-native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RouteProp, useIsFocused } from "@react-navigation/native";
+import { RootStackParamList } from "../../types/rootStack";
+import FooterMenu from "../../components/menus";
+import { Picker } from "@react-native-picker/picker";
+import { Ionicons } from "@expo/vector-icons";
+import { requestWithRefresh } from "../../services/api";
+import { DiasSemana } from "../../enums/diasSemana";
+import DietaItem from "../../components/dieta";
+import useDietas from "../../hooks/useDietas";
+import styles from "./styles";
+import { styles as style } from "../userDietaDiaria/styles";
+import { ScrollView } from "react-native-gesture-handler";
 
-- `useEffect`: Para executar efeitos colaterais, como a atualização das dietas quando a tela está em foco.
-- `useIsFocused`: Para verificar se a tela está atualmente em foco.
-- `useDietas`: Hook personalizado que gerencia o estado das dietas.
+type UserDietasScreenNavigationProp = StackNavigationProp<RootStackParamList, "UserDietas">;
+type UserDietasScreenRouteProp = RouteProp<RootStackParamList, "UserDietas">;
 
-## Funções
+type Props = {
+  navigation: UserDietasScreenNavigationProp;
+  route: UserDietasScreenRouteProp;
+};
 
-### handleCadastro
+const UserDietasScreen: React.FC<Props> = ({ navigation }) => {
+  const isFocused = useIsFocused();
+  const { dietas, selectedDiaSemana, setSelectedDiaSemana, refreshDietas } = useDietas(true);
 
-Navega para a tela de cadastro de alimentos.
+  useEffect(() => {
+    if (isFocused) {
+      refreshDietas();
+    }
+  }, [isFocused, refreshDietas]);
 
-### handleEdit
+  const handleCadastro = () => {
+    navigation.navigate("CadastroDieta", { dietaId: "" });
+  };
 
-Navega para a tela de cadastro de alimentos com o ID da dieta a ser editada.
+  const handleEdit = (id: string) => {
+    navigation.navigate("CadastroDieta", { dietaId: id });
+  };
 
-### handleDelete
+  const handleDelete = async (id: string) => {
+    try {
+      await requestWithRefresh({
+        method: "DELETE",
+        url: `/dieta/${id}`,
+      });
+      alert("Dieta deletada com sucesso!");
+      refreshDietas();
+    } catch (error) {
+      alert("Erro ao deletar dieta.");
+    }
+  };
 
-Remove uma dieta com base no ID fornecido e atualiza a lista de dietas.
+  const handleDiaChange = (value: string) => {
+    setSelectedDiaSemana(value);
+  };
 
-### handleDiaChange
+  return (
+    <View style={{ flex: 1 }}>
+      <StatusBar backgroundColor="#f0f4f8" />
+      <ScrollView style={styles.container}>
+        <Text style={styles.title}>Minhas dietas</Text>
+        <Picker
+          selectedValue={selectedDiaSemana}
+          style={styles.picker}
+          onValueChange={handleDiaChange}
+        >
+          <Picker.Item label="Selecione o dia" value="Todos" style={style.pickerText} />
+          <Picker.Item label="Hoje" value="Hoje" style={style.pickerText} />
+          {Object.keys(DiasSemana).map((key) => (
+            <Picker.Item
+              key={key}
+              label={DiasSemana[key as keyof typeof DiasSemana]}
+              value={key}
+              style={style.pickerText}
+            />
+          ))}
+        </Picker>
+        <TouchableOpacity style={styles.button} onPress={handleCadastro}>
+          <Ionicons name="add" size={20} color="#fff" style={styles.icon} />
+          <Text style={styles.buttonText}>Cadastrar Dieta</Text>
+        </TouchableOpacity>
+        <FlatList
+          data={dietas}
+          keyExtractor={(item, index) => (item._id ? item._id : `key-${index}`)}
+          renderItem={({ item }) => (
+            <DietaItem
+              dieta={item}
+              isUserDieta={true}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          )}
+          numColumns={1}
+          style={{ marginBottom: 25 }}
+        />
+      </ScrollView>
+      <FooterMenu navigation={navigation} />
+    </View>
+  );
+};
 
-Atualiza o dia da semana selecionado pelo usuário.
-
-## Renderização
-
-O componente renderiza:
-
-- Um título "Minhas dietas".
-- Um `Picker` para seleção do dia da semana.
-- Um botão para cadastrar novas dietas (desabilitado no momento).
-- Uma lista de dietas utilizando `FlatList`.
-- Um componente de menu de rodapé.
+export default UserDietasScreen;
+```
 
 ## Estilos
 
-Os estilos são definidos utilizando `StyleSheet` do React Native, incluindo estilos para o container, título, picker, botões e outros elementos da interface.
+Os estilos são importados do arquivo `styles.ts`, que define a aparência da tela, incluindo a formatação do texto, botões e layout geral.
 
-## Exemplo de Uso
+## Conclusão
 
-```jsx
-<UserDietasScreen navigation={navigation} route={route} />
-```
-
-Este componente é parte da estrutura de navegação do aplicativo e deve ser utilizado dentro de um contexto de navegação apropriado.
+A `UserDietasScreen` é uma parte essencial do aplicativo, permitindo que os usuários gerenciem suas dietas de forma eficiente e intuitiva.

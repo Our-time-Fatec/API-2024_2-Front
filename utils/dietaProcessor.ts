@@ -1,6 +1,6 @@
 import { Alert } from "react-native";
 import { IAlimento } from "../interfaces/IAlimento";
-import { IAlimentoDieta, IDietaFixa, IGrupo } from "../interfaces/IDieta";
+import { IAlimentoDieta, IContagem, IDietaDiaria, IDietaFixa, IGrupo, IGrupoConsumo } from "../interfaces/IDieta";
 import { requestWithRefresh } from "../services/api";
 
 class DietaProcessor {
@@ -13,6 +13,17 @@ class DietaProcessor {
         const indiceB = ORDEM_GRUPOS.indexOf(b.nome);
         return indiceA - indiceB;
     });
+} 
+
+
+public sorterDiario(grupos: IGrupoConsumo[]): IGrupoConsumo[] {
+  const ORDEM_GRUPOS = ["Café da Manhã", "Almoço", "Café da Tarde", "Janta"];
+
+  return grupos.sort((a, b) => {
+      const indiceA = ORDEM_GRUPOS.indexOf(a.grupo);
+      const indiceB = ORDEM_GRUPOS.indexOf(b.grupo);
+      return indiceA - indiceB;
+  });
 } 
 
   public transformGroups(grupos: IGrupo[]) {
@@ -167,6 +178,8 @@ class DietaProcessor {
   
     return null;
   };
+
+
 }
 
 export default new DietaProcessor();

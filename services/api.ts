@@ -6,7 +6,7 @@ import { API_HOST } from '@env';
 
 const APIHOST = API_HOST
 const api = axios.create({
-    baseURL: APIHOST,
+    baseURL: API_HOST,
 });
 console.log(APIHOST)
 

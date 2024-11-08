@@ -3,7 +3,7 @@ import colors from "../../colors/colors";
 
 export const styles = StyleSheet.create({
     footer: {
-      backgroundColor: colors.background,
+      backgroundColor: "#fafdff",
       flexDirection: 'row',
       justifyContent: 'space-around',
       paddingVertical: 10,
@@ -22,5 +22,15 @@ export const styles = StyleSheet.create({
       fontSize: 12,
       marginTop: 4,
       color: 'black',
-    }
+    },
+    focusedMenuText: {
+
+      color: 'black',
+  
+    },
+    focusedMenuItem: {
+
+      backgroundColor: '#e0e0e0',
+  
+    },
   });

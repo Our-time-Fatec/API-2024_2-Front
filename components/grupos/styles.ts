@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import colors from "../../colors/colors";
 
 export const styles = StyleSheet.create({
     modalContainer: {
@@ -10,7 +11,7 @@ export const styles = StyleSheet.create({
     modalContent: {
       width: "90%",
       padding: 20,
-      backgroundColor: "#fff",
+      backgroundColor: colors.background,
       borderRadius: 10,
       maxHeight: "80%",
     },

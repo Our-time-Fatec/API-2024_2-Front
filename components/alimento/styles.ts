@@ -87,11 +87,14 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#555',
         marginBottom: 8,
+        textAlign: 'center',
+        flexWrap: 'wrap',    // Permite que o texto quebre em múltiplas linhas
+    maxWidth: '80%',
     },
     closeButton: {
         marginTop: 5,
         backgroundColor: '#e13f2f',
-        paddingVertical: 8,
+        paddingVertical: 10,
         borderRadius: 5,
         alignItems: 'center',
         width: '100%',
@@ -106,12 +109,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 1,
         marginBottom: 10,
-        gap: 3
+        gap: 3,
+        width: "100%"
     },
     editButton: {
         marginTop: 5,
         backgroundColor: '#2d74da',
-        paddingVertical: 8,
+        paddingVertical: 10,
         borderRadius: 5,
         alignItems: 'center',
         flex: 0.5
@@ -119,7 +123,7 @@ const styles = StyleSheet.create({
     deleteButton: {
         marginTop: 5,
         backgroundColor: '#e13f2f',
-        paddingVertical: 8,
+        paddingVertical: 10,
         borderRadius: 5,
         alignItems: 'center',
         flex: 0.5
@@ -144,4 +148,20 @@ const styles = StyleSheet.create({
         flex: 1,  // Garante que o conteúdo ocupe o espaço restante no container
         justifyContent: "flex-start",  // Mantém o conteúdo no topo
     },
+    picker: {
+        height: 50,
+        marginBottom: 5,
+        borderColor: '#ddd',
+        borderWidth: 1,
+        borderRadius: 5,
+        width: "100%"
+      },
+      pickerContainer: {
+        marginBottom: 10,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 5,
+        padding: 5,
+          width: "100%"
+      },
 });

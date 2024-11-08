@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  Image,
+  StatusBar
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { styles } from "./styles";
@@ -18,6 +20,8 @@ import { IUsuario } from "../../interfaces/IUsuario";
 import useRegister from "../../hooks/useRegister";
 import formaterDate from "../../utils/formaterDate";
 import resultChecker from "../../utils/resultChecker";
+import useProfilePicture from "../../hooks/useProfilePicture";
+import {styles as style} from "../../screens/editProfile/styles"
 
 type CadastroScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -49,6 +53,26 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [dataFormatada, setDataFormatada] = useState<Date | null | undefined>();
+
+  const { image, saveProfileImage, pickImage, takePhoto, removeProfileImage } = useProfilePicture(formState.email);
+
+  const handlePickImage = () => {
+    if (formState.email) {
+      pickImage(); // Chama a função se o email não estiver vazio
+    } else {
+      Alert.alert("Erro", "Por favor, preencha seu email antes de selecionar uma imagem.");
+      return
+    }
+  };
+
+  const handleTakePhoto = () => {
+    if (formState.email) {
+      takePhoto(); // Chama a função se o email não estiver vazio
+    } else {
+      Alert.alert("Erro", "Por favor, preencha seu email antes de tirar uma foto.");
+      return
+    }
+  };
 
   const handleInputChange = (name: keyof IUsuario, value: any) => {
     if (name === "altura" || name === "peso") {
@@ -95,9 +119,19 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
 
     // Se qualquer validação falhar, o fluxo é interrompido
     if (validators.some((validator) => !validator(formState))) return;
+    if(image){
+      saveProfileImage(image, formState.email)
+    }
+    
+    if (validators.some((validator) => !validator(formState))) return;
+    const updatedFormState = {
+      ...formState,
+      nome: formState.nome.trim(),
+      sobrenome: formState.sobrenome.trim(),
+    };
 
     // Executa o cadastro
-    const result = await register(formState);
+    const result = await register(updatedFormState);
     if (result.success) {
       Alert.alert("Sucesso", "Cadastro realizado com sucesso!");
       navigation.navigate("Selecao");
@@ -108,8 +142,9 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <StatusBar  backgroundColor="#FFF"/>
       <ScrollView
-        contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
         style={{ flex: 1 }}
@@ -126,6 +161,33 @@ const Cadastro: React.FC<Props> = ({ navigation }) => {
             <Text style={styles.editPhoto}>Editar foto</Text>
           </TouchableOpacity> */}
         </View>
+
+        <View style={{ alignItems: "center", marginBottom: 20 }}>
+            {image ? (
+              <Image
+                source={{ uri: image }}
+                style={{ width: 120, height: 120, borderRadius: 60 }}
+              />
+            ) : (
+              <Ionicons name="person-circle-outline" size={120} color="gray" />
+            )}
+               <View style={{ flexDirection: "row", marginTop: 10 }}>
+              <TouchableOpacity onPress={handlePickImage} style={style.iconButton}>
+                <Ionicons name="folder-outline" size={30} color="black" />
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={handleTakePhoto} style={style.iconButton}>
+                <Ionicons name="camera-outline" size={30} color="black" />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={removeProfileImage}
+                style={style.iconButton}
+              >
+                <Ionicons name="trash-outline" size={30} color="black" />
+              </TouchableOpacity>
+            </View>
+            </View>
 
         <View style={styles.inputContainer}>
           <Ionicons name="person-outline" size={20} color="gray" />

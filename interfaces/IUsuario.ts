@@ -23,4 +23,10 @@ export interface IUsuario {
     atualizadoEm?: Date | null;
     removidoEm?: Date | null;
     totaisAlimentosConsumidos?: Detalhes;
+    metaAgua?: number,
+    agua?: IAgua
+}
+
+export interface IAgua {
+    aguaIngerida: number
 }

@@ -107,6 +107,14 @@ const styles = StyleSheet.create({
         flex: 1,
         fontSize: 16,
     },
+    iconButton: {
+        padding: 10, // Ajuste o padding conforme necessário
+        marginHorizontal: 10, // Espaçamento entre os ícones
+      },
+      loadingIndicator: {
+        flex: 1,
+        justifyContent: 'center',
+    },
 });
 
 export { styles };

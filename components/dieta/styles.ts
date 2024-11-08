@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import colors from "../../colors/colors";
 
 export const styles = StyleSheet.create({
     card: {
@@ -8,7 +9,7 @@ export const styles = StyleSheet.create({
       borderRadius: 8,
       overflow: "hidden",
       margin: 8,
-      backgroundColor: "#fff",
+      backgroundColor: colors.background,
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.1,
@@ -37,7 +38,7 @@ export const styles = StyleSheet.create({
     modalContent: {
       width: "90%",
       padding: 20,
-      backgroundColor: "#fff",
+      backgroundColor: colors.background,
       borderRadius: 10,
       alignItems: "center",
       shadowColor: "#000",

@@ -9,6 +9,7 @@ import {
   RefreshControl,
   Pressable,
   ActivityIndicator,
+  StatusBar,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { styles } from "./styles";
@@ -464,6 +465,7 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
         />
       }
     >
+         <StatusBar  backgroundColor="#FFF"/>
        {isLoading ? (
         <View style={styles.loading}>
         <ActivityIndicator size="large" color="#0000ff" />
@@ -551,32 +553,9 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
           ))}
         </Picker>
       </View>
-<>
-<View style={[
-    styles.refeicaoContainer,
-    groups.length === 0 && { display: 'none' }, // Condicional para ocultar o container
-  ]}>
-        {groups.length > 0 ? (
-          
-          groups.map((grupo, index) => (
-      
-            <View key={grupo._id || index} style={styles.refeicaoRegistrada}>
-              <TouchableOpacity
-                onPress={() => handleRemoveGroup(grupo.nome)}
-              >
-                <Ionicons name={"close"} size={20} color={"#333"} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => openModal(grupo)}>
-                <Text style={styles.refeicaoRegistradaText}>{grupo.nome}</Text>
-              </TouchableOpacity>
-            </View>
-       
-          ))
-        ) : (
-          <></>
-        )}
-             </View>
-      </>
+
+
+    
       <GroupModal
         visible={modalVisible}
         grupo={selectedGrupo}
@@ -642,6 +621,31 @@ const CadastroDietaScreen: React.FC<Props> = ({ navigation, route }) => {
         onChangeText={(text) => handleChange("quantidade", text)}
         keyboardType="numeric"
       />
+
+<View style={[
+    styles.refeicaoContainer,
+    groups.length === 0 && { display: 'none' }, // Condicional para ocultar o container
+  ]}>
+        {groups.length > 0 ? (
+          
+          groups.map((grupo, index) => (
+      
+            <View key={grupo._id || index} style={styles.refeicaoRegistrada}>
+              <TouchableOpacity
+                onPress={() => handleRemoveGroup(grupo.nome)}
+              >
+                <Ionicons name={"close"} size={20} color={"#333"} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => openModal(grupo)}>
+                <Text style={styles.refeicaoRegistradaText}>{grupo.nome}</Text>
+              </TouchableOpacity>
+            </View>
+       
+          ))
+        ) : (
+          <></>
+        )}
+             </View>
 
       <TouchableOpacity style={styles.button} onPress={handleAddGroup}>
         <Text style={styles.buttonText}>Adicionar Refeição</Text>

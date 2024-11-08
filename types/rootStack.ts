@@ -14,5 +14,7 @@ export type RootStackParamList = {
   UserDietas: undefined;
   DietasPredefinidas: undefined;
   DietasPersonalizadas: undefined;
-  CadastroDieta: { dietaId: string }
+  CadastroDieta: { dietaId: string };
+  AguaConsumida: undefined
+  UserDietaDiaria: undefined
 };

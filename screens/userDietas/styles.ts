@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
-        backgroundColor: colors.background
+        backgroundColor: "#f0f4f8"
     },
     title: {
         fontSize: 24,
@@ -16,6 +16,12 @@ const styles = StyleSheet.create({
         height: 50,
         width: '100%',
         marginBottom: 10,
+        backgroundColor: colors.background,
+        borderRadius: 10,
+        elevation: 1,
+        shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 1,
     },
     row: {
         justifyContent: 'space-between',
@@ -40,6 +46,10 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         flexDirection: 'row',
         alignItems: 'center',
+        elevation: 1,
+        shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 1,
     },
     buttonText: {
         color: "#fff",

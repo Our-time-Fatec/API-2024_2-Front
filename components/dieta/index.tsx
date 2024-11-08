@@ -37,7 +37,7 @@ const DietaItem: React.FC<DietaProps> = ({
 
   return (
     <View style={styles.card}>
-      <TouchableOpacity onPress={toggleModal}>
+      <TouchableOpacity onPress={toggleModal} testID="open-modal-button">
         <View style={styles.detailsContainer}>
           <Text style={styles.nome}>Dia: {dieta.diaSemana}</Text>
           <Text style={styles.info}>
@@ -61,12 +61,14 @@ const DietaItem: React.FC<DietaProps> = ({
             style={styles.editButton}
             disabled={!dieta._id}
             onPress={() => onEdit(dieta._id ? dieta._id : "")}
+            testID="edit-button"
           >
             <Text style={styles.closeButtonText}>Editar</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.deleteButton}
             onPress={() => onDelete(dieta._id ? dieta._id : "")}
+            testID="delete-button"
           >
             <Text style={styles.closeButtonText}>Remover</Text>
           </TouchableOpacity>
@@ -127,7 +129,11 @@ const DietaItem: React.FC<DietaProps> = ({
                 </View>
               ))}
             </ScrollView>
-            <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={toggleModal}
+              testID="close-modal-button"
+            >
               <Text style={styles.closeButtonText}>Fechar</Text>
             </TouchableOpacity>
           </View>

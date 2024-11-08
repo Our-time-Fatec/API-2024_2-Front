@@ -2,11 +2,9 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
   FlatList,
-  Alert,
-  RefreshControl,
+  StatusBar,
 } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp, useIsFocused } from "@react-navigation/native";
@@ -19,6 +17,7 @@ import { DiasSemana } from "../../enums/diasSemana";
 import DietaItem from "../../components/dieta";
 import useDietas from "../../hooks/useDietas";
 import styles from "./styles";
+import { styles as style } from "../userDietaDiaria/styles";
 import { ScrollView } from "react-native-gesture-handler";
 
 type UserDietasScreenNavigationProp = StackNavigationProp<
@@ -67,9 +66,14 @@ const UserDietasScreen: React.FC<Props> = ({ navigation }) => {
   const handleDiaChange = (value: string) => {
     setSelectedDiaSemana(value);
   };
+  
+ 
 
   return (
+  
     <View style={{ flex: 1 }}>
+          <StatusBar backgroundColor="#f0f4f8" />
+    
       <ScrollView style={styles.container}>
         <Text style={styles.title}>Minhas dietas</Text>
         <Picker
@@ -77,13 +81,14 @@ const UserDietasScreen: React.FC<Props> = ({ navigation }) => {
           style={styles.picker}
           onValueChange={handleDiaChange}
         >
-          <Picker.Item label="Selecione o dia" value="Todos" />
-          <Picker.Item label="Hoje" value="Hoje" />
+          <Picker.Item label="Selecione o dia" value="Todos" style={style.pickerText}/>
+          <Picker.Item label="Hoje" value="Hoje" style={style.pickerText}/>
           {Object.keys(DiasSemana).map((key) => (
             <Picker.Item
               key={key}
               label={DiasSemana[key as keyof typeof DiasSemana]}
               value={key}
+              style={style.pickerText}
             />
           ))}
         </Picker>

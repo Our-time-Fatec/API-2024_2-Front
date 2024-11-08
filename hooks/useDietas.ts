@@ -47,6 +47,7 @@ const useDietas = (onlyUser: boolean = false) => {
         }
     }, []);
 
+    
     useEffect(() => {
         fetchDietas(selectedDiaSemana);
     }, [selectedDiaSemana, fetchDietas]);

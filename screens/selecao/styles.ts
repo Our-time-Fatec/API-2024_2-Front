@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#f0f4f8',
       },
       header: {
         backgroundColor: '#ADD8E6',
@@ -17,9 +17,10 @@ const styles = StyleSheet.create({
       profileContainer: {
         flexDirection: 'row',
         alignItems: 'center',
+        marginLeft: 10
       },
       textContainer: {
-        marginLeft: 10,
+        marginLeft: 20,
       },
       welcomeText: {
         color: 'white',

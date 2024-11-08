@@ -1,17 +1,37 @@
 {
   "cli": {
-    "appVersionSource": "remote"
+    "version": ">= 3.0.0"
   },
   "build": {
-    "production": {},
-    "preview": {
-      "distribution": "internal",
+    "production": {
       "android": {
         "buildType": "apk"
+      },
+      "ios": {
+        "simulator": true
       }
     },
-    "android": {
-      "node": "20.16.0"
+    "preview": {
+      "android": {
+        "buildType": "apk"
+      },
+      "distribution": "internal"
+    },
+    "development": {
+      "android": {
+        "buildType": "apk"
+      },
+      "distribution": "internal",
+      "env": {
+        "ENVIRONMENT": "development"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "./path/to/your/service-account-file.json"
+      }
     }
   }
 }
